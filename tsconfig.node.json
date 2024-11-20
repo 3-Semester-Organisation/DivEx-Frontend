@@ -1,0 +1,12 @@
+// template node.json file
+ {
+   "compilerOptions": {
+     "jsx": "react",
+     "baseUrl": ".",
+     "paths": {
+       "@/*": [
+         "./src/*"
+       ]
+     }
+   }
+ }

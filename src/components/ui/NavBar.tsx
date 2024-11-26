@@ -57,7 +57,7 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
 
 export default function Navbar() {
   return (
-    <NavigationMenu className="flex flex-row px-4">
+    <NavigationMenu className="flex flex-row p-6 ml-10">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Home</NavigationMenuTrigger>

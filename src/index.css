@@ -67,8 +67,26 @@
 }
 
 #root {
-  max-width: 1280px;
+  
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.logo {
+  width: 50px;
+  margin: 0 auto;
+}
+
+ul {
+  width: 100vw; 
+  display: flex;
+}
+
+li:nth-child(3) {
+  flex-grow: 1;
+}
+
+.userbutton {
+  margin-right: 5rem;
 }

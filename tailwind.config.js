@@ -3,8 +3,14 @@ export default {
     darkMode: ["class"],
     content: [
     "./index.html",
-    "./scr/**/*.{js,jsx,ts,tsx}",
-  ],
+	"./scr/**/*.{js,jsx,ts,tsx}",
+	"./@/components/**/*.{js,jsx,ts,tsx}",
+	'./pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './@/components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+    ],
   theme: {
   	extend: {
   		borderRadius: {

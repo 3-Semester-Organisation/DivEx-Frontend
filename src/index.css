@@ -90,3 +90,9 @@ li:nth-child(3) {
 .userbutton {
   margin-right: 5rem;
 }
+
+.dividend-day {
+  background-color: lightgreen;
+  color: black;
+  border-radius: 0.25rem;
+}

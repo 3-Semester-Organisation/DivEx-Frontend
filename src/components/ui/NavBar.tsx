@@ -45,7 +45,7 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
   },
   {
     title: "Calendar",
-    to: "/",
+    to: "/calendar",
     description: "Info about upcoming and past dividends.",
   },
   {

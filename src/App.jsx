@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Homepage from "@/pages/homepage";
 import ModeToggle from "@/components/ui/mode-toggle";
+import StocksPaginated from "@/components/divex/StocksPaginated"
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/dashboard" element={<p>dashboard</p>} />
             <Route path="/account" element={<p>account</p>} />
             <Route path="/portfolio" element={<p>portfolio</p>} />
+            <Route path="/stocks" element={<StocksPaginated />}></Route>
             
           </Routes>
         </Router>

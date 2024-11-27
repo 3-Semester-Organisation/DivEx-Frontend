@@ -41,8 +41,6 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-
-
 const convertUnixToDate = (unix: number) => {
   return new Date(unix * 1000);
 };
@@ -62,8 +60,6 @@ export default function CalendarPage() {
   const [currentPage, setCurrentPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
 
-  
-
   const handleFetch = async (url: string) => {
     const res = await fetch(url);
     const data = await res.json();
@@ -77,6 +73,8 @@ export default function CalendarPage() {
       const data: PaginatedResponse<Stock> = await handleFetch(url);
       const convertedStocks = data.content.map((stock) => ({
         ...stock,
+        //remove last three letters from ticker, it's always ".CO"
+        ticker: stock.ticker.slice(0, -3),
       }));
       setStocks(convertedStocks);
       setTotalPages(data.totalPages);
@@ -86,14 +84,13 @@ export default function CalendarPage() {
       setLoading(false);
     }
   };
-  
+
   React.useEffect(() => {
     fetchData();
     console.log(handleFetch(URL));
   }, [currentPage]);
 
-
-  //filterer på current valgte date
+  //filtrer på current valgte date fra state
   const filteredStocks = date
     ? stocks.filter(
         (stock) =>
@@ -112,7 +109,7 @@ export default function CalendarPage() {
   };
 
   const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+    setCurrentPage((next) => Math.min(next + 1, totalPages - 1));
   };
 
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
@@ -136,90 +133,93 @@ export default function CalendarPage() {
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-lg border bg-primary-foreground mr-28"
+            className="rounded-lg bg-primary-foreground mr-28"
             dividendDays={dividendDates(stocks)}
           />
           <Button
             id="reset-button"
-            className="bg-primary-foreground text-white flex mt-4 border rounded-lg hover:bg-accent"
+            className="bg-primary-foreground text-white flex mt-4 rounded-lg hover:bg-accent"
           >
             Reset
           </Button>
         </div>
       </div>
       <div className="p-6">
-      <div className="bg-primary-foreground rounded-lg border max-w-6xl">
-        {loading ? (
-          <div className="text-center p-4">Loading...</div>
-        ) : (
-          <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center">Ticker</TableHead>
-                  <TableHead className="text-center">Name</TableHead>
-                  <TableHead className="text-center">Dividend</TableHead>
-                  <TableHead className="text-center">Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredStocks.map((stock) => (
-                  <TableRow key={stock.ticker}>
-                    <TableCell className="font-medium">
-                      {stock.ticker}
-                    </TableCell>
-                    <TableCell>{stock.name}</TableCell>
-                    <TableCell>{stock.dividendRate} {stock.currency}</TableCell>
-                    <TableCell>
-                      {convertUnixToDate(stock.exDividendDate).toDateString()}
-                    </TableCell>
+        <div className="max-w-6xl">
+          {loading ? (
+            <div className="text-center p-4">Loading...</div>
+          ) : (
+            <>
+              <Table className="bg-primary-foreground rounded-lg">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-center">Ticker</TableHead>
+                    <TableHead className="text-center">Name</TableHead>
+                    <TableHead className="text-center">Dividend</TableHead>
+                    <TableHead className="text-center">Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-              <TableFooter></TableFooter>
-            </Table>
-            <div className="flex mx-auto w-40 mt-4 mb-4 justify-center">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handlePreviousPage();
-                      }}
-                    />
-                  </PaginationItem>
-                  {pageNumbers.map((pageNumber) => (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        href="#"
-                        isActive={currentPage === pageNumber}
+                </TableHeader>
+                <TableBody>
+                  {filteredStocks.map((stock) => (
+                    <TableRow key={stock.ticker}>
+                      <TableCell className="font-medium">
+                        {stock.ticker}
+                      </TableCell>
+                      <TableCell>{stock.name}</TableCell>
+                      <TableCell>
+                        {stock.dividendRate} {stock.currency}
+                      </TableCell>
+                      <TableCell>
+                        {convertUnixToDate(stock.exDividendDate).toDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter></TableFooter>
+              </Table>
+              <div className="flex mx-auto w-40 mt-4 mb-4 justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        className="cursor-pointer"
                         onClick={(e) => {
                           e.preventDefault();
-                          handlePageClick(pageNumber);
+                          handlePreviousPage();
                         }}
-                      >
-                        {pageNumber + 1}
-                      </PaginationLink>
+                      />
                     </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleNextPage();
-                      }}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          </>
-        )}
-        </div>
-        </div>
+                    {pageNumbers.map((pageNumber) => (
+                      <PaginationItem key={pageNumber}>
+                        <PaginationLink
+                          className="cursor-pointer"
+                          isActive={currentPage === pageNumber}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handlePageClick(pageNumber);
+                          }}
+                        >
+                          {pageNumber + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleNextPage();
+                        }}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+              </>
+
+          )}
+          </div>
+      </div>
     </>
   );
 }

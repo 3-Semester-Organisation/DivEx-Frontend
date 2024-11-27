@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronsLeft, ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import { ChevronsLeft, ChevronLeft, ChevronRight, ChevronsRight, MoreHorizontal } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { ButtonProps, buttonVariants } from "@/components/ui/button"
@@ -14,6 +14,8 @@ const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
 )
 Pagination.displayName = "Pagination"
 
+
+
 const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.ComponentProps<"ul">
@@ -26,6 +28,8 @@ const PaginationContent = React.forwardRef<
 ))
 PaginationContent.displayName = "PaginationContent"
 
+
+
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
@@ -33,6 +37,8 @@ const PaginationItem = React.forwardRef<
   <li ref={ref} className={cn("", className)} {...props} />
 ))
 PaginationItem.displayName = "PaginationItem"
+
+
 
 type PaginationLinkProps = {
   isActive?: boolean
@@ -59,6 +65,8 @@ const PaginationLink = ({
 )
 PaginationLink.displayName = "PaginationLink"
 
+
+
 const PaginationPrevious = ({
   className,
   children,
@@ -75,6 +83,8 @@ const PaginationPrevious = ({
   </PaginationLink>
 )
 PaginationPrevious.displayName = "PaginationPrevious"
+
+
 
 const PaginationFirst = ({
   className,
@@ -93,6 +103,8 @@ const PaginationFirst = ({
 )
 PaginationFirst.displayName = "PaginationFirst"
 
+
+
 const PaginationNext = ({
   className,
   children,
@@ -109,6 +121,27 @@ const PaginationNext = ({
   </PaginationLink>
 )
 PaginationNext.displayName = "PaginationNext"
+
+
+
+const PaginationLast = ({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to next page"
+    size="default"
+    className={cn("gap-1 pr-2.5", className)}
+    {...props}
+  >
+    <span>{children}</span>
+    <ChevronsRight className="h-4 w-4" />
+  </PaginationLink>
+)
+PaginationLast.displayName = "PaginationLast"
+
+
 
 const PaginationEllipsis = ({
   className,
@@ -132,6 +165,7 @@ export {
   PaginationItem,
   PaginationLink,
   PaginationNext,
+  PaginationLast,
   PaginationPrevious,
   PaginationFirst
 }

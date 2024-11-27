@@ -1,7 +1,7 @@
-// import React = require("react");
-import React, { useState, useEffect } from 'react';
-import { checkHttpsErrors } from "@/js/util.js"
-import PaginationBar from './PaginationBar';
+import React, { useState, useEffect } from "react";
+import { checkHttpsErrors } from "@/js/util.js";
+import PaginationBar from "./PaginationBar";
+import { Input } from "@/components/ui/input";
 
 import {
     Table,
@@ -19,7 +19,7 @@ interface HistoricalPricingResponse {
     openingDate: number;
     previousDailyClosingPrice: number;
     closingDate: number;
-  }
+}
 
 interface Stock {
     ticker: string;
@@ -30,6 +30,10 @@ interface Stock {
     industry: string;
     sector: string;
     historicalPricingResponseList: HistoricalPricingResponse[];
+    dividendRate: number;
+    dividendYield: number;
+    dividendRatio: number;
+    exDividendDate: number;
 }
 
 interface PaginatedResponse<T> {
@@ -38,11 +42,13 @@ interface PaginatedResponse<T> {
 }
 
 export default function StocksPaginated() {
-    const [stocks, setStocks] = useState([]);
+    const [stocks, setStocks] = useState<Stock[]>([]);
+    const [originalStocks, setOriginalStocks] = useState<Stock[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [currecntPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [sorting, setSorting] = useState({ column: "", direction: "asc" });
+    const [searchValue, setSearchValue] = useState("");
 
     useEffect(() => {
         async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10) {
@@ -55,7 +61,7 @@ export default function StocksPaginated() {
 
                 const fetchedPage: PaginatedResponse<Stock> = await response.json();
                 setStocks(fetchedPage.content);
-                console.log(fetchedPage.content)
+                setOriginalStocks(fetchedPage.content); // <-- Update originalStocks here
                 setTotalPages(fetchedPage.totalPages);
             } catch (error) {
                 console.log(error);
@@ -88,14 +94,42 @@ export default function StocksPaginated() {
     }
 
 
+    const filterStocks = (searchValue: string) => {
+        if (!searchValue) {
+            return originalStocks;
+        }
+
+        return originalStocks.filter((stock) => {
+            return (
+                stock.ticker.toLowerCase().includes(searchValue.toLowerCase()) ||
+                stock.name.toLowerCase().includes(searchValue.toLowerCase())
+            );
+        });
+    };
+
+    useEffect(() => {
+        const filteredStocks = filterStocks(searchValue);
+        setStocks(filteredStocks);
+    }, [searchValue, originalStocks]);
+
+
     return (
         <>
+            <Input
+                id="search"
+                placeholder="Search"
+                type="search"
+                className="mb-4 w-1/4 fixed right-8 top-24 p-4"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+            />
+
             <h1 className='text-4xl mb-10'><b>Nordic Dividend Stocks</b></h1>
 
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div className="bg-slate-900 rounded-xl">
+                <div className="bg-slate-900 rounded-xl bg-primary-foreground">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -147,8 +181,8 @@ export default function StocksPaginated() {
                                     Ex Date {renderSortIndicator("dividendExDividendDate")}
                                 </TableHead>
                             </TableRow>
-
                         </TableHeader>
+
                         <TableBody>
                             {stocks.map((stock) => (
                                 <TableRow key={stock.ticker}>
@@ -156,7 +190,7 @@ export default function StocksPaginated() {
                                     <TableCell>{stock.name}</TableCell>
                                     <TableCell>{stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
-                                    <TableCell>{stock.dividendYield.toFixed(2)} {stock.currency}</TableCell>
+                                    <TableCell>{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
                                     <TableCell>{(stock.exDividendDate === 0) ? "-" : new Date(stock.exDividendDate * 1000).toDateString()}</TableCell>
                                 </TableRow>
                             ))}
@@ -170,8 +204,6 @@ export default function StocksPaginated() {
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
             />
-
-
         </>
-    )
+    );
 }

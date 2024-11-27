@@ -3,6 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { checkHttpsErrors } from "@/js/util.js"
 import PaginationBar from './PaginationBar';
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+
 interface Stock {
     ticker: string;
     name: string;
@@ -145,14 +156,73 @@ export default function StocksPaginated() {
 
     return (
         <>
-            <ul>
-                {stocks.map(stock => <li key={stock.ticker}>{stock.ticker + " - " + stock.name}</li>)}
-            </ul>
+            {/* <div >
+                <div className='flex justify-center items-center'>
+                    <h3 className='pr-6'>Ticker</h3>
+                    <h3>Company</h3>
+                </div>
+
+                <ul>
+                    {stocks.map(stock => 
+                    <li key={stock.ticker}>{stock.ticker + " - " + stock.name}</li>)}
+                </ul>
+            </div> */}
+
+            {/* <div className='flex justify-center'>
+                <table>
+                    <thead className='flex justify-between'>
+                        <tr className='border-b-grey border-b-2'>
+                            <th>Ticker</th>
+                            <th>Company</th>
+                            <th>Dividend Yield</th>
+                            <th>Dividend Ratio</th>
+                            <th>Ex Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {stocks.map(stock =>
+                            <tr>
+                                <td>{stock.ticker}</td>
+                                <td>{stock.name}</td>
+                                <td>{stock.name}</td>
+                                <td>{stock.name}</td>
+                                <td>{stock.name}</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div> */}
+
+            <div className='bg-slate-950 rounded-xl'>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="text-center">Ticker</TableHead>
+                            <TableHead className="text-center">Name</TableHead>
+                            <TableHead className="text-center">Dividend Yield</TableHead>
+                            <TableHead className="text-center">Dividend Ratio</TableHead>
+                            <TableHead className="text-center">Ex Date</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {stocks.map((stock) => (
+                            <TableRow key={stock.ticker}>
+                                <TableCell className="font-medium">{stock.ticker}</TableCell>
+                                <TableCell>{stock.name}</TableCell>
+                                <TableCell>{stock.dividendRate}</TableCell>
+                                <TableCell>${stock.dividendYield}</TableCell>
+                                <TableCell>{stock.exDividendDate}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
 
             <PaginationBar
                 currecntPage={currecntPage}
                 setCurrentPage={setCurrentPage}
-                totalPages={totalPages} 
+                totalPages={totalPages}
             />
 
 

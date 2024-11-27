@@ -191,7 +191,7 @@ export default function StocksPaginated() {
                                     <TableCell>{stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
                                     <TableCell>{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
-                                    <TableCell>{(stock.exDividendDate === 0) ? "-" : new Date(stock.exDividendDate * 1000).toDateString()}</TableCell>
+                                    <TableCell>{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

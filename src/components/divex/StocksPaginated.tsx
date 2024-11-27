@@ -119,7 +119,7 @@ export default function StocksPaginated() {
                 id="search"
                 placeholder="Search"
                 type="search"
-                className="mb-4 w-1/4 fixed right-8 top-24 p-4"
+                className="mb-4 w-1/4"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
             />
@@ -199,7 +199,7 @@ export default function StocksPaginated() {
                 </div>
             )}
 
-            <PaginationBar
+            <PaginationBar 
                 currecntPage={currecntPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}

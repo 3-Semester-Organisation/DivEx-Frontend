@@ -151,8 +151,8 @@ export default function CalendarPage() {
 
   return (
     <>
-      <div className="grid grid-cols-4 p-6">
-        <div className="col-span-1 mb-10">
+      <div className="flex flex-row p-6">
+        <div className="mb-10">
           <Calendar
             mode="single"
             selected={date}
@@ -162,13 +162,13 @@ export default function CalendarPage() {
           />
           <Button
             id="reset-button"
-            className="bg-primary-foreground text-white flex justify-start mt-2 button-sm hover:bg-accent"
+            className="bg-primary-foreground text-white flex mt-2 button-sm hover:bg-accent"
           >
             Reset
           </Button>
         </div>
 
-        <div className="col-span-4 bg-primary-foreground rounded-md">
+        <div className="bg-primary-foreground rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>

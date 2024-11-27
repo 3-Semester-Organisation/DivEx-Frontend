@@ -33,6 +33,7 @@ interface Stock {
   dividendRate: number;
   // price: string;
   exDividendDate: number;
+  currency: string;
 }
 
 interface PaginatedResponse<T> {
@@ -40,11 +41,7 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-const handleFetch = async (url: string) => {
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
-};
+
 
 const convertUnixToDate = (unix: number) => {
   return new Date(unix * 1000);
@@ -65,27 +62,36 @@ export default function CalendarPage() {
   const [currentPage, setCurrentPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
 
+  
+
+  const handleFetch = async (url: string) => {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data;
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}`;
+    try {
+      const data: PaginatedResponse<Stock> = await handleFetch(url);
+      const convertedStocks = data.content.map((stock) => ({
+        ...stock,
+      }));
+      setStocks(convertedStocks);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   React.useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}`;
-      try {
-        const data: PaginatedResponse<Stock> = await handleFetch(url);
-        const convertedStocks = data.content.map((stock) => ({
-          ...stock,
-        }));
-        setStocks(convertedStocks);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
+    console.log(handleFetch(URL));
   }, [currentPage]);
 
-  console.log(handleFetch(URL));
 
   //filterer på current valgte date
   const filteredStocks = date
@@ -96,6 +102,7 @@ export default function CalendarPage() {
       )
     : stocks;
 
+  // PAGINATION
   const handlePageClick = (page: number) => {
     setCurrentPage(page);
   };
@@ -108,6 +115,9 @@ export default function CalendarPage() {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
   };
 
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+  // PAGINATION END
+
   //when resetbutton is clicked, set date to undefined
   useEffect(() => {
     const resetButton = document.getElementById("reset-button");
@@ -117,8 +127,6 @@ export default function CalendarPage() {
       });
     }
   }, []);
-
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
 
   return (
     <>
@@ -161,7 +169,7 @@ export default function CalendarPage() {
                       {stock.ticker}
                     </TableCell>
                     <TableCell>{stock.name}</TableCell>
-                    <TableCell>{stock.dividendRate} Kr.</TableCell>
+                    <TableCell>{stock.dividendRate} {stock.currency}</TableCell>
                     <TableCell>
                       {convertUnixToDate(stock.exDividendDate).toDateString()}
                     </TableCell>

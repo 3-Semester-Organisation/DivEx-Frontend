@@ -156,44 +156,6 @@ export default function StocksPaginated() {
 
     return (
         <>
-            {/* <div >
-                <div className='flex justify-center items-center'>
-                    <h3 className='pr-6'>Ticker</h3>
-                    <h3>Company</h3>
-                </div>
-
-                <ul>
-                    {stocks.map(stock => 
-                    <li key={stock.ticker}>{stock.ticker + " - " + stock.name}</li>)}
-                </ul>
-            </div> */}
-
-            {/* <div className='flex justify-center'>
-                <table>
-                    <thead className='flex justify-between'>
-                        <tr className='border-b-grey border-b-2'>
-                            <th>Ticker</th>
-                            <th>Company</th>
-                            <th>Dividend Yield</th>
-                            <th>Dividend Ratio</th>
-                            <th>Ex Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {stocks.map(stock =>
-                            <tr>
-                                <td>{stock.ticker}</td>
-                                <td>{stock.name}</td>
-                                <td>{stock.name}</td>
-                                <td>{stock.name}</td>
-                                <td>{stock.name}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div> */}
-
             <div className='bg-slate-950 rounded-xl'>
                 <Table>
                     <TableHeader>

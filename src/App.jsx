@@ -11,7 +11,7 @@ import CalendarPage from "@/pages/calendarPage";
 
 function App() {
   return (
-    <>
+    <div className="container main-container" >
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="flex flex-row justify-between items-center mb-2">
           <h1 className="font-semibold text-2xl" >DivEX</h1>
@@ -38,7 +38,7 @@ function App() {
 
         </Router>
       </ThemeProvider>
-    </>
+    </div>
   );
 }
 

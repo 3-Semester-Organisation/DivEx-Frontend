@@ -6,6 +6,8 @@ import ModeToggle from "@/components/ui/mode-toggle";
 import StocksPaginated from "@/components/divex/StocksPaginated"
 import Login from "@/pages/login";
 import Register from "@/pages/register";
+import CalendarPage from "@/pages/calendarPage";
+
 
 function App() {
   return (
@@ -28,7 +30,8 @@ function App() {
             <Route path="/dashboard" element={<p>dashboard</p>} />
             <Route path="/account" element={<p>account</p>} />
             <Route path="/portfolio" element={<p>portfolio</p>} />
-            <Route path="/stocks" element={<StocksPaginated />}></Route>
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/stocks" element={<StocksPaginated />}>
             
           </Routes>
         </Router>

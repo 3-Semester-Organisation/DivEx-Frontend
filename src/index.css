@@ -63,6 +63,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 }
 
@@ -95,4 +96,8 @@ li:nth-child(3) {
   background-color: lightgreen;
   color: black;
   border-radius: 0.25rem;
+}
+
+.main-container {
+  max-width: 100%;
 }

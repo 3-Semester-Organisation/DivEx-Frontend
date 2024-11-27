@@ -117,7 +117,7 @@ const PaginationNext = ({
     {...props}
   >
     <span>{children}</span>
-    <ChevronRight className="h-4 w-4" />
+    <ChevronRight className="mt-1 h-4 w-4" />
   </PaginationLink>
 )
 PaginationNext.displayName = "PaginationNext"
@@ -136,7 +136,7 @@ const PaginationLast = ({
     {...props}
   >
     <span>{children}</span>
-    <ChevronsRight className="h-4 w-4" />
+    <ChevronsRight className="mt-1 h-4 w-4" />
   </PaginationLink>
 )
 PaginationLast.displayName = "PaginationLast"

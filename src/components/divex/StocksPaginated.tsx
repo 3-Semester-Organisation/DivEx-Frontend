@@ -14,166 +14,156 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+interface HistoricalPricingResponse {
+    openingPrice: number;
+    openingDate: number;
+    previousDailyClosingPrice: number;
+    closingDate: number;
+  }
+
 interface Stock {
-  ticker: string;
-  name: string;
-  country: string;
-  exchange: string;
-  currency: string;
-  industry: string;
-  sector: string;
+    ticker: string;
+    name: string;
+    country: string;
+    exchange: string;
+    currency: string;
+    industry: string;
+    sector: string;
+    historicalPricingResponseList: HistoricalPricingResponse[];
 }
 
 interface PaginatedResponse<T> {
-  content: T[];
-  totalPages: number;
+    content: T[];
+    totalPages: number;
 }
 
-const stockss = {
-  content: [
-    {
-      ticker: "AAPL",
-      name: "Apple Inc.",
-      country: "USA",
-      exchange: "NASDAQ",
-      currency: "DKK",
-      industry: "Technology",
-      sector: "Consumer Electronics",
-      historicalPricingResponseList: [
-        {
-          openingPrice: 150.0,
-          openingDate: "2024-11-01",
-          previousDailyClosingPrice: 148.0,
-          closingDate: "2024-11-01",
-        },
-      ],
-      dividendRate: 2.5,
-      dividendYield: 1.2,
-      dividendRatio: 0.6,
-      fiveYearAvgDividendYield: 1.1,
-      exDividendDate: "2024-01-01",
-      historicalDividendsResponseList: [
-        {
-          dividendRate: 2.0,
-          exDividendDate: "2023-01-01",
-        },
-      ],
-    },
-    {
-      ticker: "GOOGL",
-      name: "Alphabet Inc.",
-      country: "USA",
-      exchange: "NASDAQ",
-      currency: "SEK",
-      industry: "Technology",
-      sector: "Internet Services",
-      historicalPricingResponseList: [
-        {
-          openingPrice: 152.1,
-          openingDate: "2024-12-02",
-          previousDailyClosingPrice: 150.0,
-          closingDate: "2024-11-02",
-        },
-      ],
-      dividendRate: 3.0,
-      dividendYield: 1.5,
-      dividendRatio: 0.7,
-      fiveYearAvgDividendYield: 1.3,
-      exDividendDate: "2024-02-01",
-      historicalDividendsResponseList: [
-        {
-          dividendRate: 2.1,
-          exDividendDate: "2023-02-01",
-        },
-      ],
-    },
-  ],
-  pageable: {
-    sort: {
-      sorted: false,
-      unsorted: true,
-      empty: true,
-    },
-    pageNumber: 0,
-    pageSize: 2,
-    offset: 0,
-    paged: true,
-    unpaged: false,
-  },
-  totalPages: 20,
-  totalElements: 2,
-  last: false,
-  size: 2,
-  number: 0,
-  sort: {
-    sorted: false,
-    unsorted: true,
-    empty: true,
-  },
-  first: true,
-  numberOfElements: 2,
-  empty: false,
-};
-
 export default function StocksPaginated() {
-  const [stocks, setStocks] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [currecntPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+    const [stocks, setStocks] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [currecntPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [sorting, setSorting] = useState({ column: "", direction: "asc" });
 
-  useEffect(() => {
-    async function fetchPaginatedStocks(pageNumber: number) {
-      try {
-        setIsLoading(true);
-        const response = await fetch("/api/v1/stocks?page=" + pageNumber);
-        checkHttpsErrors(response);
+    useEffect(() => {
+        async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10) {
+            try {
+                setIsLoading(true);
+                const response = await fetch(
+                    `http://localhost:8080/api/v1/stocks?page=${pageNumber}&size=${pageSize}&sort=${sorting.column},${sorting.direction}`
+                );
+                checkHttpsErrors(response);
 
-        // const fetchedPage: PaginatedResponse<Stock> = await response.json();
-        const fetchedPage: PaginatedResponse<Stock> = stockss;
-        setStocks(fetchedPage.content);
-        setTotalPages(fetchedPage.totalPages);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
+                const fetchedPage: PaginatedResponse<Stock> = await response.json();
+                setStocks(fetchedPage.content);
+                console.log(fetchedPage.content)
+                setTotalPages(fetchedPage.totalPages);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchPaginatedStocks(currecntPage);
+    }, [currecntPage, sorting]);
+
+
+
+    function handleSortClick(column: string) {
+        setSorting((prevSorting) => ({
+            column: column,
+            direction:
+                prevSorting.column === column && prevSorting.direction === "asc"
+                    ? "desc"
+                    : "asc",
+        }));
     }
 
-    fetchPaginatedStocks(currecntPage);
-  }, [currecntPage]);
 
-  const stockList = () => {
-    return stocks.map((stock) => (
-      <li key={stock.ticker}>{stock.ticker + " - " + stock.name}</li>
-    ));
-  };
+    function renderSortIndicator(column: string) {
+        if (sorting.column === column) {
+            return sorting.direction === "asc" ? "▲" : "▼";
+        }
+        return ""; // No indicator if the column is not currently sorted
+    }
+
 
     return (
         <>
-            <div className='bg-slate-950 rounded-xl'>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="text-center">Ticker</TableHead>
-                            <TableHead className="text-center">Name</TableHead>
-                            <TableHead className="text-center">Dividend Yield</TableHead>
-                            <TableHead className="text-center">Dividend Ratio</TableHead>
-                            <TableHead className="text-center">Ex Date</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {stocks.map((stock) => (
-                            <TableRow key={stock.ticker}>
-                                <TableCell className="font-medium">{stock.ticker}</TableCell>
-                                <TableCell>{stock.name}</TableCell>
-                                <TableCell>{stock.dividendRate}</TableCell>
-                                <TableCell>${stock.dividendYield}</TableCell>
-                                <TableCell>{stock.exDividendDate}</TableCell>
+            <h1 className='text-4xl mb-10'><b>Nordic Dividend Stocks</b></h1>
+
+            {isLoading ? (
+                <p>Loading...</p>
+            ) : (
+                <div className="bg-slate-900 rounded-xl">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead
+                                    id="ticker"
+                                    className="text-center hover:cursor-pointer"
+                                    onClick={() => handleSortClick("ticker")}
+                                >
+                                    Ticker {renderSortIndicator("ticker")}
+                                </TableHead>
+
+                                <TableHead
+                                    id="name"
+                                    className="text-center hover:cursor-pointer"
+                                    onClick={() => handleSortClick("name")}
+                                >
+                                    Name {renderSortIndicator("name")}
+                                </TableHead>
+
+                                <TableHead
+                                    id="previousDailyClosingPrice"
+                                    className="text-center hover:cursor-pointer"
+                                    onClick={() => handleSortClick("previousDailyClosingPrice")}
+                                >
+                                    Closing price {renderSortIndicator("previousDailyClosingPrice")}
+                                </TableHead>
+
+                                <TableHead
+                                    id="dividendRate"
+                                    className="text-center hover:cursor-pointer"
+                                    onClick={() => handleSortClick("dividendDividendRate")}
+                                >
+                                    Dividend Rate {renderSortIndicator("dividendDividendRate")}
+                                </TableHead>
+
+                                <TableHead
+                                    id="dividendYield"
+                                    className="text-center hover:cursor-pointer"
+                                    onClick={() => handleSortClick("dividendDividendYield")}
+                                >
+                                    Dividend Yield {renderSortIndicator("dividendDividendYield")}
+                                </TableHead>
+
+                                <TableHead
+                                    id="exDate"
+                                    className="text-center hover:cursor-pointer"
+                                    onClick={() => handleSortClick("dividendExDividendDate")}
+                                >
+                                    Ex Date {renderSortIndicator("dividendExDividendDate")}
+                                </TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+
+                        </TableHeader>
+                        <TableBody>
+                            {stocks.map((stock) => (
+                                <TableRow key={stock.ticker}>
+                                    <TableCell className="font-medium">{stock.ticker}</TableCell>
+                                    <TableCell>{stock.name}</TableCell>
+                                    <TableCell>{stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
+                                    <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
+                                    <TableCell>{stock.dividendYield.toFixed(2)} {stock.currency}</TableCell>
+                                    <TableCell>{(stock.exDividendDate === 0) ? "-" : new Date(stock.exDividendDate * 1000).toDateString()}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            )}
 
             <PaginationBar
                 currecntPage={currecntPage}

@@ -5,7 +5,7 @@ import "./PaginationBar.css";
 export default function PaginationBar({ currecntPage, totalPages, setCurrentPage }) {
 
     let startPage = Math.max(0, currecntPage - 1);
-    const endPage = Math.min(startPage + 9, totalPages);
+    const endPage = Math.min(startPage + 5, totalPages);
 
     let paginationButtons: number[] = [];
 

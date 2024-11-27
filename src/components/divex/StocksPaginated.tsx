@@ -1,7 +1,18 @@
 // import React = require("react");
-import React, { useState, useEffect } from "react";
-import { checkHttpsErrors } from "@/js/util.js";
-import PaginationBar from "./PaginationBar";
+import React, { useState, useEffect } from 'react';
+import { checkHttpsErrors } from "@/js/util.js"
+import PaginationBar from './PaginationBar';
+
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 
 interface Stock {
   ticker: string;
@@ -137,22 +148,40 @@ export default function StocksPaginated() {
     ));
   };
 
-  return (
-    <>
-      <div>
-        <ul>
-          {stocks.map((stock) => (
-            <li key={stock.ticker}>{stock.ticker + " - " + stock.name}</li>
-          ))}
-          {stockList()}
-        </ul>
-      </div>
+    return (
+        <>
+            <div className='bg-slate-950 rounded-xl'>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="text-center">Ticker</TableHead>
+                            <TableHead className="text-center">Name</TableHead>
+                            <TableHead className="text-center">Dividend Yield</TableHead>
+                            <TableHead className="text-center">Dividend Ratio</TableHead>
+                            <TableHead className="text-center">Ex Date</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {stocks.map((stock) => (
+                            <TableRow key={stock.ticker}>
+                                <TableCell className="font-medium">{stock.ticker}</TableCell>
+                                <TableCell>{stock.name}</TableCell>
+                                <TableCell>{stock.dividendRate}</TableCell>
+                                <TableCell>${stock.dividendYield}</TableCell>
+                                <TableCell>{stock.exDividendDate}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
 
-      <PaginationBar
-        currecntPage={currecntPage}
-        setCurrentPage={setCurrentPage}
-        totalPages={totalPages}
-      />
-    </>
-  );
+            <PaginationBar
+                currecntPage={currecntPage}
+                setCurrentPage={setCurrentPage}
+                totalPages={totalPages}
+            />
+
+
+        </>
+    )
 }

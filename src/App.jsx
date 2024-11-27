@@ -14,15 +14,16 @@ function App() {
     <div className="container main-container" >
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <div className="flex flex-row justify-between items-center mb-2">
-            <h1 className="font-semibold text-2xl" >DivEX</h1>
-            { /*< img src="/public/divex-logo.png" alt="logo" className="logo" /> */}
+          <h1 className="font-semibold text-2xl" >DivEX</h1>
+          { /*< img src="/public/divex-logo.png" alt="logo" className="logo" /> */}
           <div>
             <ModeToggle />
-          </div> 
+          </div>
         </div>
-        
+
         <Router>
-        <Navbar />
+
+          <Navbar />
           <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
@@ -32,8 +33,9 @@ function App() {
             <Route path="/portfolio" element={<p>portfolio</p>} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/stocks" element={<StocksPaginated />} />
-            
+
           </Routes>
+
         </Router>
       </ThemeProvider>
     </div>

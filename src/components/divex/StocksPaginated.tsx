@@ -1,17 +1,17 @@
-// import React = require("react");
-import React, { useState, useEffect } from 'react';
-import { checkHttpsErrors } from "@/js/util.js"
-import PaginationBar from './PaginationBar';
+import React, { useState, useEffect } from "react";
+import { checkHttpsErrors } from "@/js/util.js";
+import PaginationBar from "./PaginationBar";
+import { Input } from "@/components/ui/input";
 
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 
 interface Stock {
@@ -22,6 +22,10 @@ interface Stock {
   currency: string;
   industry: string;
   sector: string;
+  dividendRate: number;
+  dividendYield: number;
+  dividendRatio: number;
+  exDividendDate: string;
 }
 
 interface PaginatedResponse<T> {
@@ -116,10 +120,12 @@ const stockss = {
 };
 
 export default function StocksPaginated() {
-  const [stocks, setStocks] = useState([]);
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [originalStocks, setOriginalStocks] = useState<Stock[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currecntPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     async function fetchPaginatedStocks(pageNumber: number) {
@@ -131,6 +137,7 @@ export default function StocksPaginated() {
         // const fetchedPage: PaginatedResponse<Stock> = await response.json();
         const fetchedPage: PaginatedResponse<Stock> = stockss;
         setStocks(fetchedPage.content);
+        setOriginalStocks(fetchedPage.content); // <-- Update originalStocks here
         setTotalPages(fetchedPage.totalPages);
       } catch (error) {
         console.log(error);
@@ -142,46 +149,64 @@ export default function StocksPaginated() {
     fetchPaginatedStocks(currecntPage);
   }, [currecntPage]);
 
-  const stockList = () => {
-    return stocks.map((stock) => (
-      <li key={stock.ticker}>{stock.ticker + " - " + stock.name}</li>
-    ));
+  const filterStocks = (searchValue: string) => {
+    if (!searchValue) {
+      return originalStocks;
+    }
+
+    return originalStocks.filter((stock) => {
+      return (
+        stock.ticker.toLowerCase().includes(searchValue.toLowerCase()) ||
+        stock.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    });
   };
 
-    return (
-        <>
-            <div className='bg-slate-950 rounded-xl'>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="text-center">Ticker</TableHead>
-                            <TableHead className="text-center">Name</TableHead>
-                            <TableHead className="text-center">Dividend Yield</TableHead>
-                            <TableHead className="text-center">Dividend Ratio</TableHead>
-                            <TableHead className="text-center">Ex Date</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {stocks.map((stock) => (
-                            <TableRow key={stock.ticker}>
-                                <TableCell className="font-medium">{stock.ticker}</TableCell>
-                                <TableCell>{stock.name}</TableCell>
-                                <TableCell>{stock.dividendRate}</TableCell>
-                                <TableCell>${stock.dividendYield}</TableCell>
-                                <TableCell>{stock.exDividendDate}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
+  useEffect(() => {
+    const filteredStocks = filterStocks(searchValue);
+    setStocks(filteredStocks);
+  }, [searchValue, originalStocks]);
 
-            <PaginationBar
-                currecntPage={currecntPage}
-                setCurrentPage={setCurrentPage}
-                totalPages={totalPages}
-            />
+  return (
+    <>
+      <Input
+        id="search"
+        placeholder="Search"
+        type="search"
+        className="mb-4 w-1/4"
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+      />
+      <div className="bg-primary-foreground rounded-xl">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Ticker</TableHead>
+              <TableHead className="text-center">Name</TableHead>
+              <TableHead className="text-center">Dividend Yield</TableHead>
+              <TableHead className="text-center">Dividend Ratio</TableHead>
+              <TableHead className="text-center">Ex Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {stocks.map((stock) => (
+              <TableRow key={stock.ticker}>
+                <TableCell className="font-medium">{stock.ticker}</TableCell>
+                <TableCell>{stock.name}</TableCell>
+                <TableCell>{stock.dividendRate}</TableCell>
+                <TableCell>${stock.dividendYield}</TableCell>
+                <TableCell>{stock.exDividendDate}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-
-        </>
-    )
+      <PaginationBar
+        currecntPage={currecntPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+      />
+    </>
+  );
 }

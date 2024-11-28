@@ -27,6 +27,8 @@ import {
 const PAGESIZE = 10;
 const URL = "http://localhost:8080/api/v1/stocks";
 
+const dates = [];
+
 interface Stock {
   ticker: string;
   name: string;
@@ -46,7 +48,6 @@ const convertUnixToDate = (unix: number) => {
 };
 
 const dividendDates = (stocks: Stock[]) => {
-  const dates = [];
   stocks.forEach((stock) => {
     dates.push(convertUnixToDate(stock.exDividendDate));
   });
@@ -68,9 +69,11 @@ export default function CalendarPage() {
 
   const fetchData = async () => {
     setLoading(true);
-    const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}`;
+    const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}&sort=ticker,asc`;
     try {
       const data: PaginatedResponse<Stock> = await handleFetch(url);
+      console.log(handleFetch(url));
+      console.log(data);
       const convertedStocks = data.content.map((stock) => ({
         ...stock,
         //remove last three letters from ticker, it's always ".CO"
@@ -87,10 +90,11 @@ export default function CalendarPage() {
 
   React.useEffect(() => {
     fetchData();
-    console.log(handleFetch(URL));
   }, [currentPage]);
 
-  //filtrer på current valgte date fra state
+
+  // filtrer på current valgte date fra state
+  // skriv om til at fetch data, og kun vis dem der matcher date
   const filteredStocks = date
     ? stocks.filter(
         (stock) =>

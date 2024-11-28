@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { checkHttpsErrors } from "@/js/util.js";
-import PaginationBar from "./PaginationBar";
+import PaginationBar from "../components/divex/PaginationBar";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -41,7 +41,7 @@ interface PaginatedResponse<T> {
     totalPages: number;
 }
 
-export default function StocksPaginated() {
+export default function StocksPage() {
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [originalStocks, setOriginalStocks] = useState<Stock[]>([]);
     const [isLoading, setIsLoading] = useState(false);

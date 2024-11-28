@@ -1,6 +1,5 @@
 // import React = require("react");
 
-import { ChevronsLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import {
     Pagination,
     PaginationContent,

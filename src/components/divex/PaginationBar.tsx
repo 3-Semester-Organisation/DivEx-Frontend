@@ -1,5 +1,5 @@
 // import React = require("react");
-
+import * as React from "react";
 import "./PaginationBar.css";
 import { ChevronsLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import {

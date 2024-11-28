@@ -1,4 +1,4 @@
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/ui/custom/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Homepage from "@/pages/homepage";
@@ -7,6 +7,7 @@ import StocksPaginated from "@/components/divex/StocksPaginated"
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import CalendarPage from "@/pages/calendarPage";
+
 
 
 function App() {

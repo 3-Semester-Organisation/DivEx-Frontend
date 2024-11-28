@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { checkHttpsErrors } from "@/js/util.js";
+import { checkHttpsErrors } from "@/js/util";
 import PaginationBar from "./PaginationBar";
 import { Input } from "@/components/ui/input";
 

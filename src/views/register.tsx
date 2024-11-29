@@ -124,7 +124,7 @@ export default function Register() {
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Login
+                  Register
                 </Button>
               </div>
             </form>

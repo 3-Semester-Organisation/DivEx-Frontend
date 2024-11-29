@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 
 const PAGESIZE = 10;
 const URL = "http://localhost:8080/api/v1/stocks";
@@ -142,10 +143,11 @@ export default function CalendarPage() {
           />
           <Button
             id="reset-button"
-            className="bg-primary-foreground text-white flex mt-4 rounded-lg hover:bg-accent"
+            className="bg-primary-foreground text-white flex mt-1 rounded-lg hover:bg-accent"
           >
             Reset
           </Button>
+          
         </div>
       </div>
       <div className="p-6">

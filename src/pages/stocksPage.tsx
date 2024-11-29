@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { checkHttpsErrors } from "@/js/util.js";
 import PaginationBar from "../components/divex/PaginationBar";
 import { Input } from "@/components/ui/input";
@@ -49,6 +50,8 @@ export default function StocksPage() {
     const [totalPages, setTotalPages] = useState(0);
     const [sorting, setSorting] = useState({ column: "", direction: "asc" });
     const [searchValue, setSearchValue] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10) {
@@ -110,6 +113,12 @@ export default function StocksPage() {
         const filteredStocks = filterStocks(searchValue);
         setStocks(filteredStocks);
     }, [searchValue, originalStocks]);
+
+
+
+    function showStockDetails(stock: Stock) {
+        navigate("/stocks/" + stock.ticker, { state: {stock}});
+    }
 
 
     return (
@@ -185,6 +194,7 @@ export default function StocksPage() {
                         <TableBody>
                             {stocks.map((stock) => (
                                 <TableRow
+                                    onClick={() => showStockDetails(stock)}
                                     className="hover:cursor-pointer"
                                     key={stock.ticker}>
                                     <TableCell>{stock.ticker}</TableCell>

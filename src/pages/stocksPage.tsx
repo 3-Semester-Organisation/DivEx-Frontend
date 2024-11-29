@@ -85,7 +85,6 @@ export default function StocksPage() {
         }));
     }
 
-
     function renderSortIndicator(column: string) {
         if (sorting.column === column) {
             return sorting.direction === "asc" ? "▲" : "▼";
@@ -152,9 +151,9 @@ export default function StocksPage() {
                                 <TableHead
                                     id="previousDailyClosingPrice"
                                     className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("previousDailyClosingPrice")}
+                                    onClick={() => handleSortClick("historicalPricings.previousDailyClosingPrice")}
                                 >
-                                    Closing price {renderSortIndicator("previousDailyClosingPrice")}
+                                    Closing price {renderSortIndicator("historicalPricings.previousDailyClosingPrice")}
                                 </TableHead>
 
                                 <TableHead
@@ -185,8 +184,10 @@ export default function StocksPage() {
 
                         <TableBody>
                             {stocks.map((stock) => (
-                                <TableRow key={stock.ticker}>
-                                    <TableCell className="font-medium">{stock.ticker}</TableCell>
+                                <TableRow
+                                    className="hover:cursor-pointer"
+                                    key={stock.ticker}>
+                                    <TableCell>{stock.ticker}</TableCell>
                                     <TableCell>{stock.name}</TableCell>
                                     <TableCell>{stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
@@ -199,7 +200,7 @@ export default function StocksPage() {
                 </div>
             )}
 
-            <PaginationBar 
+            <PaginationBar
                 currecntPage={currecntPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}

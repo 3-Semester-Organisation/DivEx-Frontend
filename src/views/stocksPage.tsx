@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { checkHttpsErrors } from "@/js/util.js";
 import PaginationBar from "../components/divex/PaginationBar";
 import { Input } from "@/components/ui/input";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import {
     Table,
@@ -90,7 +91,7 @@ export default function StocksPage() {
 
     function renderSortIndicator(column: string) {
         if (sorting.column === column) {
-            return sorting.direction === "asc" ? "▲" : "▼";
+            return sorting.direction === "asc" ? <ChevronUp className="inline-block h-4 w-4" /> : <ChevronDown className="inline-block h-4 w-4" />;
         }
         return ""; // No indicator if the column is not currently sorted
     }
@@ -125,7 +126,7 @@ export default function StocksPage() {
         <>
             <Input
                 id="search"
-                placeholder="Search"
+                placeholder="Search..."
                 type="search"
                 className="mb-4 w-1/4"
                 value={searchValue}

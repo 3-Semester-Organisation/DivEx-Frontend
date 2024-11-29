@@ -1,20 +1,20 @@
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/components/ui/custom/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
-import Homepage from "@/pages/homepage";
-import StockDetailsPage from "@/pages/stockDetailsPage";
+import Homepage from "@/views/homepage";
+import StockDetailsPage from "@/views/stockDetailsPage";
 import ModeToggle from "@/components/ui/mode-toggle";
-import StocksPage from "@/pages/stocksPage"
-import Login from "@/pages/login";
-import Register from "@/pages/register";
-import CalendarPage from "@/pages/calendarPage";
+import StocksPage from "@/views/stocksPage"
+import Login from "@/views/login";
+import Register from "@/views/register";
+import CalendarPage from "@/views/calendarPage";
+
 
 
 function App() {
   return (
-    <div className="container main-container" >
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <div className="flex flex-row justify-between items-center mb-2">
+        <div className="flex justify-between mb-2">
           <h1 className="font-semibold text-2xl" >DivEX</h1>
           { /*< img src="/public/divex-logo.png" alt="logo" className="logo" /> */}
           <div>
@@ -40,7 +40,6 @@ function App() {
 
         </Router>
       </ThemeProvider>
-    </div>
   );
 }
 

@@ -32,6 +32,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                         <PaginationItem>
                             {currecntPage > 0 && (
                                 <PaginationFirst
+                                    className="cursor-pointer"
                                     onClick={() => setCurrentPage(0)}
                                 >
                                     First
@@ -42,6 +43,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                         <PaginationItem>
                             {currecntPage > 0 && (
                                 <PaginationPrevious
+                                    className="cursor-pointer"
                                     onClick={() => setCurrentPage(page => Math.max(page - 1, 0))}
                                 >
                                     Previous
@@ -55,7 +57,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                                 <PaginationLink
                                     key={pageNumber}
                                     onClick={() => setCurrentPage(pageNumber)}
-                                    className={currecntPage === pageNumber ? "bg-slate-800" : ""}
+                                    className={currecntPage === pageNumber ? "border cursor-pointer" : "cursor-pointer" }
                                 >
                                     {pageNumber + 1}
                                 </PaginationLink>
@@ -76,6 +78,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                             {currecntPage !== totalPages - 1 && (
                                 <PaginationNext
                                     onClick={() => setCurrentPage(page => Math.min(page + 1, totalPages - 1))}
+                                    className="cursor-pointer"
                                 >
                                     Next
                                 </PaginationNext>
@@ -86,7 +89,9 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                             {currecntPage !== totalPages - 1 && (
                                 <PaginationLast
                                     onClick={() => setCurrentPage(totalPages - 1)}
+                                    className="cursor-pointer"
                                 >
+                                    
                                     Last
                                 </PaginationLast>
                             )}

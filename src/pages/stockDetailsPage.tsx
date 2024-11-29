@@ -22,6 +22,11 @@ export default function StockDetailsPage() {
                 <StockGraph stock={stock} />
 
             </div>
+
+            <div className="grid grid-rows-1 grid-flow-row gap-4 bg-slate-900 shadow-md rounded-lg p-4 w-full">
+                <h2 className="font-bold text-3xl">Historical Dividend Chart</h2>
+                <p>Chart goes here </p>
+            </div>
         </>
     )
 }

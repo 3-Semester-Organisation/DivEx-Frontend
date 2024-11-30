@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { checkHttpsErrors } from "@/js/util";
-import PaginationBar from "./PaginationBar";
+import { useNavigate } from 'react-router-dom';
+import { checkHttpsErrors } from "@/js/util.js";
+import PaginationBar from "../components/divex/PaginationBar";
 import { Input } from "@/components/ui/input";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 import {
     Table,
@@ -13,7 +15,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface HistoricalPricingResponse {
     openingPrice: number;
@@ -42,7 +43,7 @@ interface PaginatedResponse<T> {
     totalPages: number;
 }
 
-export default function StocksPaginated() {
+export default function StocksPage() {
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [originalStocks, setOriginalStocks] = useState<Stock[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,8 @@ export default function StocksPaginated() {
     const [totalPages, setTotalPages] = useState(0);
     const [sorting, setSorting] = useState({ column: "", direction: "asc" });
     const [searchValue, setSearchValue] = useState("");
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10) {
@@ -86,7 +89,6 @@ export default function StocksPaginated() {
         }));
     }
 
-
     function renderSortIndicator(column: string) {
         if (sorting.column === column) {
             return sorting.direction === "asc" ? <ChevronUp className="inline-block h-4 w-4" /> : <ChevronDown className="inline-block h-4 w-4" />;
@@ -114,26 +116,30 @@ export default function StocksPaginated() {
     }, [searchValue, originalStocks]);
 
 
+
+    function showStockDetails(stock: Stock) {
+        navigate("/stocks/" + stock.ticker, { state: {stock}});
+    }
+
+
     return (
         <>
-            <h1 className='text-4xl font-bold mb-10'>Nordic Dividend Stocks</h1>
-
-            <div className="flex-col">
-                <div className="mx-auto max-w-7xl">
-                <div className="p-4">
             <Input
                 id="search"
                 placeholder="Search..."
                 type="search"
-                className="mb-4 w-50 bg-primary-foreground"
+                className="mb-4 w-1/4"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                    />
+            />
+
+            <h1 className='text-4xl mb-10'><b>Nordic Dividend Stocks</b></h1>
 
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                    <Table className="bg-primary-foreground rounded-xl">
+                <div className="bg-slate-900 rounded-xl bg-primary-foreground">
+                    <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead
@@ -155,9 +161,9 @@ export default function StocksPaginated() {
                                 <TableHead
                                     id="previousDailyClosingPrice"
                                     className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("previousDailyClosingPrice")}
+                                    onClick={() => handleSortClick("historicalPricings.previousDailyClosingPrice")}
                                 >
-                                    Closing price {renderSortIndicator("previousDailyClosingPrice")}
+                                    Closing price {renderSortIndicator("historicalPricings.previousDailyClosingPrice")}
                                 </TableHead>
 
                                 <TableHead
@@ -188,8 +194,11 @@ export default function StocksPaginated() {
 
                         <TableBody>
                             {stocks.map((stock) => (
-                                <TableRow key={stock.ticker}>
-                                    <TableCell className="font-medium">{stock.ticker}</TableCell>
+                                <TableRow
+                                    onClick={() => showStockDetails(stock)}
+                                    className="hover:cursor-pointer"
+                                    key={stock.ticker}>
+                                    <TableCell>{stock.ticker}</TableCell>
                                     <TableCell>{stock.name}</TableCell>
                                     <TableCell>{stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
@@ -199,19 +208,14 @@ export default function StocksPaginated() {
                             ))}
                         </TableBody>
                     </Table>
-                
-                    
-                    )}
-                    </div>
-                    </div>
+                </div>
+            )}
 
-            <PaginationBar 
+            <PaginationBar
                 currecntPage={currecntPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
-                />
-                </div>
-            </>
-            
+            />
+        </>
     );
 }

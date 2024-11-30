@@ -2,8 +2,9 @@ import Navbar from "@/components/ui/custom/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Homepage from "@/views/homepage";
+import StockDetailsPage from "@/views/stockDetailsPage";
 import ModeToggle from "@/components/ui/mode-toggle";
-import StocksPaginated from "@/components/divex/StocksPaginated"
+import StocksPage from "@/views/stocksPage"
 import Login from "@/views/login";
 import Register from "@/views/register";
 import CalendarPage from "@/views/calendarPage";
@@ -32,7 +33,8 @@ function App() {
             <Route path="/account" element={<p>account</p>} />
             <Route path="/portfolio" element={<p>portfolio</p>} />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/stocks" element={<StocksPaginated />} />
+            <Route path="/stocks" element={<StocksPage />} />
+            <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
 
           </Routes>
 

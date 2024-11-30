@@ -1,17 +1,10 @@
 async function checkHttpsErrors(response) {
-    if (!response.ok) {
-        let errorMessage = `HTTP error! Status: ${response.status}`;
-        try {
-            const errorResponse = await response.json();
-            errorMessage = errorResponse.errorMessage || errorMessage;
-        } catch (e) {
-            // If response is not JSON or cannot be parsed
-            console.error('Error parsing response:', e);
-        }
-        throw new Error(errorMessage);
+    if(!response.ok) {
+        const errorResponse = response.json();
+        const error = new Error(errorResponse.message);
+        error.apiMessage = errorResponse;
+        throw error;
     }
-    console.log(response.status)
-    return response;
 }
 
 function makeOption(method, body) { 
@@ -42,4 +35,4 @@ function makeAuthOption(method, body, token) {
     return option;
 }
 
-export { checkHttpsErrors, makeOption }
+export { checkHttpsErrors, makeOption, makeAuthOption }

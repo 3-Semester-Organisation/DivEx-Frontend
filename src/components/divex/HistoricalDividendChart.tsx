@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 
-const dividendDataTest = [
-    {
-        dividendRate: 3.5,
-        exDividendDate: 1695868800 // Example Unix timestamp
-    },
-    {
-        dividendRate: 4.2,
-        exDividendDate: 1698470400
-    },
-    {
-        dividendRate: 2.8,
-        exDividendDate: 1701052800
-    }
-];
 
 export default function HistoricalDividendChart({ stock }) {
     const [dividendData, setDividendData] = useState([]);

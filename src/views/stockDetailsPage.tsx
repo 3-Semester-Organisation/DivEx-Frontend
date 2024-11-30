@@ -24,12 +24,7 @@ export default function StockDetailsPage() {
 
             </div>
 
-            {/* <div className="grid grid-rows-1 grid-flow-row gap-4 bg-slate-900 shadow-md rounded-lg p-4 w-full">
-                <h2 className="font-bold text-3xl">Historical Dividend Chart</h2>
-                <HistoricalDividendChart />
-            </div> */}
-
-            <div className="flex flex-col justify-center items-center bg-slate-900 shadow-md rounded-lg p-4 w-full">
+            <div className="flex flex-col justify-center items-center bg-slate-900 shadow-md rounded-lg p-4 ml-4 mr-4">
                 <h2 className="font-bold text-2xl">Historical Dividend Chart</h2>
                 <HistoricalDividendChart stock={stock}/>
             </div>

@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
 
-export default function homepage() {
+export default function settings() {
     return (
     <>
     <div>
-        <h1>Homepage</h1>
-                <p>Welcome to the homepage</p>
+        <h1>Settings</h1>
+                <p>settings page</p>
+                
+                
     </div>
     </>
 )

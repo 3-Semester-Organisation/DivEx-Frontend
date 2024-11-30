@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+
+import * as React from "react";
+import { useState, useEffect } from "react";
+import { checkHttpsErrors } from "@/js/util";
 import { useNavigate } from 'react-router-dom';
-import { checkHttpsErrors } from "@/js/util.js";
 import PaginationBar from "../components/divex/PaginationBar";
+
 import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp } from "lucide-react";
 

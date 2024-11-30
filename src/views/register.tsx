@@ -33,6 +33,7 @@ import { makeOption, checkHttpsErrors } from '@/js/util'
 
 // Improved schema with additional validation rules
 const formSchema = z.object({
+  username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
   email: z.string().email({ message: 'Invalid email address' }),
   password: z
     .string()
@@ -44,6 +45,7 @@ export default function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      username: '',
       email: '',
       password: '',
     },
@@ -54,20 +56,16 @@ export default function Register() {
     try {
       const postOption = makeOption('POST', values);
       const res = await fetch(URL, postOption);
-      checkHttpsErrors(res);
+      await checkHttpsErrors(res);
 
-      // const jwtToken = await res.json();
-      // const token = jwtToken.token;
-      // localStorage.setItem('token', token);
+      const jwtToken = await res.json();
+      const token = jwtToken.jwt;
+      localStorage.setItem('token', token);
 
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      )
+      toast.success('Registration successful.')
     } catch (error) {
       console.error('Form submission error', error)
-      toast.error('Failed to submit the form. Please try again.')
+      toast.error(error.message)
     }
   }
 
@@ -84,12 +82,31 @@ export default function Register() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid gap-4">
+              <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel className="flex justify-between items-center" htmlFor="username">Username</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="username"
+                          placeholder="Username"
+                          type="username"
+                          autoComplete="username"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel className="flex justify-between items-center" htmlFor="email">Username</FormLabel>
+                      <FormLabel className="flex justify-between items-center" htmlFor="email">Email</FormLabel>
                       <FormControl>
                         <Input
                           id="email"
@@ -131,7 +148,7 @@ export default function Register() {
           </Form>
           <div className="mt-4 text-center text-sm">
             Already have an account?{' '}
-            <NavLink to="/login" className="underline">
+            <NavLink to="/Login" className="underline">
               Login
             </NavLink>
           </div>

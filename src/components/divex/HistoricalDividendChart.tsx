@@ -39,16 +39,16 @@ export default function HistoricalDividendChart({ stock }) {
             height={400}
             data={dividendData}
         >
-            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-            <XAxis dataKey="formattedDate" padding={{ right: 500 }} />
+            <CartesianGrid strokeDasharray="5 5" />
+            <XAxis dataKey="formattedDate" padding={{ right: 300 }}/>
             <YAxis />
-            <Tooltip content={<CustomToolTip currency={stock.currency} />} />
-            <Line type="monotone" dataKey="dividendRate" stroke="#8884d8" />
+            <Tooltip content={<DividendChartToolTip currency={stock.currency} />} />
+            <Line type="monotone" dataKey="dividendRate"/>
         </LineChart>
     );
 }
 
-function CustomToolTip({ active, payload, label, currency }) {
+function DividendChartToolTip({ active, payload, label, currency }) {
     if (active && payload && payload.length) {
         return (
             <div className="p-4 bg-slate-900 flex flex-col gap-4 rounded-md border-2 border-gray-600">

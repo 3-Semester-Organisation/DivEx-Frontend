@@ -1,12 +1,14 @@
 'use client'
 
 import * as React from 'react'
+import { useContext } from 'react'
+import { AuthContext } from '@/js/AuthContext'
 
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 import {
   Form,
@@ -37,7 +39,10 @@ const formSchema = z.object({
     .regex(/[a-zA-Z0-9]/, { message: 'Password must be alphanumeric' }),
 })
 
-export default function Login() {
+export default function Login({ onLogin }) {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,8 +60,10 @@ export default function Login() {
       const jwtToken = await res.json();
       const token = jwtToken.jwt;
       localStorage.setItem('token', token);
-
+      
+      login();
       toast.success('Login successful.')
+      navigate('/dashboard')
     } catch (error) {
       console.error('Form submission error', error)
       toast.error(error.message)

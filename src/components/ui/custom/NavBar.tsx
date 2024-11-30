@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { NavLink } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from '@/js/AuthContext'
 
 import { cn } from "@/lib/utils";
 import {
@@ -22,10 +24,11 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/NavigationMenu";
 import { ChevronDown, Navigation, User } from "lucide-react";
+import { toast } from 'sonner'
 
 const authNavigation = [
-  { name: "Login", to: "/login" },
-  { name: "Register", to: "/register" },
+  { name: "Settings", to: "/settings" },
+  { name: "Sign out", to: "/" },
 ];
 
 const portfolioNavigation: { title: string; href: string; description: string }[] = [
@@ -60,7 +63,16 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
   },
 ]
 
-export default function Navbar() {
+
+
+export default function Navbar({ onLogout }) {
+  const { logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Logout successful.')
+  }
+
   return (
     <NavigationMenu className="flex flex-row p-6 ml-10">
       <NavigationMenuList>
@@ -100,16 +112,22 @@ export default function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger className="userbutton" ><User /></DropdownMenuTrigger>
             <DropdownMenuContent>
-              {authNavigation.map((item) => (
-                <DropdownMenuItem key={item.name} asChild>
-                  <NavLink
-                    to={item.to}
-                    className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
-                  >
-                    {item.name}
+              <DropdownMenuItem asChild>
+                <NavLink
+                  to="/settings"
+                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100">
+                  Settings
                   </NavLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                
+              onClick={() => handleLogout()}  asChild>
+                <NavLink
+                  to="/"
+                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100">
+                  Sign out
+                </NavLink>
                 </DropdownMenuItem>
-              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </NavigationMenuItem>

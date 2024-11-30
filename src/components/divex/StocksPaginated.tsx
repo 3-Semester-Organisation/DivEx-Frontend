@@ -13,6 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface HistoricalPricingResponse {
     openingPrice: number;
@@ -88,7 +89,7 @@ export default function StocksPaginated() {
 
     function renderSortIndicator(column: string) {
         if (sorting.column === column) {
-            return sorting.direction === "asc" ? "▲" : "▼";
+            return sorting.direction === "asc" ? <ChevronUp className="inline-block h-4 w-4" /> : <ChevronDown className="inline-block h-4 w-4" />;
         }
         return ""; // No indicator if the column is not currently sorted
     }
@@ -115,22 +116,24 @@ export default function StocksPaginated() {
 
     return (
         <>
+            <h1 className='text-4xl font-bold mb-10'>Nordic Dividend Stocks</h1>
+
+            <div className="flex-col">
+                <div className="mx-auto max-w-7xl">
+                <div className="p-4">
             <Input
                 id="search"
-                placeholder="Search"
+                placeholder="Search..."
                 type="search"
-                className="mb-4 w-1/4"
+                className="mb-4 w-50 bg-primary-foreground"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-            />
-
-            <h1 className='text-4xl mb-10'><b>Nordic Dividend Stocks</b></h1>
+                    />
 
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div className="bg-slate-900 rounded-xl bg-primary-foreground">
-                    <Table>
+                    <Table className="bg-primary-foreground rounded-xl">
                         <TableHeader>
                             <TableRow>
                                 <TableHead
@@ -196,14 +199,19 @@ export default function StocksPaginated() {
                             ))}
                         </TableBody>
                     </Table>
-                </div>
-            )}
+                
+                    
+                    )}
+                    </div>
+                    </div>
 
             <PaginationBar 
                 currecntPage={currecntPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
-            />
-        </>
+                />
+                </div>
+            </>
+            
     );
 }

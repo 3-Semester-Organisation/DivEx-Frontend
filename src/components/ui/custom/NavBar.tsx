@@ -49,6 +49,11 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
     description: "Info about upcoming and past dividends.",
   },
   {
+    title: "All stocks",
+    to: "/stocks",
+    description: "All stocks available on the platform.",
+  },
+  {
     title: "Trending stocks",
     to: "/",
     description: "The most viewed stocks this week.",
@@ -95,8 +100,6 @@ export default function Navbar() {
           <DropdownMenu>
             <DropdownMenuTrigger className="userbutton" ><User /></DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
               {authNavigation.map((item) => (
                 <DropdownMenuItem key={item.name} asChild>
                   <NavLink

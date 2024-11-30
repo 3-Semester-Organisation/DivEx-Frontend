@@ -28,41 +28,35 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { makeOption, checkHttpsErrors } from '@/js/util'
 
-
-
-
 // Improved schema with additional validation rules
 const formSchema = z.object({
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
-  email: z.string().email({ message: 'Invalid email address' }),
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters long' })
     .regex(/[a-zA-Z0-9]/, { message: 'Password must be alphanumeric' }),
 })
 
-export default function Register() {
+export default function Login() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: '',
-      email: '',
       password: '',
     },
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const URL = 'http://localhost:8080/api/v1/register'
+    const URL = 'http://localhost:8080/api/v1/login'
     try {
       const postOption = makeOption('POST', values);
       const res = await fetch(URL, postOption);
       await checkHttpsErrors(res);
-
       const jwtToken = await res.json();
       const token = jwtToken.jwt;
       localStorage.setItem('token', token);
 
-      toast.success('Registration successful.')
+      toast.success('Login successful.')
     } catch (error) {
       console.error('Form submission error', error)
       toast.error(error.message)
@@ -71,11 +65,11 @@ export default function Register() {
 
   return (
     <div className="flex flex-col min-h-[50vh] h-full w-full items-center justify-center px-4">
-      <Card className="mx-auto max-w-sm">
+      <Card className="mx-auto max-w-sm bg-primary-foreground">
         <CardHeader>
-          <CardTitle className="text-2xl">Register</CardTitle>
+          <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            Enter your email and password to register to your account.
+            Enter your email and password to login to your account.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,25 +88,6 @@ export default function Register() {
                           placeholder="Username"
                           type="username"
                           autoComplete="username"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel className="flex justify-between items-center" htmlFor="email">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="email"
-                          placeholder="johndoe@mail.com"
-                          type="email"
-                          autoComplete="email"
                           {...field}
                         />
                       </FormControl>
@@ -141,15 +116,15 @@ export default function Register() {
                   )}
                 />
                 <Button type="submit" className="w-full">
-                  Register
+                  Login
                 </Button>
               </div>
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            Already have an account?{' '}
-            <NavLink to="/Login" className="underline">
-              Login
+            Don&apos;t have an account?{' '}
+            <NavLink to="/register" className="underline">
+              Sign up
             </NavLink>
           </div>
         </CardContent>

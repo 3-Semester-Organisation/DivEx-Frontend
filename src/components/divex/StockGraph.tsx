@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import PaginationBar from "./PaginationBar";
 
 export default function StockGraph({ stock }) {
 
     const [closingPrices, setClosingPrices] = useState([]);
 
-    function formatClosingDate(historicalClosingPrices) {
-        const formatedClosingPriceData = historicalClosingPrices.map(data => ({
-            ...data,
-            formattedDate: new Date(data.closingDate * 1000).toDateString()
-        }))
-        setClosingPrices(formatedClosingPriceData);
-    }
-
-
     useEffect(() => {
+    
+        function formatClosingDate(historicalClosingPrices) {
+            const formatedClosingPriceData = historicalClosingPrices.map(data => ({
+                ...data,
+                formattedDate: new Date(data.closingDate * 1000).toDateString()
+            }))
+            setClosingPrices(formatedClosingPriceData);
+        }
+
         formatClosingDate(stock.historicalPricingResponseList)
     }, [])
     
@@ -23,19 +24,20 @@ export default function StockGraph({ stock }) {
         <div className="w-2/3 bg-slate-900 shadow-md rounded-lg p-6">
             <h2 className="flex justify-start text-2xl font-bold mb-4">Price movment</h2>
 
-            <div className="flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center">
                 <LineChart
                     className="mt-4"
                     width={1200}
                     height={200}
                     data={closingPrices}
                 >
-                    <CartesianGrid strokeDasharray="5 5" />
                     <XAxis dataKey="formattedDate" padding={{ right: 100 }} />
                     <YAxis />
                     <Tooltip content={<StockChartToolTip currency={stock.currency} />} />
                     <Line type="monotone" dataKey="previousDailyClosingPrice" />
                 </LineChart>
+
+                <PaginationBar></PaginationBar>
             </div>
         </div>
     )

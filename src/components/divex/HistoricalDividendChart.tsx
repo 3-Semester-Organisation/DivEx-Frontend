@@ -25,7 +25,6 @@ export default function HistoricalDividendChart({ stock }) {
             height={400}
             data={dividendData}
         >
-            <CartesianGrid strokeDasharray="5 5" />
             <XAxis dataKey="formattedDate" padding={{ right: 300 }}/>
             <YAxis />
             <Tooltip content={<DividendChartToolTip currency={stock.currency} />} />

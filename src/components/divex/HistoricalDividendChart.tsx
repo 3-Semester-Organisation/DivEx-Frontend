@@ -21,7 +21,7 @@ export default function HistoricalDividendChart({ stock }) {
     return (
         <LineChart
             className="mt-4"
-            width={1800}
+            width={1950}
             height={400}
             data={dividendData}
         >

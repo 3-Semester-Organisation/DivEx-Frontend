@@ -24,7 +24,7 @@ export default function StockDetailsPage() {
 
             </div>
 
-            <div className="flex flex-col justify-center items-center bg-slate-900 shadow-md rounded-lg p-4 ml-4 mr-4">
+            <div className="flex flex-col justify-center items-center bg-slate-900 shadow-md rounded-lg p-4 mt-1 ml-4 mr-4">
                 <h2 className="font-bold text-2xl">Historical Dividend Chart</h2>
                 <HistoricalDividendChart stock={stock}/>
             </div>

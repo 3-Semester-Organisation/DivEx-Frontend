@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 
 export default function HistoricalDividendChart({ stock }) {
@@ -19,18 +19,21 @@ export default function HistoricalDividendChart({ stock }) {
     }, []);
 
     return (
-        <LineChart
-            className="mt-4"
-            width={1950}
-            height={400}
-            data={dividendData}
-        >
-            <XAxis dataKey="formattedDate" padding={{ right: 300 }}/>
-            <YAxis />
-            <Tooltip content={<DividendChartToolTip currency={stock.currency} />} />
-            <Line type="monotone" dataKey="dividendRate"/>
-        </LineChart>
-    );
+        <div className="w-full h-[400px]">
+          {dividendData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart className="mt-4" data={dividendData}>
+                <XAxis dataKey="formattedDate" padding={{ right: 300 }} />
+                <YAxis />
+                <Tooltip content={<DividendChartToolTip currency={stock.currency} />} />
+                <Line type="monotone" dataKey="dividendRate" />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+      );
 }
 
 function DividendChartToolTip({ active, payload, label, currency }) {

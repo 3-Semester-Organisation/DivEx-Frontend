@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import TimeFrameSelector from "./TimeFrameSelector";
 
 
@@ -54,7 +54,8 @@ export default function StockGraph({ stock }) {
                 <h2 className="text-lg font-semibold ml-3 mb-3">({timeFrame})</h2>
             </div>
 
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center w-full h-[400px]" >
+                <ResponsiveContainer>
                 <LineChart
                     className="mt-4"
                     width={1200}
@@ -66,6 +67,7 @@ export default function StockGraph({ stock }) {
                     <Tooltip content={<StockChartToolTip currency={stock.currency} />} />
                     <Line type="monotone" dataKey="previousDailyClosingPrice" />
                 </LineChart>
+                </ResponsiveContainer>
 
                 <TimeFrameSelector
                     closingPrices={closingPrices}

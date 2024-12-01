@@ -1,4 +1,5 @@
-import * as React from "react"
+// import * as React from "react"
+import React, { Dispatch, SetStateAction } from "react";
 
 interface PriceMovement {
     previousDailyClosingPrice: number
@@ -6,19 +7,22 @@ interface PriceMovement {
 
 }
 
-export default function TimeFrameSelector(closingPrices: PriceMovement[], timeFrame, setTimeFrame, formatClosingDate) {
+interface TimeFrameSelectorProps {
+    closingPrices: PriceMovement[];
+    timeFrame: string;
+    setTimeFrame: Dispatch<SetStateAction<string>>;
+    formatClosingDate: (historicalClosingPrices: PriceMovement[]) => void;
+  }
+
+export default function TimeFrameSelector({closingPrices, timeFrame, setTimeFrame, formatClosingDate}: TimeFrameSelectorProps) {
     
     function filterPriceMovementByTimeFrame(curentDate: Date, closingPrices, yearsPrior: number) {
-        const previousYearsBack = new Date();
-        previousYearsBack.setFullYear(curentDate.getFullYear() - yearsPrior);
+        const cutOffDate = new Date();
+        cutOffDate.setFullYear(curentDate.getFullYear() - yearsPrior);
 
         const filteredData = closingPrices.filter(dataPoint => {
-            const closingDate = dataPoint.closingDate;
-
-            console.log("curentDate", curentDate)
-            console.log("tWOOOO", previousYearsBack)
-
-            return (closingDate >= previousYearsBack.getTime()) && (closingDate <= curentDate.getTime());
+            const closingDate = new Date(dataPoint.closingDate * 1000);
+            return (closingDate >= cutOffDate) && (closingDate <= curentDate);
         })
 
         return filteredData;
@@ -31,9 +35,8 @@ export default function TimeFrameSelector(closingPrices: PriceMovement[], timeFr
 
         switch (timeFrame) {
             case "YTD":
-                console.log(closingPrices.closingPrices)
                 const yearToDatePriceMovement = closingPrices.filter(dataPoint => {
-                    const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getTime(); // Start of the current year in milliseconds
+                    const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getSeconds(); 
                     return dataPoint.closingDate >= startOfYear && dataPoint.closingDate <= Date.now();
                 });
                 setTimeFrame("YTD")

@@ -21,7 +21,7 @@ export default function StockDetailsPage() {
                 <DividendInfo stock={stock} />
 
                 <StockGraph stock={stock} />
-
+                
             </div>
 
             <div className="flex flex-col justify-center items-center bg-slate-900 shadow-md rounded-lg p-4 mt-1 ml-4 mr-4">

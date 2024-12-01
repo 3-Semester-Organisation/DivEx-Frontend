@@ -6,7 +6,8 @@ import TimeFrameSelector from "./TimeFrameSelector";
 interface PriceMovement {
     previousDailyClosingPrice: number
     closingDate: number
-
+    openingPrice: number
+    openingDate: number
 }
 
 
@@ -17,12 +18,12 @@ const dailyClosingData = Array.from({ length: 20 }, (_, index) => ({
 
 export default function StockGraph({ stock }) {
 
-    const [closingPrices, setClosingPrices] = useState(stock.historicalPricingResponseList);
+    const [closingPrices, setClosingPrices] = useState<PriceMovement[]>(stock.historicalPricingResponseList);
     // const [closingPrices, setClosingPrices] = useState(dailyClosingData);
     const [closingPriceByTimeFrame, setClosingPriceByTimeFrame] = useState([]);
     const [timeFrame, setTimeFrame] = useState("YTD");
 
-    function formatClosingDate(historicalClosingPrices) {
+    function formatClosingDate(historicalClosingPrices: PriceMovement[]) {
         const formatedClosingPriceData = historicalClosingPrices.map(data => ({
             ...data,
             formattedDate: new Date(data.closingDate * 1000).toDateString()
@@ -33,15 +34,12 @@ export default function StockGraph({ stock }) {
     // initial load will load the YTD chart
     useEffect(() => {
         const currentDate = new Date();
-        console.log("api data", stock.historicalPricingResponseList)
-        console.log("test data", dailyClosingData)
+    
         const yearToDatePriceMovement = closingPrices.filter(dataPoint => {
-            console.log("closing date:", dataPoint.closingDate)
             const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getSeconds();
-            console.log("statt of year", startOfYear)
             return dataPoint.closingDate >= startOfYear && dataPoint.closingDate <= Date.now();
         });
-        console.log("filtered result", yearToDatePriceMovement)
+
         setTimeFrame("YTD")
         formatClosingDate(yearToDatePriceMovement);
     }, []);

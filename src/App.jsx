@@ -14,6 +14,7 @@ import Register from "@/views/register";
 import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
+import PortfolioOverview from "@/views/portfolioOverview";
 
 function App() {
   // gets login state from AuthContext
@@ -31,14 +32,13 @@ function App() {
 
         <Router>
           {isLoggedin ? <Navbar /> : <DefaultNavbar />}
-          <Navbar />
           <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<p>dashboard</p>} />
             <Route path="/account" element={<p>account</p>} />
-            <Route path="/portfolio" element={<p>portfolio</p>} />
+            <Route path="/portfolio/overview" element={<PortfolioOverview />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/stocks" element={<StocksPage />} />

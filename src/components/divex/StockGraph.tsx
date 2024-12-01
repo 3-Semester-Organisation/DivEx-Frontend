@@ -13,7 +13,7 @@ interface PriceMovement {
 
 const dailyClosingData = Array.from({ length: 20 }, (_, index) => ({
     previousDailyClosingPrice: (100 + Math.random() * 500).toFixed(2), // Random price between 100 and 150
-    closingDate: Date.now() - (index * 24 * 60 * 60 * 1000) // Decrementing one day for each object
+    closingDate: new Date().setDate(new Date().getDate() + index)
 }));
 
 export default function StockGraph({ stock }) {
@@ -36,8 +36,10 @@ export default function StockGraph({ stock }) {
         const currentDate = new Date();
     
         const yearToDatePriceMovement = closingPrices.filter(dataPoint => {
-            const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getSeconds();
-            return dataPoint.closingDate >= startOfYear && dataPoint.closingDate <= Date.now();
+            const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+            const closingDate = new Date(dataPoint.closingDate * 1000);
+
+            return closingDate >= startOfYear && closingDate <= currentDate;
         });
 
         setTimeFrame("YTD")

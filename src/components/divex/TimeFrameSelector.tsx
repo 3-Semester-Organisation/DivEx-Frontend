@@ -31,15 +31,18 @@ export default function TimeFrameSelector({closingPrices, timeFrame, setTimeFram
 
     function displayChartByTimeframe(timeFrame: string) {
 
-        const currentDate = new Date();
+        const currentDate = new Date(Date.now());
 
         switch (timeFrame) {
             case "YTD":
                 const yearToDatePriceMovement = closingPrices.filter(dataPoint => {
-                    const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getSeconds(); 
-                    return dataPoint.closingDate >= startOfYear && dataPoint.closingDate <= Date.now();
+                    const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+                    const closingDate = new Date(dataPoint.closingDate * 1000);
+                    
+                    return closingDate >= startOfYear && closingDate <= currentDate;
                 });
-                setTimeFrame("YTD")
+
+                setTimeFrame("YTD");
                 formatClosingDate(yearToDatePriceMovement);
                 break;
 
@@ -70,7 +73,7 @@ export default function TimeFrameSelector({closingPrices, timeFrame, setTimeFram
     }
 
     return(
-        <div className="flex justify-between w-44">
+        <div className="flex justify-between w-44 mt-5 mb-5">
         <button
             onClick={() => { displayChartByTimeframe("YTD") }}
             className={timeFrame === "YTD" ? "border-2 border-gray-500 rounded-lg p-1" : ""}>

@@ -1,35 +1,65 @@
 import React, { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import PaginationBar from "./PaginationBar";
+import { LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
+import TimeFrameSelector from "./TimeFrameSelector";
+
+
+interface PriceMovement {
+    previousDailyClosingPrice: number
+    closingDate: number
+
+}
+
+
+const dailyClosingData = Array.from({ length: 20 }, (_, index) => ({
+    previousDailyClosingPrice: (100 + Math.random() * 500).toFixed(2), // Random price between 100 and 150
+    closingDate: Date.now() - (index * 24 * 60 * 60 * 1000) // Decrementing one day for each object
+}));
 
 export default function StockGraph({ stock }) {
 
-    const [closingPrices, setClosingPrices] = useState([]);
+    const [closingPrices, setClosingPrices] = useState(stock.historicalPricingResponseList);
+    // const [closingPrices, setClosingPrices] = useState(dailyClosingData);
+    const [closingPriceByTimeFrame, setClosingPriceByTimeFrame] = useState([]);
+    const [timeFrame, setTimeFrame] = useState("YTD");
 
+    function formatClosingDate(historicalClosingPrices) {
+        const formatedClosingPriceData = historicalClosingPrices.map(data => ({
+            ...data,
+            formattedDate: new Date(data.closingDate).toDateString()
+        }))
+        setClosingPriceByTimeFrame(formatedClosingPriceData);
+    }
+
+    // initial load will load the YTD chart
     useEffect(() => {
-    
-        function formatClosingDate(historicalClosingPrices) {
-            const formatedClosingPriceData = historicalClosingPrices.map(data => ({
-                ...data,
-                formattedDate: new Date(data.closingDate * 1000).toDateString()
-            }))
-            setClosingPrices(formatedClosingPriceData);
-        }
+        const currentDate = new Date();
+        console.log("api data", stock.historicalPricingResponseList)
+        console.log("test data", dailyClosingData)
+        const yearToDatePriceMovement = closingPrices.filter(dataPoint => {
+            console.log("closing date:", dataPoint.closingDate)
+            const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getTime(); // Start of the current year in milliseconds
+            console.log("statt of year", startOfYear)
+            return dataPoint.closingDate >= startOfYear/1000 && dataPoint.closingDate <= Date.now();
+        });
+        console.log("filtered result", yearToDatePriceMovement)
+        setTimeFrame("YTD")
+        formatClosingDate(yearToDatePriceMovement);
+    }, []);
 
-        formatClosingDate(stock.historicalPricingResponseList)
-    }, [])
-    
 
     return (
         <div className="w-2/3 bg-slate-900 shadow-md rounded-lg p-6">
-            <h2 className="flex justify-start text-2xl font-bold mb-4">Price movment</h2>
+            <div className="flex justify-start items-center">
+                <h2 className="text-2xl font-bold mb-4">Price movment</h2>
+                <h2 className="text-lg font-semibold ml-3 mb-3">({timeFrame})</h2>
+            </div>
 
             <div className="flex flex-col items-center justify-center">
                 <LineChart
                     className="mt-4"
                     width={1200}
                     height={200}
-                    data={closingPrices}
+                    data={closingPriceByTimeFrame}
                 >
                     <XAxis dataKey="formattedDate" padding={{ right: 100 }} />
                     <YAxis />
@@ -37,7 +67,12 @@ export default function StockGraph({ stock }) {
                     <Line type="monotone" dataKey="previousDailyClosingPrice" />
                 </LineChart>
 
-                <PaginationBar></PaginationBar>
+                <TimeFrameSelector
+                    closingPrices={closingPrices}
+                    timeFrame={timeFrame}
+                    setTimeFrame={setTimeFrame}
+                    formatClosingDate={formatClosingDate}
+                />
             </div>
         </div>
     )

@@ -19,11 +19,16 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-interface HistoricalPricingResponse {
+interface HistoricalPricing {
     openingPrice: number;
     openingDate: number;
     previousDailyClosingPrice: number;
     closingDate: number;
+}
+
+interface HistoricalDividend {
+    dividendRate: number;
+    exDividendDate: number
 }
 
 interface Stock {
@@ -34,11 +39,15 @@ interface Stock {
     currency: string;
     industry: string;
     sector: string;
-    historicalPricingResponseList: HistoricalPricingResponse[];
+
+    historicalPricingResponseList: HistoricalPricing[];
+
     dividendRate: number;
     dividendYield: number;
     dividendRatio: number;
     exDividendDate: number;
+
+    historicalDividendsResponseList: HistoricalDividend[];
 }
 
 interface PaginatedResponse<T> {

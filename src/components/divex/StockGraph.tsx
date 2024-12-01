@@ -25,7 +25,7 @@ export default function StockGraph({ stock }) {
     function formatClosingDate(historicalClosingPrices) {
         const formatedClosingPriceData = historicalClosingPrices.map(data => ({
             ...data,
-            formattedDate: new Date(data.closingDate).toDateString()
+            formattedDate: new Date(data.closingDate * 1000).toDateString()
         }))
         setClosingPriceByTimeFrame(formatedClosingPriceData);
     }
@@ -37,9 +37,9 @@ export default function StockGraph({ stock }) {
         console.log("test data", dailyClosingData)
         const yearToDatePriceMovement = closingPrices.filter(dataPoint => {
             console.log("closing date:", dataPoint.closingDate)
-            const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getTime(); // Start of the current year in milliseconds
+            const startOfYear = new Date(currentDate.getFullYear(), 1, 1).getSeconds();
             console.log("statt of year", startOfYear)
-            return dataPoint.closingDate >= startOfYear/1000 && dataPoint.closingDate <= Date.now();
+            return dataPoint.closingDate >= startOfYear && dataPoint.closingDate <= Date.now();
         });
         console.log("filtered result", yearToDatePriceMovement)
         setTimeFrame("YTD")

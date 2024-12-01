@@ -42,4 +42,4 @@ function makeAuthOption(method, body, token) {
     return option;
 }
 
-export { checkHttpsErrors, makeOption }
+export { checkHttpsErrors, makeOption, makeAuthOption }

@@ -34,7 +34,7 @@ const authNavigation = [
 const portfolioNavigation: { title: string; href: string; description: string }[] = [
   {
     title: "Overview",
-    href: "/",
+    href: "/portfolio/overview",
     description:
       "Overview of your portfolio, including total value, performance, and more.",
   },

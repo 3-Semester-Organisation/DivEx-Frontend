@@ -19,17 +19,17 @@ export default function homepage() {
 
     useEffect(() => {
         async function fetchWeeklyTopStock() {
-            const response = await fetch("http://localhost:8080/api/v1/");
+            const response = await fetch("http://localhost:8080/api/v1/stock/popularity/week");
             checkHttpsErrors(response);
             const weeklyTopStocksData = await response.json();
             setWeeklyTopStocks(weeklyTopStocksData);
         }
 
         async function fetchMonthlyTopStock() {
-            const response = await fetch("http://localhost:8080/api/v1/");
+            const response = await fetch("http://localhost:8080/api/v1/stock/popularity/month");
             checkHttpsErrors(response);
             const monthlyTopStocksData = await response.json();
-            setMonthlyTopStocks(monthlyTopStocks);
+            setMonthlyTopStocks(monthlyTopStocksData);
         }
 
         fetchWeeklyTopStock();
@@ -53,7 +53,7 @@ export default function homepage() {
                                 <TableHead className='w-1'>#</TableHead>
                                 <TableHead>Stock</TableHead>
                                 <TableHead>Ticker</TableHead>
-                                <TableHead>Popularity</TableHead>
+                                <TableHead>Visits</TableHead>
                             </TableRow>
                         </TableHeader>
 
@@ -64,7 +64,7 @@ export default function homepage() {
                                     <TableCell className="text-start font-medium">{index}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
-                                    <TableCell className="text-start font-medium">{stock.popularity}</TableCell>
+                                    <TableCell className="text-start font-medium">{stock.visits}</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
@@ -80,7 +80,7 @@ export default function homepage() {
                                 <TableHead className='w-1'>#</TableHead>
                                 <TableHead>Stock</TableHead>
                                 <TableHead>Ticker</TableHead>
-                                <TableHead>Popularity</TableHead>
+                                <TableHead>Visits</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -91,7 +91,7 @@ export default function homepage() {
                                     <TableCell className="text-start font-medium">{index}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
-                                    <TableCell className="text-start font-medium">{stock.popularity}</TableCell>
+                                    <TableCell className="text-start font-medium">{stock.visits}</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>

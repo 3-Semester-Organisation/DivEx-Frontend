@@ -30,7 +30,7 @@ export default function StockDetailsPage() {
         }
 
         fetchStockByTicker(ticker);
-    }, [stock]);
+    }, []);
 
     return (
         <>

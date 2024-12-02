@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AuthContext } from "@/js/AuthContext";
 
 const URL = "http://localhost:8080/api/v1/portfolio";
 
@@ -60,6 +61,8 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 }
 
 export default function PortfolioOverview() {
+  const { subscriptionType } = React.useContext(AuthContext);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -67,8 +70,13 @@ export default function PortfolioOverview() {
     },
   });
 
+
   return (
     <>
+      <h1 className="font-semibold text-5xl flex p-6" >Portfolio</h1>
+      <div className="p-6">
+        <Label>TESTING Subscription type: {subscriptionType}</Label>
+        </div>
       <div className="flex justify-left p-6">
         <Dialog>
           <DialogTrigger asChild>
@@ -110,6 +118,9 @@ export default function PortfolioOverview() {
             </Form>
           </DialogContent>
         </Dialog>
+      </div>
+
+      <div>
       </div>
     </>
   );

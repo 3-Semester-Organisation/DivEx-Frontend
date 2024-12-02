@@ -5,6 +5,7 @@ import { getSubscriptionTypeFromToken } from "./jwt";
 interface AuthContextType {
   isLoggedin: boolean;
   subscriptionType: string | null;
+  updateSubscriptionType: (subType: string) => void;
   login: () => void;
   logout: () => void;
 }
@@ -13,6 +14,7 @@ interface AuthContextType {
 const defaultAuthContext: AuthContextType = {
   isLoggedin: false,
   subscriptionType: null,
+  updateSubscriptionType: () => {},
   login: () => {},
   logout: () => {},
 };
@@ -56,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedin, login, logout, subscriptionType }}>
+    <AuthContext.Provider value={{ isLoggedin, login, logout, subscriptionType, updateSubscriptionType }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,7 +10,6 @@ async function checkHttpsErrors(response) {
         }
         throw new Error(errorMessage);
     }
-    console.log(response.status)
     return response;
 }
 

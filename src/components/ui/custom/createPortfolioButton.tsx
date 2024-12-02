@@ -30,7 +30,7 @@ const formSchema = z.object({
     .min(1, { message: "Name must be at least 1 character long" }),
 });
 
-export function CreatePortfolioButton({ onSubmit }) {
+export function CreatePortfolioButton({ onSubmit, handleCreateButtonClick }) {
   const [open, setOpen] = React.useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,16 +40,25 @@ export function CreatePortfolioButton({ onSubmit }) {
     },
   });
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => { 
-    await onSubmit(values)
-    setOpen(false)
+  const onTriggerClick = (event) => {
+    if (handleCreateButtonClick() === false) {
+      event.preventDefault()
+    } else {
+      setOpen(true);
+    }
   }
+
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    await onSubmit(values);
+    setOpen(false);
+  };
 
   return (
     <>
+      
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-accent-foreground">Create portfolio</Button>
+          <Button className="bg-accent-foreground" onClick={onTriggerClick} >Create Portfolio</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <Form {...form}>

@@ -15,6 +15,7 @@ import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
+import Test from "@/views/test";
 
 function App() {
   // gets login state from AuthContext
@@ -43,6 +44,7 @@ function App() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/stocks" element={<StocksPage />} />
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
+            <Route path="/test" element={<Test />} />
 
           </Routes>
 

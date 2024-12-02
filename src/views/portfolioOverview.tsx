@@ -5,8 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { makeAuthOption, checkHttpsErrors } from "@/js/util";
+
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
+
+
+import { AuthContext } from "@/js/AuthContext";
 
 const URL = "http://localhost:8080/api/v1/portfolio";
 
@@ -21,6 +25,7 @@ export default function PortfolioOverview() {
     return localStorage.getItem("selectedPortfolio") || "";
   });
   const [portfolios, setPortfolios] = React.useState([]);
+  const { subscriptionType } = React.useContext(AuthContext);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,6 +109,7 @@ export default function PortfolioOverview() {
         </div>
       </div>
       <p>Selected portfolio id: {selectedPortfolio}</p>{/* This is just for debugging */}
+
     </>
   );
 }

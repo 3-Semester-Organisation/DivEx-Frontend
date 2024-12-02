@@ -19,3 +19,17 @@ export function getUserIdFromToken(): string | null {
   }
   return null;
 }
+
+export function getSubscriptionTypeFromToken(): string | null { 
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const decoded = jwtDecode<TokenPayload>(token);
+      return decoded.subscriptionType;
+    } catch (error) {
+      console.error('Invalid token:', error);
+      return null;
+    }
+  }
+  return null;
+}

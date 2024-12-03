@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import { useEffect } from "react";
 
@@ -8,12 +10,15 @@ import { makeAuthOption, checkHttpsErrors } from "@/js/util";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
 
-
 import { AuthContext } from "@/js/AuthContext";
 import StockTable from "@/components/ui/custom/stockTable";
+import { Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import { fetchPaginatedStocks } from "@/api/stocks";
 import PaginationBar from "@/components/divex/PaginationBar";
+import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
+import { fetchUpdatePortfolioName } from "@/api/portfolio";
 
 const URL = "http://localhost:8080/api/v1/portfolio";
 
@@ -23,34 +28,42 @@ const formSchema = z.object({
     .min(1, { message: "Name must be at least 1 character long" }),
 });
 
+interface Portfolio {
+  id: string;
+  name: string;
+}
+
 export default function PortfolioOverview() {
   // PORTFOLIO STATES
-  const [selectedPortfolio, setSelectedPortfolio] = React.useState(() => {
-    return localStorage.getItem("selectedPortfolio") || "";
+  const [selectedPortfolio, setSelectedPortfolio] = React.useState<Portfolio | null>(() => {
+    const stored = localStorage.getItem("selectedPortfolio");
+    return stored ? JSON.parse(stored) : null;
   });
-  const [portfolios, setPortfolios] = React.useState([]);
+  const [portfolios, setPortfolios] = React.useState<Portfolio[]>([]); 
+
   // AUTH CONTEXT
   const { subscriptionType } = React.useContext(AuthContext);
 
-  //TABLE STATES
+  // TABLE STATES
   const [sorting, setSorting] = React.useState({ column: "", direction: "asc" });
   const [stocks, setStocks] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+
   // PAGINATION STATES
   const [currentPage, setCurrentPage] = React.useState(0);
   const [totalPages, setTotalPages] = React.useState(0);
-  
 
-  // limit amount of portfolios based on subscription type
+  // Limit amount of portfolios based on subscription type
   function handleCreateButtonClick() {
-    if (portfolios.length >= 1 && subscriptionType === "FREE") {
+    if (subscriptionType === "FREE" && portfolios.length >= 1) {
       toast.error("Free users can only have one portfolio.");
       return false;
     }
-    else if (portfolios.length >= 10 && subscriptionType === "PREMIUM") {
+    else if (subscriptionType === "PREMIUM" && portfolios.length >= 10) {
       toast.error("Premium users can only have up to 10 portfolios.");
       return false;
     }
+    return true;
   }
 
   async function fetchPortfolios() {
@@ -64,13 +77,48 @@ export default function PortfolioOverview() {
       const res = await fetch(URL, getOption);
       await checkHttpsErrors(res);
       const data = await res.json();
-      const portfolioList = data.map((portfolio) => ({
+      const portfolioList = data.map((portfolio: any) => ({
         id: portfolio.id.toString(),
         name: portfolio.name,
       }));
       return portfolioList;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Fetch portfolios error", error);
+      toast.error(error.message);
+      return [];
+    }
+  }
+
+  const changePortfolioName = async (newName: string) => {
+    const token = localStorage.getItem("token");
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    if (!token) {
+      toast.error("No token found. Please log in.");
+      return;
+    }
+    try {
+      const res = await fetchUpdatePortfolioName(newName, selectedPortfolio.id);
+      await checkHttpsErrors(res);
+
+      // Update local state
+      const updatedPortfolio = { ...selectedPortfolio, name: newName };
+      setSelectedPortfolio(updatedPortfolio);
+      setPortfolios((prevPortfolios) =>
+        prevPortfolios.map((portfolio) =>
+          portfolio.id === updatedPortfolio.id ? updatedPortfolio : portfolio
+        )
+      );
+
+      // Update localStorage
+      localStorage.setItem("selectedPortfolio", JSON.stringify(updatedPortfolio));
+
+      toast.success("Portfolio name updated.");
+      return res;
+    } catch (error: any) {
+      console.error("Update portfolio name error", error);
       toast.error(error.message);
     }
   }
@@ -90,11 +138,19 @@ export default function PortfolioOverview() {
 
       // Add new portfolio to the list without fetching all portfolios again
       const newPortfolio = await res.json();
+      const formattedPortfolio: Portfolio = {
+        id: newPortfolio.id.toString(),
+        name: newPortfolio.name,
+      };
       setPortfolios((prevPortfolios) => [
         ...prevPortfolios,
-        { id: newPortfolio.id.toString(), name: newPortfolio.name },
+        formattedPortfolio,
       ]);
-    } catch (error) {
+
+      // Optionally, set the new portfolio as selected
+      setSelectedPortfolio(formattedPortfolio);
+      localStorage.setItem("selectedPortfolio", JSON.stringify(formattedPortfolio));
+    } catch (error: any) {
       console.error("Form submission error", error);
       toast.error(error.message);
     }
@@ -104,12 +160,17 @@ export default function PortfolioOverview() {
     async function loadPortfolios() {
       const data = await fetchPortfolios();
       setPortfolios(data || []);
+
+      // If no portfolio is selected, optionally select the first one
+      if (!selectedPortfolio && data && data.length > 0) {
+        setSelectedPortfolio(data[0]);
+        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
+      }
     }
     loadPortfolios();
   }, []);
 
-
-  //TABLE SHIT
+  // TABLE HANDLING
   function handleSortClick(column: string) {
     setSorting((prevSorting) => ({
       column: column,
@@ -121,7 +182,6 @@ export default function PortfolioOverview() {
     setCurrentPage(0); // Reset to first page on sort
     console.log(`Sorting by ${column} in ${sorting.direction === "asc" ? "descending" : "ascending"} order.`);
   }
-
 
   useEffect(() => {
     async function loadStocks() {
@@ -135,7 +195,6 @@ export default function PortfolioOverview() {
           10,
           sorting
         );
-        console.log("Fetched stocks:", paginatedStocks.content);
         setStocks(paginatedStocks.content);
         setTotalPages(paginatedStocks.totalPages);
       } catch (error: any) {
@@ -147,14 +206,19 @@ export default function PortfolioOverview() {
     }
     loadStocks();
   }, [currentPage, sorting]);
-  // END TABLE SHIT
 
   return (
     <>
-      <div className="flex flex-row">
-        <h1 className="text-semibold text-5xl">Portfolio</h1>
-
-        <div className="ml-10 content-center mt-2">
+      <div className="flex flex-row group">
+        <div className="relative">
+          <h1 className="text-semibold flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
+            <PortfolioEditDialog
+              onSubmit={changePortfolioName}
+              selectedPortfolio={selectedPortfolio}
+            />
+          </h1>
+        </div>
+        <div className="ml-10 mt-2">
           <PortfolioSelect
             portfolioList={portfolios}
             selectedPortfolio={selectedPortfolio}
@@ -169,7 +233,7 @@ export default function PortfolioOverview() {
           />
         </div>
       </div>
-      <p>Selected portfolio id: {selectedPortfolio}</p>{/* This is just for debugging */}
+      <p>Selected portfolio id: {selectedPortfolio?.name}</p>{/* This is just for debugging */}
 
       <div className="flex flex-col">
       <StockTable

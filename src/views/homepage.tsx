@@ -45,7 +45,7 @@ export default function homepage() {
             <div className='flex flex-col items-start gap-6'>
                 <h1 className='text-4xl font-semibold'>Homepage</h1>
 
-                <div className='w-1/4 bg-slate-900 shadow-md rounded-lg p-6'>
+                <div className='w-1/4 bg-primary-foreground shadow-md rounded-lg p-6'>
                     <h2 className='flex justify-start font-semibold text-xl mb-4'>Monthly top stocks</h2>
                     <Table>
                         <TableHeader>
@@ -71,7 +71,7 @@ export default function homepage() {
                     </Table>
                 </div>
 
-                <div className='w-1/4 bg-slate-900 shadow-md rounded-lg p-6'>
+                <div className='w-1/4 bg-primary-foreground shadow-md rounded-lg p-6'>
                     <h2 className='flex justify-start font-semibold text-xl'>Weekly top stocks</h2>
 
                     <Table>

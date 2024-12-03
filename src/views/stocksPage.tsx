@@ -11,9 +11,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -150,7 +148,7 @@ export default function StocksPage() {
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div className="bg-slate-900 rounded-xl bg-primary-foreground">
+                <div className="rounded-xl bg-primary-foreground">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -216,6 +214,7 @@ export default function StocksPage() {
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
                                     <TableCell>{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
                                     <TableCell>{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
+                                    <TableCell><button>Køb</button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

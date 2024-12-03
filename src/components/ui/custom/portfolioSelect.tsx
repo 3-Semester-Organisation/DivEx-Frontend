@@ -27,21 +27,23 @@ export function PortfolioSelect({
 
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState("");
+  const [name, setName] = React.useState("");
   const portfolios = portfolioList;
 
   React.useEffect(() => {
     setId(selectedPortfolio);
+    setName(selectedPortfolio);
   }, [selectedPortfolio]);
 
   // handles the selection of a portfolio
   // adds portfolio id to local storage
   const handleSelect = (currentValue) => {
-    const newValue = currentValue === id ? "" : currentValue;
+    const newValue = currentValue.id === id ? "" : currentValue;
     setId(newValue);
-    setSelectedPortfolio(newValue);
+    setSelectedPortfolio(currentValue);
     setOpen(false);
 
-    localStorage.setItem("selectedPortfolio", newValue);
+    localStorage.setItem("selectedPortfolio", currentValue);
   };
 
   return (
@@ -52,12 +54,11 @@ export function PortfolioSelect({
           aria-expanded={open}
           className="flex w-[200px] justify-between bg-accent-foreground "
         >
-          {id
-            ? portfolios.find((portfolio) => portfolio.id === id)?.name
-            : "Select portfolio"}
+          {name ? portfolios.find((portfolio) => portfolio.name === name)?.name : "Select portfolio"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
+
       <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandList>
@@ -66,7 +67,7 @@ export function PortfolioSelect({
               {portfolios.map((portfolio) => (
                 <CommandItem
                   key={portfolio.id}
-                  value={portfolio.id}
+                  value={portfolio}
                   onSelect={handleSelect}
                 >
                   <Check

@@ -19,7 +19,6 @@ const dailyClosingData = Array.from({ length: 20 }, (_, index) => ({
 export default function StockGraph({ stock }) {
 
     const [closingPrices, setClosingPrices] = useState<PriceMovement[]>(stock.historicalPricingResponseList);
-    // const [closingPrices, setClosingPrices] = useState(dailyClosingData);
     const [closingPriceByTimeFrame, setClosingPriceByTimeFrame] = useState([]);
     const [timeFrame, setTimeFrame] = useState("YTD");
 
@@ -44,11 +43,11 @@ export default function StockGraph({ stock }) {
 
         setTimeFrame("YTD")
         formatClosingDate(yearToDatePriceMovement);
-    }, [closingPriceByTimeFrame]);
+    }, []);
 
 
     return (
-        <div className="w-2/3 bg-slate-900 shadow-md rounded-lg p-6">
+        <div className="w-2/3 bg-primary-foreground shadow-md rounded-lg p-6">
             <div className="flex justify-start items-center">
                 <h2 className="text-2xl font-bold mb-4">Price movment</h2>
                 <h2 className="text-lg font-semibold ml-3 mb-3">({timeFrame})</h2>
@@ -83,7 +82,7 @@ export default function StockGraph({ stock }) {
 function StockChartToolTip({ active, payload, label, currency }) {
     if (active && payload && payload.length) {
         return (
-            <div className="p-4 bg-slate-900 flex flex-col gap-4 rounded-md border-2 border-gray-600">
+            <div className="p-4 bg-primary-foreground flex flex-col gap-4 rounded-md border-2 border-gray-600">
                 <p className="text-medium text-lg">{label}</p>
                 <p className="text-small text-gray-500">
                     Closing price:

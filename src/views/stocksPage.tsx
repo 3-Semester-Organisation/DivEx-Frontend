@@ -140,7 +140,7 @@ export default function StocksPage() {
                 id="search"
                 placeholder="Search..."
                 type="search"
-                className="mb-4 w-1/4"
+                className="mb-4 w-1/4 border-gray-600 border-2 "
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
             />
@@ -150,7 +150,7 @@ export default function StocksPage() {
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div className="bg-slate-900 rounded-xl bg-primary-foreground">
+                <div className="rounded-xl bg-primary-foreground">
                     <Table>
                         <TableHeader>
                             <TableRow>

@@ -224,7 +224,7 @@ export default function StocksPage() {
             )}
 
             <PaginationBar
-                currecntPage={currecntPage}
+                currentPage={currecntPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
             />

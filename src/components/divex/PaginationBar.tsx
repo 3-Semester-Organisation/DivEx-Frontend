@@ -12,9 +12,9 @@ import {
     PaginationFirst
 } from "@/components/ui/pagination"
 
-export default function PaginationBar({ currecntPage, totalPages, setCurrentPage }) {
+export default function PaginationBar({ currentPage, totalPages, setCurrentPage }) {
 
-    let startPage = Math.max(0, currecntPage - 1);
+    let startPage = Math.max(0, currentPage - 1);
     const endPage = Math.min(startPage + 5, totalPages);
 
     let paginationButtons: number[] = [];
@@ -30,7 +30,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                     <PaginationContent>
 
                         <PaginationItem>
-                            {currecntPage > 0 && (
+                            {currentPage > 0 && (
                                 <PaginationFirst
                                     className="cursor-pointer"
                                     onClick={() => setCurrentPage(0)}
@@ -41,7 +41,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                         </PaginationItem>
 
                         <PaginationItem>
-                            {currecntPage > 0 && (
+                            {currentPage > 0 && (
                                 <PaginationPrevious
                                     className="cursor-pointer"
                                     onClick={() => setCurrentPage(page => Math.max(page - 1, 0))}
@@ -57,7 +57,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                                 <PaginationLink
                                     key={pageNumber}
                                     onClick={() => setCurrentPage(pageNumber)}
-                                    className={currecntPage === pageNumber ? "border cursor-pointer" : "cursor-pointer" }
+                                    className={currentPage === pageNumber ? "border cursor-pointer" : "cursor-pointer" }
                                 >
                                     {pageNumber + 1}
                                 </PaginationLink>
@@ -65,7 +65,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                         ))}
 
 
-                        {totalPages > 5 && currecntPage < totalPages - 5 ? (
+                        {totalPages > 5 && currentPage < totalPages - 5 ? (
                             <PaginationItem>
                                 <PaginationEllipsis
                                     className="mt-2" />
@@ -75,7 +75,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
 
 
                         <PaginationItem>
-                            {currecntPage !== totalPages - 1 && (
+                            {currentPage !== totalPages - 1 && (
                                 <PaginationNext
                                     onClick={() => setCurrentPage(page => Math.min(page + 1, totalPages - 1))}
                                     className="cursor-pointer"
@@ -86,7 +86,7 @@ export default function PaginationBar({ currecntPage, totalPages, setCurrentPage
                         </PaginationItem>
 
                         <PaginationItem>
-                            {currecntPage !== totalPages - 1 && (
+                            {currentPage !== totalPages - 1 && (
                                 <PaginationLast
                                     onClick={() => setCurrentPage(totalPages - 1)}
                                     className="cursor-pointer"

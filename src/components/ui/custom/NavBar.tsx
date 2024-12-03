@@ -3,7 +3,7 @@
 import * as React from "react";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from '@/js/AuthContext'
+import { AuthContext } from "@/js/AuthContext";
 
 import { cn } from "@/lib/utils";
 import {
@@ -23,15 +23,23 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/NavigationMenu";
-import { ChevronDown, Navigation, User } from "lucide-react";
-import { toast } from 'sonner'
+import { ChevronDown, Navigation, User, Rocket } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "../button";
+import { fetchSubscriptionChange } from "@/api/subscription";
+import { getSubscriptionTypeFromToken } from "@/js/jwt";
+import { set } from "date-fns";
 
 const authNavigation = [
   { name: "Settings", to: "/settings" },
   { name: "Sign out", to: "/" },
 ];
 
-const portfolioNavigation: { title: string; href: string; description: string }[] = [
+const portfolioNavigation: {
+  title: string;
+  href: string;
+  description: string;
+}[] = [
   {
     title: "Overview",
     href: "/portfolio/overview",
@@ -61,17 +69,38 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
     to: "/",
     description: "The most viewed stocks this week.",
   },
-]
-
-
+];
 
 export default function Navbar({ onLogout }) {
-  const { logout } = useContext(AuthContext);
+  const { logout, subscriptionType, setSubscriptionType } =
+    useContext(AuthContext);
+
+  const isPremium = (subscriptionType: string) => {
+    return subscriptionType !== "PREMIUM";
+  };
 
   const handleLogout = () => {
     logout();
-    toast.success('Logout successful.')
-  }
+    toast.success("Logout successful.");
+  };
+
+  const handleUpgrade = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetchSubscriptionChange("PREMIUM", token);
+      const jwtToken = await response.json();
+      const tkn = jwtToken.jwt;
+
+      localStorage.setItem("token", tkn);
+      const newSubType = getSubscriptionTypeFromToken();
+      setSubscriptionType(newSubType);
+
+      toast.success("Upgrade successful.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Upgrade failed.");
+    }
+  };
 
   return (
     <NavigationMenu className="flex flex-row p-6 ml-10">
@@ -108,26 +137,40 @@ export default function Navbar({ onLogout }) {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+
+        <NavigationMenuItem className="flex justify-end">
+          {isPremium(subscriptionType) ? (
+            <Button onClick={handleUpgrade}>
+              <Rocket />
+              Upgrade
+            </Button>
+          ) : (
+            ""
+          )}
+        </NavigationMenuItem>
+
         <NavigationMenuItem className="flex justify-end">
           <DropdownMenu>
-            <DropdownMenuTrigger className="userbutton" ><User /></DropdownMenuTrigger>
+            <DropdownMenuTrigger className="userbutton">
+              <User />
+            </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem asChild>
                 <NavLink
                   to="/settings"
-                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100">
+                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                >
                   Settings
-                  </NavLink>
+                </NavLink>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                
-              onClick={() => handleLogout()}  asChild>
+              <DropdownMenuItem onClick={() => handleLogout()} asChild>
                 <NavLink
                   to="/"
-                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100">
+                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                >
                   Sign out
                 </NavLink>
-                </DropdownMenuItem>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </NavigationMenuItem>
@@ -154,7 +197,7 @@ const ListItem = React.forwardRef<
           {...props}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
-          {typeof children === 'function' ? null : (
+          {typeof children === "function" ? null : (
             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
               {children}
             </p>

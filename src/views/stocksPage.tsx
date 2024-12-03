@@ -150,7 +150,7 @@ export default function StocksPage() {
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div className="bg-slate-900 rounded-xl bg-primary-foreground">
+                <div className="rounded-xl bg-primary-foreground">
                     <Table>
                         <TableHeader>
                             <TableRow>

@@ -9,7 +9,6 @@ import { makeAuthOption, checkHttpsErrors } from "@/js/util";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
 
-
 import { AuthContext } from "@/js/AuthContext";
 
 const URL = "http://localhost:8080/api/v1/portfolio";
@@ -33,6 +32,18 @@ export default function PortfolioOverview() {
       portfolioName: "",
     },
   });
+
+  // limit amount of portfolios based on subscription type
+  function handleCreateButtonClick() {
+    if (portfolios.length >= 1 && subscriptionType === "FREE") {
+      toast.error("Free users can only have one portfolio.");
+      return false;
+    }
+    else if (portfolios.length >= 10 && subscriptionType === "PREMIUM") {
+      toast.error("Premium users can only have up to 10 portfolios.");
+      return false;
+    }
+  }
 
   async function fetchPortfolios() {
     const token = localStorage.getItem("token");
@@ -63,11 +74,8 @@ export default function PortfolioOverview() {
       return;
     }
     try {
-      console.log(token);
       const postOption = makeAuthOption("POST", values, token);
-      console.log(postOption);
       const res = await fetch(URL, postOption);
-      console.log(res);
       await checkHttpsErrors(res);
 
       toast.success("Portfolio created.");
@@ -105,7 +113,11 @@ export default function PortfolioOverview() {
           />
         </div>
         <div className="ml-1 content-center mt-2">
-          <CreatePortfolioButton onSubmit={onSubmit} />
+
+          <CreatePortfolioButton
+            onSubmit={onSubmit}
+            handleCreateButtonClick={handleCreateButtonClick}
+          />
         </div>
       </div>
       <p>Selected portfolio id: {selectedPortfolio}</p>{/* This is just for debugging */}

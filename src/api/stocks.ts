@@ -1,21 +1,7 @@
 import * as React from 'react';
 
 import { checkHttpsErrors } from '@/js/util';
-
-interface Stock { 
-    ticker: string;
-    name: string;
-    country: string;
-    exchange: string;
-    currency: string;
-    industry: string;
-    sector: string;
-}
-
-interface PaginatedResponse<T> { 
-    content: T[];
-    totalPages: number;
-}
+import { PaginatedResponse, Stock } from '@/divextypes/types';
 
 async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10, sorting: { column: string, direction: string }) {
     try {
@@ -35,4 +21,17 @@ async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10, s
     } 
 }
 
-export { fetchPaginatedStocks }
+async function fetchStocksBySearchTerm(searchTerm: string) {
+    try {
+        const response = await fetch("http://localhost:8080/api/v1/stocks/" + searchTerm);
+        checkHttpsErrors(response);
+
+        const searchResult: Stock[] = await response.json();
+        return searchResult;
+
+    } catch (error) {
+        console.log(error);
+    } 
+}
+
+export { fetchPaginatedStocks, fetchStocksBySearchTerm }

@@ -51,10 +51,10 @@ interface PaginatedResponse<T> {
 const tableHeads = [
   { id: "ticker", label: "Ticker" },
   { id: "name", label: "Name" },
-  { id: "previousDailyClosingPrice", label: "Closing price" },
-  { id: "dividendRate", label: "Dividend Rate" },
-  { id: "dividendYield", label: "Dividend Yield" },
-  { id: "exDate", label: "Ex Date" },
+  { id: "historical.previousDailyClosingPrice", label: "Closing price" },
+  { id: "dividend.dividendRate", label: "Dividend Rate" },
+  { id: "dividend.dividendYield", label: "Dividend Yield" },
+  { id: "dividend.ExDividendDate", label: "Ex Date" },
 ];
 
 export default function StockTable({ stocks, sorting, onSortClick, isLoading }) {

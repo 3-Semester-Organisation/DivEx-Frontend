@@ -44,7 +44,7 @@ export default function StockGraph({ stock }) {
 
         setTimeFrame("YTD")
         formatClosingDate(yearToDatePriceMovement);
-    }, []);
+    }, [closingPriceByTimeFrame]);
 
 
     return (

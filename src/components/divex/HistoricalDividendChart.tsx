@@ -39,7 +39,7 @@ export default function HistoricalDividendChart({ stock }) {
 function DividendChartToolTip({ active, payload, label, currency }) {
     if (active && payload && payload.length) {
         return (
-            <div className="p-4 bg-slate-900 flex flex-col gap-4 rounded-md border-2 border-gray-600">
+            <div className="p-4 bg-primary-foreground flex flex-col gap-4 rounded-md border-2 border-gray-600">
                 <p className="text-medium text-lg">{label}</p>
                 <p className="text-small text-gray-500">
                     Dividend rate:

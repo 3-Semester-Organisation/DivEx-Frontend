@@ -102,7 +102,7 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
               <TableRow key={`skeleton-${index}`}>
                 {tableHeads.map((head) => (
                   <TableCell key={head.id} className={`text-center`} >
-                    <div className="h-4 bg-gray-700 rounded-md w-3/4 mx-auto animate-pulse"></div>
+                    <div className="h-5 bg-gray-700 rounded-md w-3/4 mx-auto animate-pulse"></div>
                   </TableCell>
                 ))}
               </TableRow>
@@ -114,7 +114,7 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
                 onClick={() => showStockDetails(stock)}
                 className="hover:bg-accent cursor-pointer"
               >
-                <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.ticker}</TableCell>
+                <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.ticker.slice(0, -3)}</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.name}</TableCell>
                 <TableCell className="h-4 text-center">
                   {stock.historicalPricingResponseList[0]?.previousDailyClosingPrice || "N/A"}

@@ -132,6 +132,9 @@ export default function CalendarPage() {
 
   return (
     <>
+      <div className="flex">
+      <h1 className="text-5xl ml-6">Calendar</h1>
+        </div>
       <div className="flex flex-row p-6">
         <div className="">
           <Calendar
@@ -143,7 +146,7 @@ export default function CalendarPage() {
           />
           <Button
             id="reset-button"
-            className="bg-primary-foreground text-white flex mt-1 rounded-lg hover:bg-accent"
+            className="flex mt-1 rounded-lg"
           >
             Reset
           </Button>

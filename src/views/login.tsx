@@ -95,6 +95,7 @@ export default function Login({ onLogin }) {
                           placeholder="Username"
                           type="username"
                           autoComplete="username"
+                          className="bg-primary-foreground border-primary"
                           {...field}
                         />
                       </FormControl>
@@ -115,6 +116,7 @@ export default function Login({ onLogin }) {
                           id="password"
                           placeholder="******"
                           autoComplete="current-password"
+                          className="bg-primary-foreground border-primary"
                           {...field}
                         />
                       </FormControl>
@@ -129,7 +131,7 @@ export default function Login({ onLogin }) {
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
+            Don't have an account?{' '}
             <NavLink to="/register" className="underline">
               Sign up
             </NavLink>

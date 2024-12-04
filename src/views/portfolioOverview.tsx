@@ -12,8 +12,6 @@ import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioBut
 
 import { AuthContext } from "@/js/AuthContext";
 import StockTable from "@/components/ui/custom/stockTable";
-import { Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import { fetchPaginatedStocks } from "@/api/stocks";
 import PaginationBar from "@/components/divex/PaginationBar";
@@ -211,7 +209,7 @@ export default function PortfolioOverview() {
     <>
       <div className="flex flex-row group">
         <div className="relative">
-          <h1 className="text-semibold flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
+          <h1 className="flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
             <PortfolioEditDialog
               onSubmit={changePortfolioName}
               selectedPortfolio={selectedPortfolio}
@@ -233,9 +231,10 @@ export default function PortfolioOverview() {
           />
         </div>
       </div>
-      <p>Selected portfolio id: {selectedPortfolio?.name}</p>{/* This is just for debugging */}
 
-      <div className="flex flex-col">
+      
+
+      <div className="flex flex-col mt-10">
       <StockTable
         stocks={stocks}
         sorting={sorting}

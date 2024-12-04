@@ -5,11 +5,16 @@ import { useEffect, useState } from "react";
 import { checkHttpsErrors } from '@/js/util'
 import * as React from 'react'
 import HistoricalDividendChart from '@/components/divex/HistoricalDividendChart';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
 
 export default function StockDetailsPage() {
 
     // const location = useLocation();
     // const stock = location.state?.stock;
+
+    const navigate = useNavigate();
 
     const { ticker } = useParams();
 
@@ -34,10 +39,13 @@ export default function StockDetailsPage() {
 
     return (
         <>
+            <div className="flex p-4">
+                <Button variant="ghost" onClick={() => navigate(-1)}><ChevronLeft />Go back</Button>
+                </div>
             {stock === null ? (<p>Loading...</p>) : (
                 <div>
                     <div className='flex justify-start'>
-                        <h1 className='ml-6 font-bold text-3xl'>{stock.name}</h1>
+                        <h1 className='ml-6 text-3xl'>{stock.name}</h1>
                         <p className='mt-3 ml-3'>{`(${stock.ticker.toUpperCase()})`}</p>
                     </div>
 

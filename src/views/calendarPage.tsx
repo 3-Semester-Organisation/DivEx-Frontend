@@ -2,8 +2,10 @@
 
 import * as React from "react";
 import { useEffect } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { DividendCalendar } from "@/components/ui/custom/DividendCalendar";
+import  DividendTable  from "@/components/ui/custom/DividendTable";
 import { Button } from "@/components/ui/button";
+import { makeOption, checkHttpsErrors } from "@/js/util";
 import {
   Pagination,
   PaginationContent,
@@ -13,22 +15,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 
 const PAGESIZE = 10;
-const URL = "http://localhost:8080/api/v1/stocks";
-
-const dates = [];
 
 interface Stock {
   ticker: string;
@@ -44,23 +32,32 @@ interface PaginatedResponse<T> {
   totalPages: number;
 }
 
+interface DividendDate {
+  exDividendDate: number;
+}
+
 const convertUnixToDate = (unix: number) => {
   return new Date(unix * 1000);
 };
 
-const dividendDates = (stocks: Stock[]) => {
-  stocks.forEach((stock) => {
-    dates.push(convertUnixToDate(stock.exDividendDate));
+/*
+const convertDividendDates = (dates: number[]) => {
+  const dateList = [];
+  dates.forEach((date) => {
+    dateList.push(convertUnixToDate(date));
   });
-  return dates;
-};
+  return dateList;
+}
+  */
 
 export default function CalendarPage() {
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [date, setDate] = React.useState<number | undefined>(undefined);
+  const [dividendDates, setDividendDates] = React.useState<number[]>([]);
   const [stocks, setStocks] = React.useState<Stock[]>([]);
   const [totalPages, setTotalPages] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
+  const [sorting, setSorting] = React.useState({ column: "", direction: "asc" }); 
 
   const handleFetch = async (url: string) => {
     const res = await fetch(url);
@@ -68,17 +65,66 @@ export default function CalendarPage() {
     return data;
   };
 
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      // Normalize the selected date to midnight UTC
+      const utcDate = new Date(Date.UTC(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        selectedDate.getDate()
+      ));
+      // Convert to Unix timestamp in seconds
+      const unixTimestamp = Math.floor(utcDate.getTime() / 1000);
+  
+      setDate(unixTimestamp); // Set `date` as Unix timestamp
+    } else {
+      setDate(undefined);
+    }
+  };
+
+  const fetchDividendDates = async () => { 
+    const url = "http://localhost:8080/api/v1/stocks/dividendDates";
+    try {
+      const data = await handleFetch(url);
+      const dates = data.map((date) => date.exDividendDate);
+      setDividendDates(dates);
+    } catch (error) {
+      console.error("Error fetching dividend dates:", error);
+    }
+  }
+
+  useEffect(() => {
+    const fetchStocksByDividendDate = async (date: number) => {
+      
+      const url = `http://localhost:8080/api/v1/stocksByDate?date=${date}&page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
+      try {
+        const res = await fetch(url);
+        await checkHttpsErrors(res);
+        const data = await res.json();
+        setStocks(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Error fetching stocks by dividend date", error)
+      }
+    }
+    if (date) {
+      fetchStocksByDividendDate(date);
+    }
+  }, [date]);
+
+  
   const fetchData = async () => {
     setLoading(true);
-    const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}&sort=ticker,asc`;
+    // simulate loading time
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
     try {
       const data: PaginatedResponse<Stock> = await handleFetch(url);
-      console.log(handleFetch(url));
-      console.log(data);
+
       const convertedStocks = data.content.map((stock) => ({
         ...stock,
-        //remove last three letters from ticker, it's always ".CO"
-        ticker: stock.ticker.slice(0, -3),
+        
+
       }));
       setStocks(convertedStocks);
       setTotalPages(data.totalPages);
@@ -91,18 +137,8 @@ export default function CalendarPage() {
 
   React.useEffect(() => {
     fetchData();
-  }, [currentPage]);
-
-
-  // filtrer på current valgte date fra state
-  // skriv om til at fetch data, og kun vis dem der matcher date
-  const filteredStocks = date
-    ? stocks.filter(
-        (stock) =>
-          convertUnixToDate(stock.exDividendDate).toDateString() ===
-          date.toDateString()
-      )
-    : stocks;
+    fetchDividendDates();
+  }, [currentPage, sorting]);
 
   // PAGINATION
   const handlePageClick = (page: number) => {
@@ -120,15 +156,32 @@ export default function CalendarPage() {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
   // PAGINATION END
 
-  //when resetbutton is clicked, set date to undefined
-  useEffect(() => {
-    const resetButton = document.getElementById("reset-button");
-    if (resetButton) {
-      resetButton.addEventListener("click", () => {
-        setDate(undefined);
-      });
-    }
-  }, []);
+  function handleSortClick(column: string) {
+    setSorting((prevSorting) => ({
+      column: column,
+      direction:
+        prevSorting.column === column && prevSorting.direction === "asc"
+          ? "desc"
+          : "asc",
+    }));
+    setCurrentPage(0); // Reset to first page on sort
+    console.log(`Sorting by ${column} in ${sorting.direction === "asc" ? "descending" : "ascending"} order.`);
+  }
+
+  /*
+  function handleDateClick(date: Date) {
+    setDate(date);
+
+  }
+  */
+
+  const handleReset = () => {
+    setDate(undefined); // Reset the date state to undefined
+    setCurrentPage(0);  // Optionally reset to the first page
+  
+    // Fetch all stocks
+    fetchData();
+  };
 
   return (
     <>
@@ -137,55 +190,34 @@ export default function CalendarPage() {
         </div>
       <div className="flex flex-row p-6">
         <div className="">
-          <Calendar
+          <DividendCalendar
             mode="single"
-            selected={date}
-            onSelect={setDate}
+            selected={convertUnixToDate(date)}
+            onSelect={handleDateSelect}
             className="rounded-lg bg-primary-foreground mr-28"
-            dividendDays={dividendDates(stocks)}
+            dividendDays={dividendDates}
           />
           <Button
             id="reset-button"
-            className="flex mt-1 rounded-lg"
+            className="flex mt-2 rounded-lg"
+            onClick={() => handleReset()}
           >
             Reset
           </Button>
           
         </div>
       </div>
+      
       <div className="p-6">
         <div className="max-w-6xl">
-          {loading ? (
-            <div className="text-center p-4">Loading...</div>
-          ) : (
+          
             <>
-              <Table className="bg-primary-foreground rounded-lg">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="text-center">Ticker</TableHead>
-                    <TableHead className="text-center">Name</TableHead>
-                    <TableHead className="text-center">Dividend</TableHead>
-                    <TableHead className="text-center">Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredStocks.map((stock) => (
-                    <TableRow key={stock.ticker}>
-                      <TableCell className="font-medium">
-                        {stock.ticker}
-                      </TableCell>
-                      <TableCell>{stock.name}</TableCell>
-                      <TableCell>
-                        {stock.dividendRate} {stock.currency}
-                      </TableCell>
-                      <TableCell>
-                        {convertUnixToDate(stock.exDividendDate).toDateString()}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-                <TableFooter></TableFooter>
-              </Table>
+              <DividendTable
+        stocks={stocks}
+        sorting={sorting}
+        onSortClick={handleSortClick}
+        isLoading={loading}
+      />
               <div className="flex mx-auto w-40 mt-4 mb-4 justify-center">
                 <Pagination>
                   <PaginationContent>
@@ -201,7 +233,7 @@ export default function CalendarPage() {
                     {pageNumbers.map((pageNumber) => (
                       <PaginationItem key={pageNumber}>
                         <PaginationLink
-                          className="cursor-pointer"
+                          className="cursor-pointer border-primary"
                           isActive={currentPage === pageNumber}
                           onClick={(e) => {
                             e.preventDefault();
@@ -225,8 +257,6 @@ export default function CalendarPage() {
                 </Pagination>
               </div>
               </>
-
-          )}
           </div>
       </div>
     </>

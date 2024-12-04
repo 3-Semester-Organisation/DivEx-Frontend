@@ -46,7 +46,7 @@ export default function StockDetailsPage() {
                 <div>
                     <div className='flex justify-start'>
                         <h1 className='ml-6 text-3xl'>{stock.name}</h1>
-                        <p className='mt-3 ml-3'>{`(${stock.ticker.toUpperCase()})`}</p>
+                        <p className='mt-3 ml-3'>{`(${stock.ticker.toUpperCase().slice(0, -3)})`}</p>
                     </div>
 
                     <div className="flex gap-6 p-4">

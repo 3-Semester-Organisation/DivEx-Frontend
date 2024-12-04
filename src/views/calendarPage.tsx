@@ -132,6 +132,9 @@ export default function CalendarPage() {
 
   return (
     <>
+      <div className="flex">
+      <h1 className="text-5xl ml-6">Calendar</h1>
+        </div>
       <div className="flex flex-row p-6">
         <div className="">
           <Calendar

@@ -61,7 +61,7 @@ export default function homepage() {
                             {monthlyTopStocks.map((stock, index) =>
                                 <TableRow
                                     onClick={() => { showStockDetails(stock.ticker) }}>
-                                    <TableCell className="text-start font-medium">{index}</TableCell>
+                                    <TableCell className="text-start font-medium">{index+1}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.visits}</TableCell>
@@ -88,7 +88,7 @@ export default function homepage() {
                         {weeklyTopStocks.map((stock, index) =>
                                 <TableRow
                                     onClick={() => { showStockDetails(stock.ticker) }}>
-                                    <TableCell className="text-start font-medium">{index}</TableCell>
+                                    <TableCell className="text-start font-medium">{index+1}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.visits}</TableCell>

@@ -6,15 +6,8 @@ import { DividendCalendar } from "@/components/ui/custom/DividendCalendar";
 import  DividendTable  from "@/components/ui/custom/DividendTable";
 import { Button } from "@/components/ui/button";
 import { makeOption, checkHttpsErrors } from "@/js/util";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+
+import PaginationBar from "@/components/divex/PaginationBar";
 
 const PAGESIZE = 10;
 
@@ -39,16 +32,6 @@ interface DividendDate {
 const convertUnixToDate = (unix: number) => {
   return new Date(unix * 1000);
 };
-
-/*
-const convertDividendDates = (dates: number[]) => {
-  const dateList = [];
-  dates.forEach((date) => {
-    dateList.push(convertUnixToDate(date));
-  });
-  return dateList;
-}
-  */
 
 export default function CalendarPage() {
   const [date, setDate] = React.useState<number | undefined>(undefined);
@@ -77,21 +60,26 @@ export default function CalendarPage() {
       const unixTimestamp = Math.floor(utcDate.getTime() / 1000);
   
       setDate(unixTimestamp); // Set `date` as Unix timestamp
+      setCurrentPage(0); // Reset to first page on date select
     } else {
       setDate(undefined);
+      setCurrentPage(0);
     }
   };
 
-  const fetchDividendDates = async () => { 
-    const url = "http://localhost:8080/api/v1/stocks/dividendDates";
-    try {
-      const data = await handleFetch(url);
-      const dates = data.map((date) => date.exDividendDate);
-      setDividendDates(dates);
-    } catch (error) {
-      console.error("Error fetching dividend dates:", error);
+  useEffect(() => {
+    const fetchDividendDates = async () => {
+      const url = "http://localhost:8080/api/v1/stocks/dividendDates";
+      try {
+        const data = await handleFetch(url);
+        const dates = data.map((date) => date.exDividendDate);
+        setDividendDates(dates);
+      } catch (error) {
+        console.error("Error fetching dividend dates:", error);
+      }
     }
-  }
+    fetchDividendDates();
+  }, []);
 
   useEffect(() => {
     const fetchStocksByDividendDate = async (date: number) => {
@@ -113,48 +101,42 @@ export default function CalendarPage() {
   }, [date]);
 
   
-  const fetchData = async () => {
-    setLoading(true);
-    // simulate loading time
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
-    try {
-      const data: PaginatedResponse<Stock> = await handleFetch(url);
+  useEffect(() => {
+    const fetchStocks = async () => {
+      setLoading(true);
+      // simulate a delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      let url = "";
+      if (date !== undefined) {
+        // Fetch stocks filtered by dividend date
+        url = `http://localhost:8080/api/v1/stocksByDate?date=${date}&page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
+      } else {
+        // Fetch all stocks
+        url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
+      }
 
-      const convertedStocks = data.content.map((stock) => ({
-        ...stock,
-        
+      try {
+        const data: PaginatedResponse<Stock> = await handleFetch(url);
+        setStocks(data.content);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
+        setStocks([]);            // Clear stocks on error
+        setTotalPages(1);         // Reset totalPages to 1 on error
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      }));
-      setStocks(convertedStocks);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchStocks();
+  }, [date, currentPage, sorting]);
 
+  /*
   React.useEffect(() => {
     fetchData();
-    fetchDividendDates();
-  }, [currentPage, sorting]);
-
-  // PAGINATION
-  const handlePageClick = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 0));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((next) => Math.min(next + 1, totalPages - 1));
-  };
-
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
-  // PAGINATION END
+    
+  }, [sorting, currentPage]);
+  */
 
   function handleSortClick(column: string) {
     setSorting((prevSorting) => ({
@@ -168,19 +150,10 @@ export default function CalendarPage() {
     console.log(`Sorting by ${column} in ${sorting.direction === "asc" ? "descending" : "ascending"} order.`);
   }
 
-  /*
-  function handleDateClick(date: Date) {
-    setDate(date);
-
-  }
-  */
-
   const handleReset = () => {
     setDate(undefined); // Reset the date state to undefined
     setCurrentPage(0);  // Optionally reset to the first page
   
-    // Fetch all stocks
-    fetchData();
   };
 
   return (
@@ -217,45 +190,12 @@ export default function CalendarPage() {
         sorting={sorting}
         onSortClick={handleSortClick}
         isLoading={loading}
-      />
-              <div className="flex mx-auto w-40 mt-4 mb-4 justify-center">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        className="cursor-pointer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handlePreviousPage();
-                        }}
-                      />
-                    </PaginationItem>
-                    {pageNumbers.map((pageNumber) => (
-                      <PaginationItem key={pageNumber}>
-                        <PaginationLink
-                          className="cursor-pointer border-primary"
-                          isActive={currentPage === pageNumber}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePageClick(pageNumber);
-                          }}
-                        >
-                          {pageNumber + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                      <PaginationNext
-                        className="cursor-pointer"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleNextPage();
-                        }}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
+            />
+            <PaginationBar
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+            />
               </>
           </div>
       </div>

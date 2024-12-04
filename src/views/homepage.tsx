@@ -7,9 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react'
-import { checkHttpsErrors } from '@/js/util.js'
+import {useNavigate} from 'react-router-dom';
+import {useState, useEffect} from 'react'
+import {checkHttpsErrors} from '@/js/util.js'
 
 export default function homepage() {
 
@@ -18,23 +18,41 @@ export default function homepage() {
     const [monthlyTopStocks, setMonthlyTopStocks] = useState([]);
 
     useEffect(() => {
-        async function fetchWeeklyTopStock() {
-            const response = await fetch("http://localhost:8080/api/v1/stock/popularity/week");
-            checkHttpsErrors(response);
-            const weeklyTopStocksData = await response.json();
-            setWeeklyTopStocks(weeklyTopStocksData);
+        function fetchAtSpecificTime() {
+            const now = new Date();
+            const fetchTime = new Date();
+            fetchTime.setHours(24,0,0,0);
+
+            // @ts-ignore
+            const timeUntilFetch = fetchTime - now;
+
+            setTimeout(() => {
+                fetchWeeklyTopStock();
+                fetchMonthlyTopStock();
+
+                setInterval(() => {
+                    fetchWeeklyTopStock();
+                    fetchMonthlyTopStock();
+                }, 24 * 60 * 60 * 1000); //24 hours in milliseconds
+            }, timeUntilFetch);
         }
 
-        async function fetchMonthlyTopStock() {
-            const response = await fetch("http://localhost:8080/api/v1/stock/popularity/month");
-            checkHttpsErrors(response);
-            const monthlyTopStocksData = await response.json();
-            setMonthlyTopStocks(monthlyTopStocksData);
-        }
-
-        fetchWeeklyTopStock();
-        fetchMonthlyTopStock();
+        fetchAtSpecificTime();
     }, []);
+
+    async function fetchWeeklyTopStock() {
+        const response = await fetch("http://localhost:8080/api/v1/stock/popularity/week");
+        checkHttpsErrors(response);
+        const weeklyTopStocksData = await response.json();
+        setWeeklyTopStocks(weeklyTopStocksData);
+    }
+
+    async function fetchMonthlyTopStock() {
+        const response = await fetch("http://localhost:8080/api/v1/stock/popularity/month");
+        checkHttpsErrors(response);
+        const monthlyTopStocksData = await response.json();
+        setMonthlyTopStocks(monthlyTopStocksData);
+    }
 
     function showStockDetails(ticker: string) {
         navigate("/stocks/" + ticker);
@@ -60,8 +78,10 @@ export default function homepage() {
                         <TableBody>
                             {monthlyTopStocks.map((stock, index) =>
                                 <TableRow
-                                    onClick={() => { showStockDetails(stock.ticker) }}>
-                                    <TableCell className="text-start font-medium">{index+1}</TableCell>
+                                    onClick={() => {
+                                        showStockDetails(stock.ticker)
+                                    }}>
+                                    <TableCell className="text-start font-medium">{index + 1}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.visits}</TableCell>
@@ -85,10 +105,12 @@ export default function homepage() {
                         </TableHeader>
                         <TableBody>
 
-                        {weeklyTopStocks.map((stock, index) =>
+                            {weeklyTopStocks.map((stock, index) =>
                                 <TableRow
-                                    onClick={() => { showStockDetails(stock.ticker) }}>
-                                    <TableCell className="text-start font-medium">{index+1}</TableCell>
+                                    onClick={() => {
+                                        showStockDetails(stock.ticker)
+                                    }}>
+                                    <TableCell className="text-start font-medium">{index + 1}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.visits}</TableCell>

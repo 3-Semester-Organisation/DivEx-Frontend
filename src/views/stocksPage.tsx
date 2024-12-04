@@ -128,8 +128,10 @@ export default function StocksPage() {
 
 
     function showStockDetails(stock: Stock) {
-        navigate("/stocks/" + stock.ticker, { state: {stock}});
+        navigate("/stocks/" + stock.ticker, { state: { stock } });
     }
+
+
 
 
     return (
@@ -214,7 +216,13 @@ export default function StocksPage() {
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
                                     <TableCell>{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
                                     <TableCell>{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
-                                    <TableCell><button>Køb</button></TableCell>
+                                    <TableCell>
+                                        <button
+                                            // onClick={addToPortfolio()}
+                                            className="border-2 border-gray-600 rounded-lg pr-2 pl-2 pt-1 pb-1 hover:underline">
+                                            Buy
+                                        </button>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

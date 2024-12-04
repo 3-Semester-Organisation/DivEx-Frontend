@@ -41,6 +41,13 @@ interface Stock {
     historicalDividends: HistoricalDividend[];
 }
 
+interface PortfolioEntryRequest {
+    ticker: string;
+    stockPrice: number;
+    quantity: number;
+    portfolioId: number;
+}
+
 interface PortfolioEntries {
     id: number;
     numberOfShares: number;
@@ -54,9 +61,9 @@ interface Portfolio {
     user: User;
 }
 
-interface PaginatedResponse<T> { 
+interface PaginatedResponse<T> {
     content: T[];
     totalPages: number;
 }
 
-export { User, HistoricalPricing, HistoricalDividend, Stock, Portfolio, PortfolioEntries, PaginatedResponse }
+export { User, HistoricalPricing, HistoricalDividend, Stock, Portfolio, PortfolioEntries, PaginatedResponse, PortfolioEntryRequest }

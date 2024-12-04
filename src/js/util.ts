@@ -1,4 +1,5 @@
-async function checkHttpsErrors(response) {
+// Check for HTTP errors in the response
+async function checkHttpsErrors(response: Response): Promise<Response> {
     if (!response.ok) {
         let errorMessage = `HTTP error! Status: ${response.status}`;
         try {
@@ -13,32 +14,34 @@ async function checkHttpsErrors(response) {
     return response;
 }
 
-function makeOption(method, body) { 
-    const option = {
+// Create a fetch options object for a given method and optional body
+function makeOption(method: string, body?: any): RequestInit {
+    const option: RequestInit = {
         method: method.toUpperCase(),
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
-    }
-    if(body) {
-        option.body = JSON.stringify(body);
-    }
-    return option;
-}
-
-function makeAuthOption(method, body, token) {
-    const option = {
-        method: method.toUpperCase(),
-        headers: {
-            "Content-type": "application/json",
-            "Authorization": "Bearer " + token
-        }
-    }
+    };
     if (body) {
         option.body = JSON.stringify(body);
     }
     return option;
 }
 
-export { checkHttpsErrors, makeOption, makeAuthOption }
+// Create a fetch options object with authentication token
+function makeAuthOption(method: string, token: string, body?: any): RequestInit {
+    const option: RequestInit = {
+        method: method.toUpperCase(),
+        headers: {
+            "Content-type": "application/json",
+            "Authorization": "Bearer " + token,
+        }
+    };
+    if (body) {
+        option.body = JSON.stringify(body);
+    }
+    return option;
+}
+
+export { checkHttpsErrors, makeOption, makeAuthOption };

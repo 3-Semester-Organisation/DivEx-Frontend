@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react'
-import { checkHttpsErrors } from '@/js/util.js'
+import { checkHttpsErrors } from '@/js/util'
 
 export default function homepage() {
 

@@ -58,7 +58,7 @@ export function CreatePortfolioButton({ onSubmit, handleCreateButtonClick }) {
       
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="bg-accent-foreground" onClick={onTriggerClick} >Create Portfolio</Button>
+          <Button onClick={onTriggerClick} >Create Portfolio</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <Form {...form}>
@@ -78,7 +78,7 @@ export function CreatePortfolioButton({ onSubmit, handleCreateButtonClick }) {
                           className="flex justify-between items-center"
                           htmlFor="portfolioName"
                         >
-                          Portfolio name
+                          name
                         </FormLabel>
                         <FormControl>
                           <Input

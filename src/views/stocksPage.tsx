@@ -136,16 +136,18 @@ export default function StocksPage() {
 
     return (
         <>
+            
+
+            <h1 className='text-5xl mb-10 text-start'>Nordic Dividend Stocks</h1>
+
             <Input
                 id="search"
                 placeholder="Search..."
                 type="search"
-                className="mb-4 w-1/4 border-gray-600 border-2 "
+                className="mb-4 w-1/4 border-gray-600 border-2"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
             />
-
-            <h1 className='text-4xl mb-10'><b>Nordic Dividend Stocks</b></h1>
 
             {isLoading ? (
                 <p>Loading...</p>

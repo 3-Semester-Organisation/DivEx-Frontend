@@ -143,7 +143,7 @@ export default function CalendarPage() {
           />
           <Button
             id="reset-button"
-            className="bg-primary-foreground text-white flex mt-1 rounded-lg hover:bg-accent"
+            className="flex mt-1 rounded-lg"
           >
             Reset
           </Button>

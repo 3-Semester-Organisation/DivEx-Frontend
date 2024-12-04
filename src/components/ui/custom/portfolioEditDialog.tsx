@@ -53,16 +53,16 @@ export function PortfolioEditDialog({ selectedPortfolio, onSubmit }) {
             Edit the name of your portfolio.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 ">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
+            <Label htmlFor="name" className="">
               name
             </Label>
             <Input
               id="name"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="col-span-3 bg-primary-foreground"
+              className="col-span-4"
             />
           </div>
         </div>

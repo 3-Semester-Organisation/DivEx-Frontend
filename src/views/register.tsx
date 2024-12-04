@@ -101,6 +101,7 @@ export default function Register({ onLogin }) {
                           placeholder="Username"
                           type="username"
                           autoComplete="username"
+                          className="bg-primary-foreground border-primary"
                           {...field}
                         />
                       </FormControl>
@@ -120,6 +121,7 @@ export default function Register({ onLogin }) {
                           placeholder="johndoe@mail.com"
                           type="email"
                           autoComplete="email"
+                          className="bg-primary-foreground border-primary"
                           {...field}
                         />
                       </FormControl>
@@ -140,6 +142,7 @@ export default function Register({ onLogin }) {
                           id="password"
                           placeholder="******"
                           autoComplete="current-password"
+                          className="bg-primary-foreground border-primary"
                           {...field}
                         />
                       </FormControl>

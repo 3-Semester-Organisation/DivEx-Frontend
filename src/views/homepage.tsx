@@ -42,11 +42,12 @@ export default function homepage() {
 
     return (
         <>
-            <div className='flex flex-col items-start gap-6'>
-                <h1 className='text-4xl font-semibold'>Homepage</h1>
-
-                <div className='w-1/4 bg-slate-900 shadow-md rounded-lg p-6'>
-                    <h2 className='flex justify-start font-semibold text-xl mb-4'>Monthly top stocks</h2>
+            <div className='grid grid-cols-4 gap-6'>
+                <div className="col-span-4">
+                        <h1 className='text-5xl text-start'>Homepage</h1>
+                </div>
+                <div className='col-span-2 bg-primary-foreground rounded-md p-6'>
+                    <h2 className='flex justify-start font-semibold text-xl'>Monthly top stocks</h2>
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -71,7 +72,7 @@ export default function homepage() {
                     </Table>
                 </div>
 
-                <div className='w-1/4 bg-slate-900 shadow-md rounded-lg p-6'>
+                <div className='col-span-2 bg-primary-foreground rounded-md p-6'>
                     <h2 className='flex justify-start font-semibold text-xl'>Weekly top stocks</h2>
 
                     <Table>

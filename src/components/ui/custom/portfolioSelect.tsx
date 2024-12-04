@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -18,6 +20,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+interface Portfolio {
+  id: string;
+  name: string;
+}
+
+interface PortfolioSelectProps {
+  portfolioList: Portfolio[];
+  selectedPortfolio: Portfolio | null;
+  setSelectedPortfolio: React.Dispatch<React.SetStateAction<Portfolio | null>>;
+}
 
 export function PortfolioSelect({
   portfolioList,
@@ -52,7 +65,7 @@ export function PortfolioSelect({
         <Button
           role="combobox"
           aria-expanded={open}
-          className="flex w-[200px] justify-between bg-accent-foreground "
+          className="flex w-[200px] justify-between"
         >
           {name ? portfolios.find((portfolio) => portfolio.name === name)?.name : "Select portfolio"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -61,6 +74,7 @@ export function PortfolioSelect({
 
       <PopoverContent className="w-[200px] p-0">
         <Command>
+          <CommandInput placeholder="Search portfolios..." />
           <CommandList>
             <CommandEmpty>No portfolio found.</CommandEmpty>
             <CommandGroup>
@@ -73,7 +87,7 @@ export function PortfolioSelect({
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      id === portfolio.id ? "opacity-100" : "opacity-0"
+                      selectedPortfolio?.id === portfolio.id ? "opacity-100" : "opacity-0"
                     )}
                   />
                   {portfolio.name}

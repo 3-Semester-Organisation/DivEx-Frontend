@@ -18,23 +18,41 @@ export default function homepage() {
     const [monthlyTopStocks, setMonthlyTopStocks] = useState([]);
 
     useEffect(() => {
-        async function fetchWeeklyTopStock() {
-            const response = await fetch("http://localhost:8080/api/v1/stock/popularity/week");
-            checkHttpsErrors(response);
-            const weeklyTopStocksData = await response.json();
-            setWeeklyTopStocks(weeklyTopStocksData);
+        function fetchAtSpecificTime() {
+            const now = new Date();
+            const fetchTime = new Date();
+            fetchTime.setHours(24,0,0,0);
+
+            // @ts-ignore
+            const timeUntilFetch = fetchTime - now;
+
+            setTimeout(() => {
+                fetchWeeklyTopStock();
+                fetchMonthlyTopStock();
+
+                setInterval(() => {
+                    fetchWeeklyTopStock();
+                    fetchMonthlyTopStock();
+                }, 24 * 60 * 60 * 1000); //24 hours in milliseconds
+            }, timeUntilFetch);
         }
 
-        async function fetchMonthlyTopStock() {
-            const response = await fetch("http://localhost:8080/api/v1/stock/popularity/month");
-            checkHttpsErrors(response);
-            const monthlyTopStocksData = await response.json();
-            setMonthlyTopStocks(monthlyTopStocksData);
-        }
-
-        fetchWeeklyTopStock();
-        fetchMonthlyTopStock();
+        fetchAtSpecificTime();
     }, []);
+
+    async function fetchWeeklyTopStock() {
+        const response = await fetch("http://localhost:8080/api/v1/stock/popularity/week");
+        checkHttpsErrors(response);
+        const weeklyTopStocksData = await response.json();
+        setWeeklyTopStocks(weeklyTopStocksData);
+    }
+
+    async function fetchMonthlyTopStock() {
+        const response = await fetch("http://localhost:8080/api/v1/stock/popularity/month");
+        checkHttpsErrors(response);
+        const monthlyTopStocksData = await response.json();
+        setMonthlyTopStocks(monthlyTopStocksData);
+    }
 
     function showStockDetails(ticker: string) {
         navigate("/stocks/" + ticker);
@@ -42,11 +60,12 @@ export default function homepage() {
 
     return (
         <>
-            <div className='flex flex-col items-start gap-6'>
-                <h1 className='text-4xl font-semibold'>Homepage</h1>
-
-                <div className='w-1/4 bg-primary-foreground shadow-md rounded-lg p-6'>
-                    <h2 className='flex justify-start font-semibold text-xl mb-4'>Monthly top stocks</h2>
+            <div className='grid grid-cols-4 gap-6'>
+                <div className="col-span-4">
+                        <h1 className='text-5xl text-start'>Homepage</h1>
+                </div>
+                <div className='col-span-2 bg-primary-foreground rounded-md p-6'>
+                    <h2 className='flex justify-start font-semibold text-xl'>Monthly top stocks</h2>
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -60,8 +79,10 @@ export default function homepage() {
                         <TableBody>
                             {monthlyTopStocks.map((stock, index) =>
                                 <TableRow
-                                    onClick={() => { showStockDetails(stock.ticker) }}>
-                                    <TableCell className="text-start font-medium">{index}</TableCell>
+                                    onClick={() => {
+                                        showStockDetails(stock.ticker)
+                                    }}>
+                                    <TableCell className="text-start font-medium">{index + 1}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.visits}</TableCell>
@@ -71,7 +92,7 @@ export default function homepage() {
                     </Table>
                 </div>
 
-                <div className='w-1/4 bg-primary-foreground shadow-md rounded-lg p-6'>
+                <div className='col-span-2 bg-primary-foreground rounded-md p-6'>
                     <h2 className='flex justify-start font-semibold text-xl'>Weekly top stocks</h2>
 
                     <Table>
@@ -85,10 +106,12 @@ export default function homepage() {
                         </TableHeader>
                         <TableBody>
 
-                        {weeklyTopStocks.map((stock, index) =>
+                            {weeklyTopStocks.map((stock, index) =>
                                 <TableRow
-                                    onClick={() => { showStockDetails(stock.ticker) }}>
-                                    <TableCell className="text-start font-medium">{index}</TableCell>
+                                    onClick={() => {
+                                        showStockDetails(stock.ticker)
+                                    }}>
+                                    <TableCell className="text-start font-medium">{index + 1}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.name}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.ticker}</TableCell>
                                     <TableCell className="text-start font-medium">{stock.visits}</TableCell>

@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -45,8 +46,10 @@ export default function DefaultNavbar() {
         </NavigationMenuItem>
         <NavigationMenuItem className="flex justify-end">
           <DropdownMenu>
-            <DropdownMenuTrigger className="userbutton">
-              <User />
+          <DropdownMenuTrigger className="">
+              <Button className="border mr-13" size={"icon"} variant={"ghost"}>
+                <User />
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {authNavigation.map((item) => (

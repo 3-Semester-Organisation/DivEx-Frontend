@@ -7,6 +7,7 @@ import PaginationBar from "../components/divex/PaginationBar";
 
 import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { Stock, PaginatedResponse } from "@/divextypes/types";
 
 import {
     Table,
@@ -17,41 +18,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-interface HistoricalPricing {
-    openingPrice: number;
-    openingDate: number;
-    previousDailyClosingPrice: number;
-    closingDate: number;
-}
-
-interface HistoricalDividend {
-    dividendRate: number;
-    exDividendDate: number
-}
-
-interface Stock {
-    ticker: string;
-    name: string;
-    country: string;
-    exchange: string;
-    currency: string;
-    industry: string;
-    sector: string;
-
-    historicalPricingResponseList: HistoricalPricing[];
-
-    dividendRate: number;
-    dividendYield: number;
-    dividendRatio: number;
-    exDividendDate: number;
-
-    historicalDividendsResponseList: HistoricalDividend[];
-}
-
-interface PaginatedResponse<T> {
-    content: T[];
-    totalPages: number;
-}
 
 export default function StocksPage() {
     const [stocks, setStocks] = useState<Stock[]>([]);
@@ -65,7 +31,7 @@ export default function StocksPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10) {
+        async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 9) {
             try {
                 setIsLoading(true);
                 const response = await fetch(
@@ -212,7 +178,7 @@ export default function StocksPage() {
                                     key={stock.ticker}>
                                     <TableCell>{stock.ticker}</TableCell>
                                     <TableCell>{stock.name}</TableCell>
-                                    <TableCell>{stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
+                                    <TableCell>{stock.historicalPricing[stock.historicalPricing.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
                                     <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
                                     <TableCell>{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
                                     <TableCell>{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
@@ -220,7 +186,7 @@ export default function StocksPage() {
                                         <button
                                             // onClick={addToPortfolio()}
                                             className="border-2 border-gray-600 rounded-lg pr-2 pl-2 pt-1 pb-1 hover:underline">
-                                            Buy
+                                            Add
                                         </button>
                                     </TableCell>
                                 </TableRow>

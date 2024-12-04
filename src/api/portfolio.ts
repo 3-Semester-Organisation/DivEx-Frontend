@@ -1,4 +1,4 @@
-import { PortfolioEntryRequest } from "@/divextypes/types";
+import { Portfolio, PortfolioEntryRequest } from "@/divextypes/types";
 import { checkHttpsErrors, makeAuthOption } from "@/js/util"
 import { toast } from "sonner";
 import { z } from "zod";
@@ -43,7 +43,7 @@ async function fetchPortfolios() {
         const getOption = makeAuthOption("GET", token);
         const res = await fetch("http://localhost:8080/api/v1/portfolio", getOption);
         await checkHttpsErrors(res);
-        const portfolios = await res.json();
+        const portfolios: Portfolio[] = await res.json();
 
         return portfolios;
 

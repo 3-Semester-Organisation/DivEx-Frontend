@@ -96,12 +96,26 @@ export default function PortfolioOverview() {
     navigate("/stocks/" + ticker, { state: portfolios });
   }
 
-  console.log("aaaaaaaaaaaaaaaaa", portfolios)
+  // console.log("aaaaaaaaaaaaaaaaa", portfolios)
+
 
   console.log("TEEEEEEEEEEEEEEEESTS1", selectedPortfolio)
-  console.log("TEEEEEEEEEEEEEEEESTS2", selectedPortfolio?.portfolioEntries)
-  console.log("TEEEEEEEEEEEEEEEESTS3", selectedPortfolio?.portfolioEntries?.length > 0)
 
+  // selectedPortfolio.portfolioEntries.map((entry) => {
+  //   const historicalPricing = entry.stock.historicalPricing ?? []; // Default to empty array if undefined
+  //   const lastElementIndex = historicalPricing.length - 1;
+  //   const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
+
+
+  //   console.log("historicval pricing", historicalPricing)
+  //   console.log("lastElementIndex", lastElementIndex)
+  //   console.log("latest closingprice", latestClosingPrice)
+  // })
+
+
+  // console.log("TEEEEEEEEEEEEEEEESTS2", selectedPortfolio?.portfolioEntries)
+  // console.log("TEEEEEEEEEEEEEEEESTS3", selectedPortfolio?.portfolioEntries?.length > 0)
+console.log("portfolios", portfolios)
   return (
     <>
       <div className="flex flex-row items-center gap-4">
@@ -172,7 +186,7 @@ export default function PortfolioOverview() {
 
 
       <div>
-        {portfolios === undefined || portfolios.length === 0 && (
+        {portfolios === undefined && (
           <h1 className="text-4xl font-semibold">Create a portfolio to get started</h1>
         )}
       </div>
@@ -181,7 +195,12 @@ export default function PortfolioOverview() {
 
         {selectedPortfolio !== undefined && (
           <div className='w-full bg-primary-foreground shadow-md rounded-lg p-6 mt-5'>
-            <h1 className="text-4xl font-semibold mb-12">Add stocks to the portfolio</h1>
+            <h1 className="flex justify-start font-semibold text-2xl ml-1 mb-6">{selectedPortfolio.name}</h1>
+
+            {selectedPortfolio?.portfolioEntries?.length === 0 || selectedPortfolio?.portfolioEntries?.length === undefined && (
+              <h1 className="text-4xl font-semibold mb-12">Add stocks to the portfolio</h1>
+            )}
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -201,13 +220,13 @@ export default function PortfolioOverview() {
                     const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
 
                     return (
-                      <TableRow key={entry.id}>
+                      <TableRow key={entry.stock.ticker}>
                         <TableCell className="text-start font-medium">{entry.stock.ticker}</TableCell>
                         <TableCell className="text-start font-medium">{entry.stock.name}</TableCell>
                         <TableCell className="text-start font-medium">{entry.stock.currency}</TableCell>
-                        <TableCell className="text-start font-medium">{entry.numberOfShares}</TableCell>
+                        <TableCell className="text-start font-medium">{entry.quantity}</TableCell>
                         <TableCell className="text-start font-medium">
-                          {((latestClosingPrice || 0) * entry.numberOfShares).toFixed(2)}
+                          {new Intl.NumberFormat('en-US').format((latestClosingPrice || 0) * entry.quantity)}
                         </TableCell>
                       </TableRow>
                     );

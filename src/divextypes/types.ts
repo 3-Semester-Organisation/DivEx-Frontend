@@ -48,16 +48,17 @@ interface PortfolioEntryRequest {
     portfolioId: number;
 }
 
-interface PortfolioEntries {
-    id: number;
-    numberOfShares: number;
+interface PortfolioEntry {
     stock: Stock;
+    stockPrice: number;
+    quantity: number;
+    entryDate: number;
 }
 
 interface Portfolio {
     id: number;
     name: string;
-    portfolioEntries: PortfolioEntries[]
+    portfolioEntries: PortfolioEntry[]
     user: User;
 }
 

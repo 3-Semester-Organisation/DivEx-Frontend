@@ -22,7 +22,7 @@ import {
 export function PortfolioSelect({
   portfolioList,
   selectedPortfolio,
-  setSelectedPortfolio,
+  setSelectedPortfolio
 }) {
 
   const [open, setOpen] = React.useState(false);
@@ -37,13 +37,13 @@ export function PortfolioSelect({
 
   // handles the selection of a portfolio
   // adds portfolio id to local storage
-  const handleSelect = (currentValue) => {
-    const newValue = currentValue.id === id ? "" : currentValue;
+  const handleSelect = (selectedPortfolio) => {
+    const newValue = selectedPortfolio.id === id ? "" : selectedPortfolio.id;
     setId(newValue);
-    setSelectedPortfolio(currentValue);
+    setSelectedPortfolio(selectedPortfolio);
     setOpen(false);
 
-    localStorage.setItem("selectedPortfolio", currentValue);
+    localStorage.setItem("selectedPortfolio", JSON.stringify(selectedPortfolio));
   };
 
   return (
@@ -68,7 +68,7 @@ export function PortfolioSelect({
                 <CommandItem
                   key={portfolio.id}
                   value={portfolio}
-                  onSelect={handleSelect}
+                  onSelect={ () => handleSelect(portfolio)}
                 >
                   <Check
                     className={cn(

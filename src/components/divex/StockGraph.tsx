@@ -18,7 +18,7 @@ const dailyClosingData = Array.from({ length: 20 }, (_, index) => ({
 
 export default function StockGraph({ stock }) {
 
-    const [closingPrices, setClosingPrices] = useState<PriceMovement[]>(stock.historicalPricingResponseList);
+    const [closingPrices, setClosingPrices] = useState<PriceMovement[]>(stock.historicalPricing);
     const [closingPriceByTimeFrame, setClosingPriceByTimeFrame] = useState([]);
     const [timeFrame, setTimeFrame] = useState("YTD");
 

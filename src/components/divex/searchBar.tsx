@@ -47,7 +47,7 @@ export default function SearchBar() {
                     id="search"
                     placeholder="Search..."
                     type="search"
-                    className="p-2 border-2 border-gray-400 w-full rounded-lg"
+                    className="p-2 border-2 border-gray-400 w-full rounded-lg bg-primary-foreground"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />

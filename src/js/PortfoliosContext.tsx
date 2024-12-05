@@ -4,22 +4,22 @@ import { fetchPortfolios } from "@/api/portfolio"; // Adjust the fetch function 
 
 // Define the context type
 type PortfoliosContextType = {
-  portfolios: Portfolio[] | undefined;
-  setPortfolios: React.Dispatch<React.SetStateAction<Portfolio[] | undefined>>;
+  portfolios: Portfolio[] | null;
+  setPortfolios: React.Dispatch<React.SetStateAction<Portfolio[] | null>>;
 };
 
 // Create the context with a default value
-export const PortfoliosContext = createContext<PortfoliosContextType | undefined>(undefined);
+export const PortfoliosContext = createContext<PortfoliosContextType | null>(null);
 
 // Create the Provider component
 export const PortfoliosProvider: React.FC = ({ children }) => {
-  const [portfolios, setPortfolios] = useState<Portfolio[] | undefined>(undefined);
+  const [portfolios, setPortfolios] = useState<Portfolio[] | null>(null);
 
   useEffect(() => {
     // Fetch portfolios from an API or service
     async function fetchAndSetPortfolios() {
       try {
-        const data = await fetchPortfolios();  // Adjust this call if necessary
+        const data: Portfolio[] = await fetchPortfolios();  // Adjust this call if necessary
         setPortfolios(data);
       } catch (error) {
         console.error("Error fetching portfolios:", error);

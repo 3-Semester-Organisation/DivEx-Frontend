@@ -24,51 +24,51 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePortfolios } from "@/js/PortfoliosContext";
-import { createPortfolio, fetchPortfolios } from "@/api/portfolio";
-
+import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/api/portfolio";
 
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
-import { fetchUpdatePortfolioName } from "@/api/portfolio";
+import { Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const URL = "http://localhost:8080/api/v1/portfolio";
 
-const formSchema = z.object({
-  portfolioName: z
-    .string()
-    .min(1, { message: "Name must be at least 1 character long" }),
-});
 
 export default function PortfolioOverview() {
   // PORTFOLIO STATES
 
   const { portfolios, setPortfolios } = usePortfolios();
+
+  // const [selectedPortfolio, setSelectedPortfolio] = React.useState<Portfolio | null>(() => {
+  //   const stored = localStorage.getItem("selectedPortfolio");
+  //   return stored ? JSON.parse(stored) : null;
+  // });
+  
+  const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null)
+  
+
+  //SEARCH STATES
   const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState<Stock[]>([])
 
 
-  const [selectedPortfolio, setSelectedPortfolio] = React.useState<Portfolio | null>(() => {
-    const stored = localStorage.getItem("selectedPortfolio");
-    return stored ? JSON.parse(stored) : null;
-  });
-
-
   // AUTH CONTEXT
-  // limit amount of portfolios based on subscription type
   const { subscriptionType } = useContext(AuthContext);
 
 
-  // Limit amount of portfolios based on subscription type
+  // limit amount of portfolios based on subscription type
   function handleCreateButtonClick() {
-    if (subscriptionType === "FREE" && portfolios.length >= 1) {
+    if (portfolios.length >= 1 && subscriptionType === "FREE") {
       toast.error("Free users can only have one portfolio.");
       return false;
     }
-    else if (subscriptionType === "PREMIUM" && portfolios.length >= 10) {
+    else if (portfolios.length >= 10 && subscriptionType === "PREMIUM") {
       toast.error("Premium users can only have up to 10 portfolios.");
       return false;
     }
-    return true;
   }
+
+
+
+
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
@@ -84,15 +84,10 @@ export default function PortfolioOverview() {
     async function loadPortfolios() {
       const data = await fetchPortfolios();
       setPortfolios(data || []);
-
-      // If no portfolio is selected, optionally select the first one
-      if (!selectedPortfolio && data && data.length > 0) {
-        setSelectedPortfolio(data[0]);
-        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
-      }
     }
     loadPortfolios();
   }, []);
+
 
   useEffect(() => {
     async function fetchAndSetResults() {
@@ -121,7 +116,10 @@ export default function PortfolioOverview() {
   }
 
 
-  console.log("portfolios", portfolios)
+console.log("portfolios", portfolios)
+console.log("Localstorage Ports", JSON.parse(localStorage.getItem("selectedPortfolio")))
+
+console.log("Selected PORTs", selectedPortfolio)
   return (
     <>
       <div className="flex flex-row items-center gap-4">
@@ -130,7 +128,7 @@ export default function PortfolioOverview() {
 
       <div className="flex flex-row items-center gap-4 mt-5">
 
-        {portfolios !== undefined && (
+        {portfolios !== null && (
           <div className="content-center">
             <PortfolioSelect
               portfolioList={portfolios}
@@ -139,27 +137,6 @@ export default function PortfolioOverview() {
             />
           </div>
         )}
-      </div>
-
-      <div className="flex flex-row group">
-        <div className="relative">
-          <h1 className="flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
-            <PortfolioEditDialog
-              onSubmit={changePortfolioName}
-              selectedPortfolio={selectedPortfolio}
-            />
-          </h1>
-        </div>
-        <div className="ml-10 mt-2">
-          <PortfolioSelect
-            portfolioList={portfolios}
-            selectedPortfolio={selectedPortfolio}
-            setSelectedPortfolio={setSelectedPortfolio}
-          />
-        </div>
-      </div>
-
-      <div className="ml-1 content-center mt-2">
 
         <div className="ml-1 content-center">
           <CreatePortfolioButton
@@ -213,14 +190,14 @@ export default function PortfolioOverview() {
 
 
       <div>
-        {portfolios === undefined && (
+        {portfolios === null && (
           <h1 className="text-4xl font-semibold">Create a portfolio to get started</h1>
         )}
       </div>
 
       <div>
 
-        {selectedPortfolio !== undefined && (
+        {selectedPortfolio !== null && (
           <div className='w-full bg-primary-foreground shadow-md rounded-lg p-6 mt-5'>
             <h1 className="flex justify-start font-semibold text-2xl ml-1 mb-6">{selectedPortfolio.name}</h1>
 
@@ -264,8 +241,6 @@ export default function PortfolioOverview() {
           </div>
         )}
       </div>
-
-
     </>
   );
 }

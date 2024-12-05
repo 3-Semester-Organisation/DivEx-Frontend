@@ -54,6 +54,11 @@ export default function PortfolioOverview() {
     async function loadPortfolios() {
       const data = await fetchPortfolios();
       setPortfolios(data || []);
+
+      if (!selectedPortfolio && data && data.length > 0) {
+        setSelectedPortfolio(data[0]);
+        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
+      }
     }
 
     loadPortfolios();
@@ -72,7 +77,9 @@ export default function PortfolioOverview() {
       return;
     }
     try {
-      const data = await fetchUpdatePortfolioName(newName, selectedPortfolio.name);
+      const data = await fetchUpdatePortfolioName(newName, selectedPortfolio.id);
+
+      console.log("changedNAME",data)
 
       // Update local state
       const updatedPortfolio = { ...selectedPortfolio, name: data.name };

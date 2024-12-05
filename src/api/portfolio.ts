@@ -86,7 +86,7 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
 
 async function updatePortfolioName(
     portfolioName: string,
-    portfolioId: string,
+    portfolioId: number,
 ) {
   try {
     const response = await fetch(`http://localhost:8080/api/v1/portfolio`, {

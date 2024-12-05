@@ -1,11 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { cn } from "@/lib/utils"; // Ensure the `cn` utility is properly imported
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -20,11 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-interface Portfolio {
-  id: string;
-  name: string;
-}
+import { Portfolio } from "@/divextypes/types"; // Ensure correct path and export
 
 interface PortfolioSelectProps {
   portfolioList: Portfolio[];
@@ -33,26 +28,22 @@ interface PortfolioSelectProps {
 }
 
 export function PortfolioSelect({
-  portfolioList,
+  portfolioList = [],
   selectedPortfolio,
   setSelectedPortfolio,
 }: PortfolioSelectProps) {
   const [open, setOpen] = useState(false);
-  const portfolios = portfolioList;
 
-  // Handles the selection of a portfolio
-  // Adds the entire portfolio object to local storage
-  const handleSelect = (currentValue: string) => {
-    if (selectedPortfolio === null) { 
-      toast.error("No portfolio selected.");
+  useEffect(() => {
+    if (!selectedPortfolio && portfolioList.length > 0) {
+      setSelectedPortfolio(portfolioList[0]); // Default selection to first item if null
     }
-    const newPortfolio = portfolios.find((portfolio) => portfolio.id === currentValue);
-    if (newPortfolio) {
-      setSelectedPortfolio(newPortfolio);
-      setOpen(false);
+  }, [selectedPortfolio, portfolioList, setSelectedPortfolio]);
 
-      localStorage.setItem("selectedPortfolio", JSON.stringify(newPortfolio));
-    }
+  const handleSelect = (portfolio: Portfolio) => {
+    setSelectedPortfolio(portfolio);
+    setOpen(false);
+    // localStorage.setItem("selectedPortfolio", JSON.stringify(portfolio));
   };
 
   return (
@@ -63,34 +54,38 @@ export function PortfolioSelect({
           aria-expanded={open}
           className="flex w-[200px] justify-between"
         >
-          {selectedPortfolio
-            ? selectedPortfolio.name
-            : "Select portfolio"}
+          {selectedPortfolio?.name || "Select portfolio"}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
+
       <PopoverContent className="w-[200px] p-0">
         <Command>
           <CommandInput placeholder="Search portfolios..." />
           <CommandList>
-            <CommandEmpty>No portfolio found.</CommandEmpty>
-            <CommandGroup>
-              {portfolios.map((portfolio) => (
-                <CommandItem
-                  key={portfolio.id}
-                  value={portfolio.id}
-                  onSelect={() => handleSelect(portfolio.id)}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      selectedPortfolio?.id === portfolio.id ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {portfolio.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            {portfolioList.length > 0 ? (
+              <CommandGroup>
+                {portfolioList.map((portfolio) => (
+                  <CommandItem
+                    key={portfolio.id}
+                    value={portfolio.name}
+                    onSelect={() => handleSelect(portfolio)}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedPortfolio?.id === portfolio.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                    {portfolio.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ) : (
+              <CommandEmpty>No portfolio found.</CommandEmpty>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

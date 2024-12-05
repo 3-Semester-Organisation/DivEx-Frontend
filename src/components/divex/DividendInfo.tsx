@@ -2,7 +2,7 @@ import * as React from 'react'
 
 export default function DividendInfo({ stock }) {
 
-    const latestClosingPrice = stock.historicalPricingResponseList[stock.historicalPricingResponseList.length - 1].previousDailyClosingPrice;
+    const latestClosingPrice = stock.historicalPricing[stock.historicalPricing.length - 1].previousDailyClosingPrice;
 
     return (
         <div className="w-1/3 bg-primary-foreground shadow-md rounded-lg p-6">

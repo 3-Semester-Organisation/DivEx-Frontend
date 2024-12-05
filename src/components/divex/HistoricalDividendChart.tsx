@@ -15,7 +15,7 @@ export default function HistoricalDividendChart({ stock }) {
     }
 
     useEffect(() => {
-        formatDate(stock.historicalDividendsResponseList);
+        formatDate(stock.historicalDividends);
     }, []);
 
     return (

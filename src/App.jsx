@@ -16,6 +16,8 @@ import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
 
+import { PortfoliosProvider } from '@/js/PortfoliosContext'
+
 function App() {
   // gets login state from AuthContext
   const { isLoggedin } = useContext(AuthContext);
@@ -30,24 +32,25 @@ function App() {
       </div>
 
 
+      <PortfoliosProvider>
         <Router>
-          {isLoggedin ? <Navbar /> : <DefaultNavbar />}
+          {isLoggedin ? <Navbar/> : <DefaultNavbar/>}
           <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={<p>dashboard</p>} />
             <Route path="/account" element={<p>account</p>} />
-            <Route path="/portfolio/overview" element={<PortfolioOverview />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/stocks" element={<StocksPage />} />
+
+            <Route path="/portfolio/overview" element={<PortfolioOverview />} />
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
-
           </Routes>
-
         </Router>
-      </ThemeProvider>
+      </PortfoliosProvider>
+    </ThemeProvider>
   );
 }
 

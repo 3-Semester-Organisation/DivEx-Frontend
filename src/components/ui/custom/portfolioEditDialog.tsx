@@ -27,8 +27,8 @@ export function PortfolioEditDialog({ selectedPortfolio, onSubmit }) {
         if (newName.length < 1) {
             toast.error("Name must be at least 1 character long");
             return
-        } else if (newName.length > 20) {
-            toast.error("Name must be at most 20 characters long");
+        } else if (newName.length > 30) {
+            toast.error("Name must be at most 30 characters long");
             return
 
         }

@@ -88,6 +88,8 @@ export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isA
         }
 
     }
+
+    
     function handleSelectedPortfolio(portfolioId: number) {
         setSelectedPortfolioId(portfolioId);
     }

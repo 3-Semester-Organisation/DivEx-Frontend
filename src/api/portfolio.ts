@@ -84,7 +84,7 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
     }
 }
 
-async function fetchUpdatePortfolioName(
+async function updatePortfolioName(
     portfolioName: string,
     portfolioId: string,
 ) {
@@ -97,8 +97,9 @@ async function fetchUpdatePortfolioName(
         body: JSON.stringify({ portfolioName, portfolioId })
     });
     checkHttpsErrors(response);
-
-    return response;
+    const data = await response.json();
+    
+    return data;
     
   } catch (error) {
     console.log(error);
@@ -106,4 +107,4 @@ async function fetchUpdatePortfolioName(
 }
 
 
-export { addStockToPortfolio, fetchPortfolios, createPortfolio, fetchUpdatePortfolioName }
+export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName }

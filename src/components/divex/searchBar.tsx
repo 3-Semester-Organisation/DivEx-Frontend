@@ -45,7 +45,7 @@ export default function SearchBar() {
             <div className="relative w-full max-w-md ml-auto">
                 <Input
                     id="search"
-                    placeholder="Search..."
+                    placeholder="Search stocks by ticker or name..."
                     type="search"
                     className="p-2 border-2 border-gray-400 w-full rounded-lg bg-primary-foreground"
                     value={searchValue}

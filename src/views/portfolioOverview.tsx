@@ -11,6 +11,8 @@ import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/ap
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
 import SearchBar from "@/components/divex/searchBar";
 import PortfolioTable from "@/components/divex/PortfolioTable";
+import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
+import { currencyConverter } from "@/js/util";
 
 
 
@@ -165,6 +167,11 @@ export default function PortfolioOverview() {
           selectedPortfolio={selectedPortfolio}
           currency={currency} />
       )}
+
+      <DividendSummaryTable
+        selectedPortfolio={selectedPortfolio}
+        currency={currency}
+        currencyConverter={currencyConverter} />
     </>
   );
 }

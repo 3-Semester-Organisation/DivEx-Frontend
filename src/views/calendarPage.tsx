@@ -1,11 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { useEffect } from "react";
+import React, { useEffect }  from "react";
 import { DividendCalendar } from "@/components/ui/custom/DividendCalendar";
 import  DividendTable  from "@/components/ui/custom/DividendTable";
 import { Button } from "@/components/ui/button";
-import { makeOption, checkHttpsErrors } from "@/js/util";
+import { checkHttpsErrors } from "@/js/util";
 
 import PaginationBar from "@/components/divex/PaginationBar";
 
@@ -22,10 +21,6 @@ interface Stock {
 interface PaginatedResponse<T> {
   content: T[];
   totalPages: number;
-}
-
-interface DividendDate {
-  exDividendDate: number;
 }
 
 const convertUnixToDate = (unix: number) => {

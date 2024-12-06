@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Table,
     TableBody,
@@ -8,7 +8,6 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react'
 import { checkHttpsErrors } from '@/js/util'
 
 export default function homepage() {

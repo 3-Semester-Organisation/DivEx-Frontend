@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { checkHttpsErrors } from '@/js/util';
 import { PaginatedResponse, Stock } from '@/divextypes/types';
 

@@ -1,7 +1,6 @@
 'use client'
 
-import * as React from 'react'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { AuthContext } from '@/js/AuthContext'
 
 import { z } from 'zod'

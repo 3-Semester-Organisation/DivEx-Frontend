@@ -11,6 +11,7 @@ import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/ap
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
 import SearchBar from "@/components/divex/searchBar";
 import PortfolioTable from "@/components/divex/PortfolioTable";
+import useCheckCredentials from "@/js/useCredentials";
 
 
 
@@ -21,6 +22,9 @@ export default function PortfolioOverview() {
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
 
+
+
+  useCheckCredentials();
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);

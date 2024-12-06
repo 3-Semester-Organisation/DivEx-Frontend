@@ -20,7 +20,7 @@ import { PortfoliosProvider } from '@/js/PortfoliosContext'
 
 function App() {
   // gets login state from AuthContext
-  const { isLoggedin } = useContext(AuthContext);
+  const { isLoggedin: isLoggedIn } = useContext(AuthContext);
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -34,7 +34,7 @@ function App() {
 
       <PortfoliosProvider>
         <Router>
-          {isLoggedin ? <Navbar/> : <DefaultNavbar/>}
+          {isLoggedIn ? <Navbar/> : <DefaultNavbar/>}
           <Routes>
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<Login />} />
@@ -45,7 +45,7 @@ function App() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/stocks" element={<StocksPage />} />
 
-            <Route path="/portfolio/overview" element={<PortfolioOverview />} />
+            <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
           </Routes>
         </Router>

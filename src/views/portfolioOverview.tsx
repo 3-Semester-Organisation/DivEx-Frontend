@@ -1,91 +1,52 @@
 "use client";
-
 import * as React from "react";
-import { useEffect } from "react";
-
-import { z } from "zod";
 import { toast } from "sonner";
-import { makeAuthOption, checkHttpsErrors } from "@/js/util";
-
+import { useState, useEffect, useContext } from "react";
+import { Stock, Portfolio } from "@/divextypes/types";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
 
-import { AuthContext } from "@/js/AuthContext";
-import StockTable from "@/components/ui/custom/stockTable";
-
-import { fetchPaginatedStocks } from "@/api/stocks";
-import PaginationBar from "@/components/divex/PaginationBar";
+import { usePortfolios } from "@/js/PortfoliosContext";
+import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/api/portfolio";
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
-import { fetchUpdatePortfolioName } from "@/api/portfolio";
+import SearchBar from "@/components/divex/searchBar";
+import PortfolioTable from "@/components/divex/PortfolioTable";
 
-const URL = "http://localhost:8080/api/v1/portfolio";
 
-const formSchema = z.object({
-  portfolioName: z
-    .string()
-    .min(1, { message: "Name must be at least 1 character long" }),
-});
-
-interface Portfolio {
-  id: string;
-  name: string;
-}
 
 export default function PortfolioOverview() {
   // PORTFOLIO STATES
-  const [selectedPortfolio, setSelectedPortfolio] = React.useState<Portfolio | null>(() => {
-    const stored = localStorage.getItem("selectedPortfolio");
-    return stored ? JSON.parse(stored) : null;
-  });
-  const [portfolios, setPortfolios] = React.useState<Portfolio[]>([]); 
+  const { portfolios, setPortfolios } = usePortfolios();
+  const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
+  const [currency, setCurrency] = useState("DKK");
+  const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
 
-  // AUTH CONTEXT
-  const { subscriptionType } = React.useContext(AuthContext);
 
-  // TABLE STATES
-  const [sorting, setSorting] = React.useState({ column: "", direction: "asc" });
-  const [stocks, setStocks] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(false);
+  async function handlePortfolioCreation(values) {
+    const newPortfolio = await createPortfolio(values);
 
-  // PAGINATION STATES
-  const [currentPage, setCurrentPage] = React.useState(0);
-  const [totalPages, setTotalPages] = React.useState(0);
-
-  // Limit amount of portfolios based on subscription type
-  function handleCreateButtonClick() {
-    if (subscriptionType === "FREE" && portfolios.length >= 1) {
-      toast.error("Free users can only have one portfolio.");
-      return false;
-    }
-    else if (subscriptionType === "PREMIUM" && portfolios.length >= 10) {
-      toast.error("Premium users can only have up to 10 portfolios.");
-      return false;
-    }
-    return true;
+    setPortfolios((prevPortfolios) => [
+      ...prevPortfolios,
+      newPortfolio
+    ]);
   }
 
-  async function fetchPortfolios() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("No token found. Please log in.");
-      return [];
+
+  useEffect(() => {
+    async function loadPortfolios() {
+      const data = await fetchPortfolios();
+      setPortfolios(data || []);
+
+      if (!selectedPortfolio && data && data.length > 0) {
+        setSelectedPortfolio(data[0]);
+        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
+      }
     }
-    try {
-      const getOption = makeAuthOption("GET", null, token);
-      const res = await fetch(URL, getOption);
-      await checkHttpsErrors(res);
-      const data = await res.json();
-      const portfolioList = data.map((portfolio: any) => ({
-        id: portfolio.id.toString(),
-        name: portfolio.name,
-      }));
-      return portfolioList;
-    } catch (error: any) {
-      console.error("Fetch portfolios error", error);
-      toast.error(error.message);
-      return [];
-    }
-  }
+
+    loadPortfolios();
+    setSelectedPortfolio(selectedPortfolio);
+  }, []);
+
 
   const changePortfolioName = async (newName: string) => {
     const token = localStorage.getItem("token");
@@ -98,11 +59,12 @@ export default function PortfolioOverview() {
       return;
     }
     try {
-      const res = await fetchUpdatePortfolioName(newName, selectedPortfolio.id);
-      await checkHttpsErrors(res);
+      const data = await fetchUpdatePortfolioName(newName, selectedPortfolio.id);
+
+      console.log("changedNAME", data)
 
       // Update local state
-      const updatedPortfolio = { ...selectedPortfolio, name: newName };
+      const updatedPortfolio = { ...selectedPortfolio, name: data.name };
       setSelectedPortfolio(updatedPortfolio);
       setPortfolios((prevPortfolios) =>
         prevPortfolios.map((portfolio) =>
@@ -114,139 +76,85 @@ export default function PortfolioOverview() {
       localStorage.setItem("selectedPortfolio", JSON.stringify(updatedPortfolio));
 
       toast.success("Portfolio name updated.");
-      return res;
+
     } catch (error: any) {
       console.error("Update portfolio name error", error);
       toast.error(error.message);
     }
   }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("No token found. Please log in.");
-      return;
-    }
-    try {
-      const postOption = makeAuthOption("POST", values, token);
-      const res = await fetch(URL, postOption);
-      await checkHttpsErrors(res);
 
-      toast.success("Portfolio created.");
+  // console.log("portfolios", portfolios)
+  // console.log("Localstorage Ports", JSON.parse(localStorage.getItem("selectedPortfolio")))
 
-      // Add new portfolio to the list without fetching all portfolios again
-      const newPortfolio = await res.json();
-      const formattedPortfolio: Portfolio = {
-        id: newPortfolio.id.toString(),
-        name: newPortfolio.name,
-      };
-      setPortfolios((prevPortfolios) => [
-        ...prevPortfolios,
-        formattedPortfolio,
-      ]);
+  // console.log("Selected PORTs", selectedPortfolio)
 
-      // Optionally, set the new portfolio as selected
-      setSelectedPortfolio(formattedPortfolio);
-      localStorage.setItem("selectedPortfolio", JSON.stringify(formattedPortfolio));
-    } catch (error: any) {
-      console.error("Form submission error", error);
-      toast.error(error.message);
-    }
-  }
 
-  useEffect(() => {
-    async function loadPortfolios() {
-      const data = await fetchPortfolios();
-      setPortfolios(data || []);
-
-      // If no portfolio is selected, optionally select the first one
-      if (!selectedPortfolio && data && data.length > 0) {
-        setSelectedPortfolio(data[0]);
-        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
-      }
-    }
-    loadPortfolios();
-  }, []);
-
-  // TABLE HANDLING
-  function handleSortClick(column: string) {
-    setSorting((prevSorting) => ({
-      column: column,
-      direction:
-        prevSorting.column === column && prevSorting.direction === "asc"
-          ? "desc"
-          : "asc",
-    }));
-    setCurrentPage(0); // Reset to first page on sort
-    console.log(`Sorting by ${column} in ${sorting.direction === "asc" ? "descending" : "ascending"} order.`);
-  }
-
-  useEffect(() => {
-    async function loadStocks() {
-      try {
-        setIsLoading(true);
-        // Simulate network delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        
-        const paginatedStocks = await fetchPaginatedStocks(
-          currentPage,
-          10,
-          sorting
-        );
-        setStocks(paginatedStocks.content);
-        setTotalPages(paginatedStocks.totalPages);
-      } catch (error: any) {
-        console.error("Load stocks error", error);
-        toast.error("Failed to load stocks.");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadStocks();
-  }, [currentPage, sorting]);
 
   return (
     <>
-      <div className="flex flex-row group">
-        <div className="relative">
-          <h1 className="flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
-            <PortfolioEditDialog
-              onSubmit={changePortfolioName}
-              selectedPortfolio={selectedPortfolio}
-            />
-          </h1>
-        </div>
-        <div className="ml-10 mt-2">
-          <PortfolioSelect
-            portfolioList={portfolios}
-            selectedPortfolio={selectedPortfolio}
-            setSelectedPortfolio={setSelectedPortfolio}
-          />
-        </div>
-        <div className="ml-1 content-center mt-2">
+      <div className="flex flex-row items-center gap-4 mt-5">
 
-          <CreatePortfolioButton
-            onSubmit={onSubmit}
-            handleCreateButtonClick={handleCreateButtonClick}
-          />
-        </div>
+        {portfolios !== null && (
+          <div className="flex flex-col content-center">
+
+            <div className="relative group">
+              <h1 className="text-semibold flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
+                <PortfolioEditDialog
+                  onSubmit={changePortfolioName}
+                  selectedPortfolio={selectedPortfolio}
+                />
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-3 mt-4">
+              <PortfolioSelect
+                portfolioList={portfolios}
+                selectedPortfolio={selectedPortfolio}
+                setSelectedPortfolio={setSelectedPortfolio}
+              />
+
+              <div className="content-center">
+                <CreatePortfolioButton
+                  onSubmit={handlePortfolioCreation}
+                  portfolios={portfolios}
+                />
+              </div>
+
+              <div>
+                <select
+                  className="p-2 border-2 border-gray-400 rounded-lg mr-4 ml-4 bg-primary-foreground"
+                  onChange={(event) => setCurrency(event.target.value)}
+                  defaultValue="DKK"
+                >
+                  <option value="" disabled>
+                    Select a currency
+                  </option>
+                  {supportedCurrencies.map((currency) => (
+                    <option key={currency} value={currency}>
+                      {currency}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <SearchBar />
       </div>
 
-      
 
-      <div className="flex flex-col mt-10">
-      <StockTable
-        stocks={stocks}
-        sorting={sorting}
-        onSortClick={handleSortClick}
-        isLoading={isLoading}
-          />
-      <PaginationBar
-        currentPage={currentPage}  
-        setCurrentPage={setCurrentPage}
-        totalPages={totalPages}
-      />
+
+      <div>
+        {portfolios === null && (
+          <h1 className="text-4xl font-semibold">Create a portfolio to get started</h1>
+        )}
       </div>
+
+      <PortfolioTable
+        selectedPortfolio={selectedPortfolio}
+        currency={currency} />
     </>
   );
 }

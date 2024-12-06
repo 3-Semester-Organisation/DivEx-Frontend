@@ -22,6 +22,7 @@ export default function PortfolioOverview() {
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
+  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false)
 
 
   async function handlePortfolioCreation(values) {
@@ -101,36 +102,36 @@ export default function PortfolioOverview() {
     <>
       <div className="flex flex-row items-center gap-4 mt-5">
 
-        {portfolios !== null && (
-          <div className="flex flex-col content-center">
+        <div className="flex flex-col content-center">
 
-            <div className="relative group">
-              <h1 className="text-semibold flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
-                <PortfolioEditDialog
-                  onSubmit={changePortfolioName}
-                  selectedPortfolio={selectedPortfolio}
-                />
-              </h1>
+          <div className="relative group">
+            <h1 className="text-semibold flex text-5xl">{selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
+              <PortfolioEditDialog
+                onSubmit={changePortfolioName}
+                selectedPortfolio={selectedPortfolio}
+              />
+            </h1>
+          </div>
+
+
+          <div className="flex items-center gap-3 mt-4">
+
+            {selectedPortfolio && (
+              <PortfolioSelect
+                portfolioList={portfolios}
+                selectedPortfolio={selectedPortfolio}
+                setSelectedPortfolio={setSelectedPortfolio}
+              />
+            )}
+
+            <div className="content-center">
+              <CreatePortfolioButton
+                onSubmit={handlePortfolioCreation}
+                portfolios={portfolios}
+              />
             </div>
 
-
-            <div className="flex items-center gap-3 mt-4">
-
-              {selectedPortfolio && (
-                <PortfolioSelect
-                  portfolioList={portfolios}
-                  selectedPortfolio={selectedPortfolio}
-                  setSelectedPortfolio={setSelectedPortfolio}
-                />
-              )}
-
-              <div className="content-center">
-                <CreatePortfolioButton
-                  onSubmit={handlePortfolioCreation}
-                  portfolios={portfolios}
-                />
-              </div>
-
+            {selectedPortfolio && (
               <div>
                 <select
                   className="p-2 border-2 border-gray-400 rounded-lg mr-4 ml-4 bg-primary-foreground"
@@ -146,32 +147,45 @@ export default function PortfolioOverview() {
                     </option>
                   ))}
                 </select>
+
+                <button
+                className={isDisplayingDividendSummary ? "hover:underline bg-primary-foreground p-2 rounded-lg border-2 border-gray-400 font-bold shadow-lg" 
+                  : "hover:underline bg-primary-foreground p-2 rounded-lg border-2 border-gray-400"}
+                  onClick={() => setIsDisplayingDividendSummary(!isDisplayingDividendSummary)}>
+                  {isDisplayingDividendSummary ? "Dividends" : "Dividends"}
+                </button>
               </div>
-            </div>
+            )}
+
           </div>
-        )}
+        </div>
 
         <SearchBar />
       </div>
 
-
-
       <div>
-        {portfolios === null && (
-          <h1 className="text-4xl font-semibold">Create a portfolio to get started</h1>
+        {portfolios !== null && (
+          <div>
+            {portfolios === null && (
+              <h1 className="text-4xl font-semibold">Create a portfolio to get started</h1>
+            )}
+          </div>
+        )}
+
+        {selectedPortfolio && !isDisplayingDividendSummary && (
+          <PortfolioTable
+            selectedPortfolio={selectedPortfolio}
+            currency={currency} />
+        )}
+
+
+        {isDisplayingDividendSummary && (
+          <DividendSummaryTable
+            selectedPortfolio={selectedPortfolio}
+            currency={currency}
+            currencyConverter={currencyConverter} />
         )}
       </div>
-
-      {selectedPortfolio && (
-        <PortfolioTable
-          selectedPortfolio={selectedPortfolio}
-          currency={currency} />
-      )}
-
-      <DividendSummaryTable
-        selectedPortfolio={selectedPortfolio}
-        currency={currency}
-        currencyConverter={currencyConverter} />
     </>
   );
 }

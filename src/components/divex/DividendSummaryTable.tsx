@@ -59,6 +59,7 @@ const navigate = useNavigate();
                     const dividendRatio = entry.stock.dividendRatio;
                     const dividendRate = entry.stock.dividendRate;
 
+                    //filters out stock that do not payout dividends.
                     if(dividendYield === 0 && fiveYearAvgDividendYield === 0 && dividendRatio === 0 && dividendRate === 0) {
                       return;
                     }

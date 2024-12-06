@@ -140,7 +140,11 @@ export default function Navbar({ onLogout }) {
 
         <NavigationMenuItem className="flex justify-end">
           {isPremium(subscriptionType) ? (
-            <Button className="mr-5 border" variant={"ghost"} onClick={handleUpgrade}>
+            <Button
+              className="mr-5 border"
+              variant={"ghost"}
+              onClick={handleUpgrade}
+            >
               <Rocket />
               Upgrade to Premium
             </Button>
@@ -151,10 +155,15 @@ export default function Navbar({ onLogout }) {
 
         <NavigationMenuItem className="flex justify-end">
           <DropdownMenu>
-            <DropdownMenuTrigger className="">
-              <Button className="border mr-13" size={"icon"} variant={"ghost"}>
+            <DropdownMenuTrigger>
+              <div
+                className={cn(
+                  "mr-13 flex items-center justify-center p-2 rounded-md cursor-pointer",
+                  "hover:bg-primary-foreground"
+                )}
+              >
                 <User />
-              </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem asChild>

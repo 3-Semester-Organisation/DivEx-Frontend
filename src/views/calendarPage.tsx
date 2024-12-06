@@ -15,7 +15,6 @@ interface Stock {
   ticker: string;
   name: string;
   dividendRate: number;
-  // price: string;
   exDividendDate: number;
   currency: string;
 }
@@ -33,19 +32,38 @@ const convertUnixToDate = (unix: number) => {
   return new Date(unix * 1000);
 };
 
+function formatDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default function CalendarPage() {
   const [date, setDate] = React.useState<number | undefined>(undefined);
   const [dividendDates, setDividendDates] = React.useState<number[]>([]);
+  const [currentMonth, setCurrentMonth] = React.useState(new Date());
+  const [dividendData, setDividendData] = React.useState({});
   const [stocks, setStocks] = React.useState<Stock[]>([]);
   const [totalPages, setTotalPages] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
   const [sorting, setSorting] = React.useState({ column: "", direction: "asc" }); 
-
+  
   const handleFetch = async (url: string) => {
-    const res = await fetch(url);
-    const data = await res.json();
-    return data;
+    try {
+      const res = await fetch(url);
+      await checkHttpsErrors(res);
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      throw error; // Re-throw the error after logging it
+    }
+  };
+
+  const handleMonthChange = (month: Date) => {
+    setCurrentMonth(month);
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
@@ -66,6 +84,8 @@ export default function CalendarPage() {
       setCurrentPage(0);
     }
   };
+
+  
 
   useEffect(() => {
     const fetchDividendDates = async () => {
@@ -131,12 +151,6 @@ export default function CalendarPage() {
     fetchStocks();
   }, [date, currentPage, sorting]);
 
-  /*
-  React.useEffect(() => {
-    fetchData();
-    
-  }, [sorting, currentPage]);
-  */
 
   function handleSortClick(column: string) {
     setSorting((prevSorting) => ({
@@ -162,13 +176,15 @@ export default function CalendarPage() {
       <h1 className="text-5xl ml-6">Calendar</h1>
         </div>
       <div className="flex flex-row p-6">
-        <div className="">
+        <div>
           <DividendCalendar
             mode="single"
             selected={convertUnixToDate(date)}
             onSelect={handleDateSelect}
-            className="rounded-lg bg-primary-foreground mr-28"
+            className="rounded-lg bg-primary-foreground"
             dividendDays={dividendDates}
+            dividendData={dividendData}
+            onMonthChange={handleMonthChange}
           />
           <Button
             id="reset-button"
@@ -183,7 +199,6 @@ export default function CalendarPage() {
       
       <div className="p-6">
         <div className="max-w-6xl">
-          
             <>
               <DividendTable
         stocks={stocks}

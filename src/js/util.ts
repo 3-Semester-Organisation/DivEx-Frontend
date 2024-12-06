@@ -45,3 +45,4 @@ function makeAuthOption(method: string, token: string, body?: any): RequestInit 
 }
 
 export { checkHttpsErrors, makeOption, makeAuthOption };
+

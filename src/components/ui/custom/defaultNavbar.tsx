@@ -29,7 +29,6 @@ const authNavigation = [
   { name: "Register", to: "/register" },
 ];
 
-
 export default function DefaultNavbar() {
   return (
     <NavigationMenu className="flex flex-row p-6 ml-10">
@@ -40,16 +39,21 @@ export default function DefaultNavbar() {
           </NavLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-            <NavLink to="/register" className={navigationMenuTriggerStyle()}>
-              Create account
-            </NavLink>
+          <NavLink to="/register" className={navigationMenuTriggerStyle()}>
+            Create account
+          </NavLink>
         </NavigationMenuItem>
         <NavigationMenuItem className="flex justify-end">
           <DropdownMenu>
-          <DropdownMenuTrigger className="">
-              <Button className="border mr-13" size={"icon"} variant={"ghost"}>
+            <DropdownMenuTrigger>
+              <div
+                className={cn(
+                  "mr-13 flex items-center justify-center p-2 rounded-md cursor-pointer",
+                  "hover:bg-primary-foreground"
+                )}
+              >
                 <User />
-              </Button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {authNavigation.map((item) => (

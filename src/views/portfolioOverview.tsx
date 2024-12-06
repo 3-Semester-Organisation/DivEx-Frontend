@@ -11,16 +11,30 @@ import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/ap
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
 import SearchBar from "@/components/divex/searchBar";
 import PortfolioTable from "@/components/divex/PortfolioTable";
+import { useNavigate } from "react-router-dom";
 
 
 
-export default function PortfolioOverview() {
+export default function PortfolioOverview({ isLoggedIn }) {
   // PORTFOLIO STATES
   const { portfolios, setPortfolios } = usePortfolios();
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
+  const navigate = useNavigate();
 
+
+
+  useEffect(() => {
+    function checkCredentials() {
+
+      if (!isLoggedIn) {
+        navigate("/login");
+      }
+    }
+
+    checkCredentials();
+  }, [])
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);

@@ -43,7 +43,6 @@ export function PortfolioSelect({
   const handleSelect = (portfolio: Portfolio) => {
     setSelectedPortfolio(portfolio);
     setOpen(false);
-    // localStorage.setItem("selectedPortfolio", JSON.stringify(portfolio));
   };
 
   return (

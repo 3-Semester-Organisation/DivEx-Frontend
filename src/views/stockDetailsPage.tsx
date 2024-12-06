@@ -7,7 +7,8 @@ import * as React from 'react'
 import HistoricalDividendChart from '@/components/divex/HistoricalDividendChart';
 import AddStockModal from '@/components/divex/AddStockModal';
 import { Stock } from '@/divextypes/types';
-
+import { usePortfolios } from '@/js/PortfoliosContext';
+import { toast } from 'sonner';
 
 export default function StockDetailsPage() {
 
@@ -16,6 +17,8 @@ export default function StockDetailsPage() {
 
     const [isAddingStock, setIsAddingStock] = useState(false);
     const [stockToAdd, setStockToAdd] = useState<Stock>(null);
+
+    const { portfolios, setPortfolios } = usePortfolios();
 
     useEffect(() => {
         async function fetchStockByTicker(ticker: string) {
@@ -36,9 +39,16 @@ export default function StockDetailsPage() {
 
     function showModal(stock: Stock, event: React.MouseEvent<HTMLButtonElement>) {
         event.stopPropagation();
+        if (portfolios.length === 0) {
+            console.log("no portfolios detected")
+            toast.error("You need to create a portfolio first.");
+            return;
+        } else {
+            setStockToAdd(stock);
+            setIsAddingStock(true);
+        }
 
-        setStockToAdd(stock);
-        setIsAddingStock(true);
+        
     }
 
     return (

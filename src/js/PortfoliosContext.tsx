@@ -14,7 +14,7 @@ export const PortfoliosContext = createContext<PortfoliosContextType | null>(nul
 // Create the Provider component
 export const PortfoliosProvider: React.FC = ({ children }) => {
   const [portfolios, setPortfolios] = useState<Portfolio[] | null>(null);
-
+  
   useEffect(() => {
     // Fetch portfolios from an API or service
     async function fetchAndSetPortfolios() {

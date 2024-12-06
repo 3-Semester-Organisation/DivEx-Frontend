@@ -32,7 +32,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
       const lastElementIndex = historicalPricing.length - 1;
       const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
 
-      totalPortfolioValue += currencyConverter(entry, latestClosingPrice);
+      totalPortfolioValue += currencyConverter(latestClosingPrice, entry);
 
     })
 
@@ -49,7 +49,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
 
     selectedPortfolio.portfolioEntries.forEach(entry => {
       const purchasePrice: number = entry.stockPrice;
-      totalMoneySpent += currencyConverter(entry, purchasePrice);
+      totalMoneySpent += currencyConverter(purchasePrice, entry);
     })
 
     const percentageChange: number = ((portfolioMarketValue - totalMoneySpent) / totalMoneySpent) * 100;
@@ -60,21 +60,21 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
   }
 
 
-  function currencyConverter(entry, stockPrice) {
+  function currencyConverter(stockRelatedValue, entry) {
     // TODO fetch realtime currency in the future 
     switch (currency) {
 
       case 'DKK': {
         switch (entry.stock.currency) {
           case 'DKK': {
-            return stockPrice * entry.quantity;
+            return stockRelatedValue * entry.quantity;
           }
           case 'SEK': {
-            return stockPrice * entry.quantity * 0.65; //1 dkk = 0,65 sek for 05/12-2024 
+            return stockRelatedValue * entry.quantity * 0.65; //1 dkk = 0,65 sek for 05/12-2024 
 
           }
           case 'NOK': {
-            return stockPrice * entry.quantity * 0.65; //1 dkk = 0,71 sek for 05/12-2024 
+            return stockRelatedValue * entry.quantity * 0.65; //1 dkk = 0,71 sek for 05/12-2024 
 
           }
         }
@@ -84,15 +84,15 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
       case 'SEK': {
         switch (entry.stock.currency) {
           case 'DKK': {
-            return stockPrice * entry.quantity * 1.54;
+            return stockRelatedValue * entry.quantity * 1.54;
 
           }
           case 'SEK': {
-            return stockPrice * entry.quantity; //1 dkk = 0,65 sek for 05/12-2024 
+            return stockRelatedValue * entry.quantity; //1 dkk = 0,65 sek for 05/12-2024 
 
           }
           case 'NOK': {
-            return stockPrice * entry.quantity * 0.99; //1 dkk = 0,71 sek for 05/12-2024 
+            return stockRelatedValue * entry.quantity * 0.99; //1 dkk = 0,71 sek for 05/12-2024 
 
           }
         }
@@ -102,15 +102,15 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
       case 'NOK': {
         switch (entry.stock.currency) {
           case 'DKK': {
-            return stockPrice * entry.quantity * 1.41;
+            return stockRelatedValue * entry.quantity * 1.41;
 
           }
           case 'SEK': {
-            return stockPrice * entry.quantity * 0.94;
+            return stockRelatedValue * entry.quantity * 0.94;
 
           }
           case 'NOK': {
-            return stockPrice * entry.quantity;
+            return stockRelatedValue * entry.quantity;
 
           }
         }
@@ -120,11 +120,17 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
   }
 
 
-  // function displayTotalAnnualDividends() {
-  //   let totalAnnualDividends = 0;
+  function displayTotalAnnualDividends() {
+    let totalAnnualDividends = 0;
 
-  //   selectedPortfolio.portfolioEntries.foreach( en)
-  // }
+    selectedPortfolio.portfolioEntries.forEach( entry => {
+      const dividendRate = entry.stock.dividendRate
+
+      totalAnnualDividends += currencyConverter(dividendRate, entry);
+    })
+
+    return totalAnnualDividends;
+  }
 
   console.log("SELECTEDPORT", selectedPortfolio)
   console.log("SELECTEDPORT.ENTRIES", selectedPortfolio.portfolioEntries)
@@ -214,7 +220,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                     </TableCell>
                   </TableRow>
                 )}
-                
+
               </TableBody>
             </Table>
           </div>
@@ -266,23 +272,23 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                         <TableCell className="text-start">{entry.stock.dividendRate}</TableCell>
                         <TableCell className="text-start">{entry.quantity}</TableCell>
                         <TableCell className="text-start">{new Date(entry.stock.exDividendDate * 1000).toDateString()}</TableCell>
-                        <TableCell className="text-start text-green-700">{new Intl.NumberFormat('en-US').format(entry.stock.dividendRate * entry.quantity)}</TableCell>
+                        <TableCell className="text-start text-green-700 font-semibold">{new Intl.NumberFormat('en-US').format(entry.stock.dividendRate * entry.quantity)}</TableCell>
                       </TableRow>
                     )
                   })
                 )}
 
                 <TableRow>
-                  <TableCell className="text-start">Total Annual Dividends: </TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  <TableCell className="text-start"></TableCell>
-                  {/* <TableCell className="text-start"> {displayTotalAnnualDividends()} {currency}</TableCell> */}
+                  <TableCell className="text-start font-semibold">Total Annual Dividends: </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell></TableCell>
+                  <TableCell className="text-start text-green-700 font-semibold"> {new Intl.NumberFormat('en-US').format(displayTotalAnnualDividends())} {currency}</TableCell>
                 </TableRow>
               </TableBody>
 

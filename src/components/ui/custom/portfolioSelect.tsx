@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { usePortfolios } from "@/js/PortfoliosContext";
 
 import { cn } from "@/lib/utils"; // Ensure the `cn` utility is properly imported
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ import { Portfolio } from "@/divextypes/types"; // Ensure correct path and expor
 interface PortfolioSelectProps {
   portfolioList: Portfolio[];
   selectedPortfolio: Portfolio | null;
-  setSelectedPortfolio: React.Dispatch<React.SetStateAction<Portfolio | null>>;
+  setSelectedPortfolio: (portfolio: Portfolio) => void;
 }
 
 export function PortfolioSelect({
@@ -34,16 +35,13 @@ export function PortfolioSelect({
 }: PortfolioSelectProps) {
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (!selectedPortfolio && portfolioList.length > 0) {
-      setSelectedPortfolio(portfolioList[0]); // Default selection to first item if null
-    }
-  }, [selectedPortfolio, portfolioList, setSelectedPortfolio]);
-
-  const handleSelect = (portfolio: Portfolio) => {
+  
+  const handleChange = (id: string) => {
+    const selectedId = id
+    const portfolio = portfolioList?.find((p) => p.id.toString() === selectedId) || null;
     setSelectedPortfolio(portfolio);
+    console.log("SELECTED PORTFOLIO", portfolio);
     setOpen(false);
-    // localStorage.setItem("selectedPortfolio", JSON.stringify(portfolio));
   };
 
   return (
@@ -69,7 +67,7 @@ export function PortfolioSelect({
                   <CommandItem
                     key={portfolio.id}
                     value={portfolio.name}
-                    onSelect={() => handleSelect(portfolio)}
+                    onSelect={() => handleChange(portfolio.id.toString())}
                   >
                     <Check
                       className={cn(

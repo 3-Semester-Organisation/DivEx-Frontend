@@ -53,9 +53,6 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
         })
     
         const percentageChange: number = ((portfolioMarketValue - totalMoneySpent) / totalMoneySpent) * 100;
-        console.log("PORTFOLIOMARKETVALUE", portfolioMarketValue)
-        console.log("TOTALMONEYSPENT", totalMoneySpent)
-        console.log("CHANGE", percentageChange)
         return percentageChange;
       }
     
@@ -125,7 +122,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     return (<div>
 
         {selectedPortfolio !== null && (
-            <div className='w-full bg-primary-foreground shadow-md rounded-lg p-6 mt-5'>
+            <div className='bg-primary-foreground shadow-md rounded-lg p-2'>
 
                 {selectedPortfolio?.portfolioEntries?.length === 0 || selectedPortfolio?.portfolioEntries?.length === undefined && (
                     <h1 className="text-4xl font-semibold mb-12">Add stocks to the portfolio</h1>
@@ -134,12 +131,12 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Ticker</TableHead>
-                            <TableHead>Stock</TableHead>
-                            <TableHead>Latest Price</TableHead>
-                            <TableHead>Currency</TableHead>
-                            <TableHead>no. shares</TableHead>
-                            <TableHead>value</TableHead>
+                            <TableHead className="text-center">Ticker</TableHead>
+                            <TableHead className="text-center">Stock</TableHead>
+                            <TableHead className="text-center">Latest Price</TableHead>
+                            <TableHead className="text-center">Currency</TableHead>
+                            <TableHead className="text-center">no. shares</TableHead>
+                            <TableHead className="text-center">value</TableHead>
                             <TableHead className="p-1">Change</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -160,13 +157,13 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                                         onClick={() => showStockDetails(entry.stock.ticker)}
                                         className="hover:cursor-pointer"
                                         key={entry.stock.ticker}>
-                                        <TableCell className="text-start font-medium">{entry.stock.ticker}</TableCell>
-                                        <TableCell className="text-start font-medium">{entry.stock.name}</TableCell>
-                                        <TableCell className="text-start font-medium">{latestClosingPrice}</TableCell>
-                                        <TableCell className="text-start font-medium">{entry.stock.currency}</TableCell>
-                                        <TableCell className="text-start font-medium">{entry.quantity}</TableCell>
-                                        <TableCell className="text-start font-medium">{marketValue}</TableCell>
-                                        <TableCell className="text-start font-medium">
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.stock.ticker.slice(0, -3)}</TableCell>
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.stock.name}</TableCell>
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{latestClosingPrice}</TableCell>
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.stock.currency}</TableCell>
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.quantity}</TableCell>
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{marketValue}</TableCell>
+                                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">
                                             {
                                                 Number.parseFloat(percentageValueChange) > 0 ? (<span className="text-green-700">+{percentageValueChange}%</span>)
                                                     : Number.parseFloat(percentageValueChange) === 0 ? (<span>{percentageValueChange}%</span>)

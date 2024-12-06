@@ -7,9 +7,13 @@ import * as React from 'react'
 import HistoricalDividendChart from '@/components/divex/HistoricalDividendChart';
 import AddStockModal from '@/components/divex/AddStockModal';
 import { Stock } from '@/divextypes/types';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function StockDetailsPage() {
+    const navigate = useNavigate();
 
     const { ticker } = useParams();
     const [stock, setStock] = useState(null);
@@ -49,6 +53,10 @@ export default function StockDetailsPage() {
             stockToAdd={stockToAdd}
             isAddingStock={isAddingStock}
             />
+
+            <div className="flex p-4">
+                <Button variant="ghost" onClick={() => navigate(-1)}><ChevronLeft />Go back</Button>
+            </div>
 
             <div className="">
                 {stock === null ? (

@@ -1,12 +1,9 @@
-// add these import to seperate component buy BTN
-import * as React from 'react'
-import { Portfolio, PortfolioEntryRequest, Stock } from '@/divextypes/types';
+import React, { useState, useContext } from 'react'
+import { PortfolioEntryRequest } from '@/divextypes/types';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { number, z } from "zod";
+import { z } from "zod";
 import { toast } from "sonner";
 import { AuthContext } from "@/js/AuthContext";
-import { useContext } from "react";
 import { addStockToPortfolio } from "@/api/portfolio"
 import {
     Card,
@@ -16,13 +13,10 @@ import {
 } from "@/components/ui/card"
 import { usePortfolios } from '@/js/PortfoliosContext';
 
-
-
 const addStockSchema = z.object({
     stockPrice: z.number().gt(0, { message: "Stock price must be greater than 0" }),
     quantity: z.number().min(1, { message: "Quantity must atlest be 1" }),
 });
-
 
 export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isAddingStock }) {
 

@@ -1,4 +1,5 @@
-import * as React from "react"
+import React from "react"
+import { useNavigate } from "react-router-dom";
 import {
     Table,
     TableBody,
@@ -7,12 +8,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useNavigate } from "react-router-dom";
-
-
-
-
-
 
 
 export default function PortfolioTable({ selectedPortfolio, currency }) {
@@ -38,8 +33,6 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     
         return totalPortfolioValue;
       }
-    
-    
     
       function displayPortfolioPercentageChange() {
     

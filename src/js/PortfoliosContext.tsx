@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Portfolio } from '@/divextypes/types';
 import { fetchPortfolios } from "@/api/portfolio"; // Adjust the fetch function as needed
 
@@ -14,7 +14,7 @@ type PortfoliosContextType = {
 export const PortfoliosContext = createContext<PortfoliosContextType | null>(null);
 
 // Create the Provider component
-export const PortfoliosProvider: React.FC = ({ children }) => {
+export const PortfoliosProvider = ({ children }) => {
   const [portfolios, setPortfolios] = useState<Portfolio[] | null>(null);
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -37,13 +37,7 @@ export const PortfoliosProvider: React.FC = ({ children }) => {
             localStorage.setItem('selectedPortfolioId', data[0].id.toString());
           } else {
           }
-        } else if (data.length > 0) {
-          // No stored ID, default to the first portfolio
-          console.log(data)
-          console.log("No stored ID, defaulting to first portfolio");
-          setSelectedPortfolio(data[0]);
-          localStorage.setItem('selectedPortfolioId', data[0].id.toString());
-        }
+        } 
         setIsInitialLoad(false);
       } catch (error) {
         console.error("Error fetching portfolios:", error);
@@ -73,7 +67,7 @@ export const PortfoliosProvider: React.FC = ({ children }) => {
 
 // Custom hook for accessing the context
 export const usePortfolios = () => {
-  const context = React.useContext(PortfoliosContext);
+  const context = useContext(PortfoliosContext);
   if (!context) {
     throw new Error('usePortfolios must be used within a PortfoliosProvider');
   }

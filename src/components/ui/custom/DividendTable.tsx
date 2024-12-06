@@ -1,7 +1,5 @@
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
   Table,
   TableBody,
@@ -18,11 +16,6 @@ interface Stock {
   dividendRate: number;
   currency: string;
   exDividendDate: number;
-}
-
-interface PaginatedResponse<T> {
-  content: T[];
-  totalPages: number;
 }
 
 const tableHeads = [

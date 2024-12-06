@@ -1,9 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { usePortfolios } from "@/js/PortfoliosContext";
 
 import { cn } from "@/lib/utils"; // Ensure the `cn` utility is properly imported
 import { Button } from "@/components/ui/button";

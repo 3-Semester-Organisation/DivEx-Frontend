@@ -9,6 +9,7 @@
     }
   ],
   "compilerOptions": {
+    "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -16,7 +17,7 @@
       ]
     },
     
-    "esModuleInterop": true,
+    
     "allowSyntheticDefaultImports": true
   }
 }

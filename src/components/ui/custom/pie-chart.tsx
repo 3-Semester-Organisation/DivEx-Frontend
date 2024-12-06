@@ -5,17 +5,13 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
+import { PieChart, Pie, Cell, Legend } from "recharts";
 
 // Define TypeScript interfaces for type safety
 interface Stock {

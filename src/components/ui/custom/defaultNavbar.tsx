@@ -1,28 +1,22 @@
 "use client";
 
-import * as React from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
-
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/NavigationMenu";
-import { ChevronDown, Navigation, User } from "lucide-react";
+import { User } from "lucide-react";
 
 const authNavigation = [
   { name: "Login", to: "/login" },

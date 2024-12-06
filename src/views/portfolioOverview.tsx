@@ -1,21 +1,19 @@
 "use client";
-import * as React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import { useState, useEffect, useContext } from "react";
-import { Stock, Portfolio } from "@/divextypes/types";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
 
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
   createPortfolio,
-  fetchPortfolios,
   fetchUpdatePortfolioName,
 } from "@/api/portfolio";
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
 import SearchBar from "@/components/divex/searchBar";
 import PortfolioTable from "@/components/divex/PortfolioTable";
 import { PortfolioChart } from "@/components/ui/custom/pie-chart";
+import { CurrencySelect } from "@/components/ui/custom/currency-select";
 
 export default function PortfolioOverview() {
   // PORTFOLIO STATES
@@ -84,31 +82,17 @@ export default function PortfolioOverview() {
                 portfolioList={portfolios}
                 selectedPortfolio={selectedPortfolio}
                 setSelectedPortfolio={setSelectedPortfolio}
-              />
-
-              <div className="content-center">
+              />              
                 <CreatePortfolioButton
                   onSubmit={handlePortfolioCreation}
                   portfolios={portfolios}
                 />
-              </div>
-
-              <div>
-                <select
-                  className="p-2 border-2 border-gray-400 rounded-lg mr-4 ml-4 bg-primary-foreground"
-                  onChange={(event) => setCurrency(event.target.value)}
-                  defaultValue="DKK"
-                >
-                  <option value="" disabled>
-                    Select a currency
-                  </option>
-                  {supportedCurrencies.map((currency) => (
-                    <option key={currency} value={currency}>
-                      {currency}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              
+                <CurrencySelect
+                  supportedCurrencies={supportedCurrencies}
+                  selectedCurrency={currency}
+                  setSelectedCurrency={setCurrency}
+                />
             </div>
           </div>
         )}
@@ -117,16 +101,12 @@ export default function PortfolioOverview() {
       </div>
 
       <div className="grid grid-cols-12 mt-5">
-
-        
-
         <div className="col-span-7">
       <PortfolioTable
         selectedPortfolio={selectedPortfolio}
         currency={currency}
           />
         </div>
-        
         <div className="col-span-4 col-end-13">
           <PortfolioChart selectedPortfolio={selectedPortfolio} />
           </div>

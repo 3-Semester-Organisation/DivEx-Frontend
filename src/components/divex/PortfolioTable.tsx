@@ -77,21 +77,6 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
         break;
       }
     
-      function displayPortfolioPercentageChange() {
-    
-        const portfolioMarketValue = displayPortfolioValue();
-    
-        let totalMoneySpent: number = 0;
-    
-        selectedPortfolio.portfolioEntries.forEach(entry => {
-          const purchasePrice: number = entry.stockPrice;
-          totalMoneySpent += currencyConverter(totalMoneySpent, entry, purchasePrice);
-        })
-    
-        const percentageChange: number = ((portfolioMarketValue - totalMoneySpent) / totalMoneySpent) * 100;
-        return percentageChange;
-
-
       case 'SEK': {
         switch (entry.stock.currency) {
           case 'DKK': {

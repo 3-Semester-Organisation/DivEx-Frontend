@@ -16,6 +16,7 @@ export const PortfoliosContext = createContext<PortfoliosContextType | null>(nul
 // Create the Provider component
 export const PortfoliosProvider = ({ children }) => {
   const [portfolios, setPortfolios] = useState<Portfolio[] | null>(null);
+
   const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 

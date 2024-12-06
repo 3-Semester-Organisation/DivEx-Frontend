@@ -1,6 +1,11 @@
+import useCheckCredentials from '@/js/useCredentials';
 import * as React from 'react';
 
-export default function settings() {
+
+export default function settings( {isLoggedIn} ) {
+    
+  useCheckCredentials();
+
     return (
     <>
     <div>

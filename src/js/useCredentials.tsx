@@ -5,11 +5,10 @@ import { AuthContext } from "./AuthContext";
 
 export default function useCheckCredentials() {
   const navigate = useNavigate();
-  const { isLoggedin: isLoggedIn } = useContext(AuthContext);
-
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!token) {
       navigate("/login");
     }
-  }, [isLoggedIn, navigate]);
+  }, [token, navigate]);
 }

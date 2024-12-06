@@ -1,7 +1,11 @@
+import useCheckCredentials from '@/js/useCredentials';
 import * as React from 'react';
-import { Button } from '@/components/ui/button';
 
-export default function settings() {
+
+export default function settings( {isLoggedIn} ) {
+    
+  useCheckCredentials();
+
     return (
     <>
     <div>

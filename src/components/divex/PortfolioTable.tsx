@@ -6,15 +6,8 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
-import { useNavigate } from "react-router-dom";
 import { currencyConverter } from "@/js/util";
 
 

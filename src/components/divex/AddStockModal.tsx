@@ -12,7 +12,6 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { usePortfolios } from '@/js/PortfoliosContext';
-import { AuthContext } from '@/js/AuthContext';
 
 const addStockSchema = z.object({
     stockPrice: z.number().gt(0, { message: "Stock price must be greater than 0" }),

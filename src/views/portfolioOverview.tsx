@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
@@ -7,6 +7,7 @@ import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioBut
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
   createPortfolio,
+  fetchPortfolios,
   fetchUpdatePortfolioName,
 } from "@/api/portfolio";
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
@@ -18,13 +19,14 @@ import { CurrencySelect } from "@/components/ui/custom/currency-select";
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { currencyConverter } from "@/js/util";
+import { Portfolio } from "@/divextypes/types";
 
 
 
 export default function PortfolioOverview() {
   // PORTFOLIO STATES
   const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
-    
+
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false)
@@ -36,7 +38,8 @@ export default function PortfolioOverview() {
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
 
-    setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+    // might be redundant? idk
+    // setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
   }
 
   useEffect(() => {
@@ -151,8 +154,8 @@ export default function PortfolioOverview() {
                 </select>
 
                 <button
-                className={isDisplayingDividendSummary ? "hover:underline bg-primary-foreground p-2 rounded-lg border-2 border-gray-400 font-bold shadow-lg" 
-                  : "hover:underline bg-primary-foreground p-2 rounded-lg border-2 border-gray-400"}
+                  className={isDisplayingDividendSummary ? "hover:underline bg-primary-foreground p-2 rounded-lg border-2 border-gray-400 font-bold shadow-lg"
+                    : "hover:underline bg-primary-foreground p-2 rounded-lg border-2 border-gray-400"}
                   onClick={() => setIsDisplayingDividendSummary(!isDisplayingDividendSummary)}>
                   {isDisplayingDividendSummary ? "Dividends" : "Dividends"}
                 </button>
@@ -165,6 +168,7 @@ export default function PortfolioOverview() {
         <SearchBar />
       </div>
 
+
       <div>
         {portfolios !== null && (
           <div>
@@ -175,9 +179,17 @@ export default function PortfolioOverview() {
         )}
 
         {selectedPortfolio && !isDisplayingDividendSummary && (
-          <PortfolioTable
-            selectedPortfolio={selectedPortfolio}
-            currency={currency} />
+          <div className="flex flex-col">
+
+            <div className="flex justify-center items-center w-[30%] mt-5">
+              <PortfolioChart selectedPortfolio={selectedPortfolio} />
+            </div>
+
+            <PortfolioTable
+              selectedPortfolio={selectedPortfolio}
+              currency={currency}
+            />
+          </div>
         )}
 
 

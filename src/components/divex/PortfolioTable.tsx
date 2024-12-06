@@ -31,12 +31,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
       const historicalPricing = entry.stock.historicalPricing ?? [];
       const lastElementIndex = historicalPricing.length - 1;
       const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
-console.log("££££££££££££££££££££££££££££££££££££££££££££££££££")
-      console.log("stock", entry.stock.name)
-      console.log("quantity", entry.quantity)
-      console.log("lateset closing price", latestClosingPrice)
-      console.log("sum", latestClosingPrice * entry.quantity)
-      console.log("££££££££££££££££££££££££££££££££££££££££££££££££££")
+
       totalPortfolioValue += currencyConverter(entry, latestClosingPrice);
 
     })
@@ -76,11 +71,11 @@ console.log("£££££££££££££££££££££££££££££££££�
           }
           case 'SEK': {
             return stockPrice * entry.quantity * 0.65; //1 dkk = 0,65 sek for 05/12-2024 
-            
+
           }
           case 'NOK': {
-            return  stockPrice * entry.quantity * 0.65; //1 dkk = 0,71 sek for 05/12-2024 
-            
+            return stockPrice * entry.quantity * 0.65; //1 dkk = 0,71 sek for 05/12-2024 
+
           }
         }
         break;
@@ -89,16 +84,16 @@ console.log("£££££££££££££££££££££££££££££££££�
       case 'SEK': {
         switch (entry.stock.currency) {
           case 'DKK': {
-            return  stockPrice * entry.quantity * 1.54;
-        
+            return stockPrice * entry.quantity * 1.54;
+
           }
           case 'SEK': {
             return stockPrice * entry.quantity; //1 dkk = 0,65 sek for 05/12-2024 
-           
+
           }
           case 'NOK': {
             return stockPrice * entry.quantity * 0.99; //1 dkk = 0,71 sek for 05/12-2024 
-       
+
           }
         }
         break;
@@ -108,7 +103,7 @@ console.log("£££££££££££££££££££££££££££££££££�
         switch (entry.stock.currency) {
           case 'DKK': {
             return stockPrice * entry.quantity * 1.41;
-      
+
           }
           case 'SEK': {
             return stockPrice * entry.quantity * 0.94;
@@ -116,7 +111,7 @@ console.log("£££££££££££££££££££££££££££££££££�
           }
           case 'NOK': {
             return stockPrice * entry.quantity;
-       
+
           }
         }
       }
@@ -124,9 +119,16 @@ console.log("£££££££££££££££££££££££££££££££££�
     }
   }
 
-console.log("SELECTEDPORT", selectedPortfolio)
-console.log("SELECTEDPORT.ENTRIES", selectedPortfolio.portfolioEntries)
-// console.log("SELECTEDPORT.ENTRIES.LENGTH", selectedPortfolio.portfolioEntries.length)
+
+  // function displayTotalAnnualDividends() {
+  //   let totalAnnualDividends = 0;
+
+  //   selectedPortfolio.portfolioEntries.foreach( en)
+  // }
+
+  console.log("SELECTEDPORT", selectedPortfolio)
+  console.log("SELECTEDPORT.ENTRIES", selectedPortfolio.portfolioEntries)
+  // console.log("SELECTEDPORT.ENTRIES.LENGTH", selectedPortfolio.portfolioEntries.length)
 
   return (
     <>
@@ -185,37 +187,42 @@ console.log("SELECTEDPORT.ENTRIES", selectedPortfolio.portfolioEntries)
                   })
                 )}
 
-                <TableRow>
-                  <TableCell className="text-start font-semibold">
-                    Total:
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell></TableCell>
-                  <TableCell className="text-start font-medium">
-                    {new Intl.NumberFormat('en-US').format(displayPortfolioValue())} {currency}
-                  </TableCell>
-                  <TableCell className="text-start font-medium">
-                    {(() => {
-                      const percentageChange = displayPortfolioPercentageChange();
+                {selectedPortfolio?.portfolioEntries?.length > 0 && (
+                  <TableRow>
+                    <TableCell className="text-start font-semibold">
+                      Total:
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell className="text-start font-medium">
+                      {new Intl.NumberFormat('en-US').format(displayPortfolioValue())} {currency}
+                    </TableCell>
+                    <TableCell className="text-start font-medium">
+                      {(() => {
+                        const percentageChange = displayPortfolioPercentageChange();
 
-                      if (percentageChange > 0) {
-                        return <span className="text-green-700">+{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                      } else if (percentageChange === 0) {
-                        return <span>{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                      } else {
-                        return <span className="text-red-700">{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                      }
-                    })()}
-                  </TableCell>
-                </TableRow>
-
+                        if (percentageChange > 0) {
+                          return <span className="text-green-700">+{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
+                        } else if (percentageChange === 0) {
+                          return <span>{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
+                        } else {
+                          return <span className="text-red-700">{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
+                        }
+                      })()}
+                    </TableCell>
+                  </TableRow>
+                )}
+                
               </TableBody>
             </Table>
           </div>
         )}
       </div>
+
+
+
 
       <div className="w-50% bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
         {selectedPortfolio?.portfolioEntries?.length === 0 && (
@@ -227,23 +234,56 @@ console.log("SELECTEDPORT.ENTRIES", selectedPortfolio.portfolioEntries)
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Invoice</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>Ticker</TableHead>
+                  <TableHead>Stock</TableHead>
+                  <TableHead>Yield</TableHead>
+                  <TableHead>5-Year Avg. Yield</TableHead>
+                  <TableHead>Ratio</TableHead>
+                  <TableHead>Currency</TableHead>
+                  <TableHead>Rate</TableHead>
+                  <TableHead>no. shares</TableHead>
+                  <TableHead>Ex Date</TableHead>
+                  <TableHead>Annual Dividend</TableHead>
                 </TableRow>
               </TableHeader>
 
 
               <TableBody>
                 {selectedPortfolio?.portfolioEntries?.length > 0 && (
-                  <TableRow>
-                    <TableCell className="font-medium">INV001</TableCell>
-                    <TableCell>Paid</TableCell>
-                    <TableCell>Credit Card</TableCell>
-                    <TableCell className="text-right">$250.00</TableCell>
-                  </TableRow>
+
+                  selectedPortfolio.portfolioEntries.map(entry => {
+
+                    return (
+                      <TableRow
+                        className="hover:cursor-pointer"
+                        onClick={() => navigate("/stocks/" + entry.stock.ticker)}>
+                        <TableCell className="text-start">{entry.stock.ticker}</TableCell>
+                        <TableCell className="text-start">{entry.stock.name}</TableCell>
+                        <TableCell className="text-start">{(entry.stock.dividendYield * 100).toFixed(2)}%</TableCell>
+                        <TableCell className="text-start">{(entry.stock.fiveYearAvgDividendYield).toFixed(2)}%</TableCell>
+                        <TableCell className="text-start">{(entry.stock.dividendRatio * 100).toFixed(2)}%</TableCell>
+                        <TableCell className="text-start">{entry.stock.currency}</TableCell>
+                        <TableCell className="text-start">{entry.stock.dividendRate}</TableCell>
+                        <TableCell className="text-start">{entry.quantity}</TableCell>
+                        <TableCell className="text-start">{new Date(entry.stock.exDividendDate * 1000).toDateString()}</TableCell>
+                        <TableCell className="text-start text-green-700">{new Intl.NumberFormat('en-US').format(entry.stock.dividendRate * entry.quantity)}</TableCell>
+                      </TableRow>
+                    )
+                  })
                 )}
+
+                <TableRow>
+                  <TableCell className="text-start">Total Annual Dividends: </TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  <TableCell className="text-start"></TableCell>
+                  {/* <TableCell className="text-start"> {displayTotalAnnualDividends()} {currency}</TableCell> */}
+                </TableRow>
               </TableBody>
 
             </Table>

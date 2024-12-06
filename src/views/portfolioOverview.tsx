@@ -31,6 +31,17 @@ export default function PortfolioOverview() {
     ]);
   }
 
+  useEffect(() => {
+    function getLatestPortfolio(portfolios: Portfolio[]) {
+      const lastElement = portfolios.length - 1;
+      return portfolios[lastElement];
+    }
+
+    if (portfolios?.length > 0) {
+      setSelectedPortfolio(getLatestPortfolio(portfolios));
+    }
+  }, [portfolios]);
+
 
   useEffect(() => {
     async function loadPortfolios() {

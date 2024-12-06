@@ -1,17 +1,13 @@
 "use client";
 
-import * as React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { useContext } from "react";
 import { AuthContext } from "@/js/AuthContext";
-
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -21,19 +17,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/NavigationMenu";
-import { ChevronDown, Navigation, User, Rocket } from "lucide-react";
+import { User, Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../button";
 import { fetchSubscriptionChange } from "@/api/subscription";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
-import { set } from "date-fns";
-
-const authNavigation = [
-  { name: "Settings", to: "/settings" },
-  { name: "Sign out", to: "/" },
-];
 
 const portfolioNavigation: {
   title: string;

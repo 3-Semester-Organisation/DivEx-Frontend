@@ -1,15 +1,12 @@
 'use client'
 
-import * as React from 'react'
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { AuthContext } from '@/js/AuthContext'
-
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { NavLink, useNavigate } from 'react-router-dom'
-
 import {
   Form,
   FormControl,
@@ -29,8 +26,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { makeOption, checkHttpsErrors } from '@/js/util'
-
-
 
 
 // Improved schema with additional validation rules

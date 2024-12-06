@@ -1,9 +1,8 @@
+import React, { useEffect, useState } from 'react'
 import DividendInfo from '@/components/divex/DividendInfo'
 import StockGraph from '@/components/divex/StockGraph'
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from "react";
 import { checkHttpsErrors } from '@/js/util'
-import * as React from 'react'
 import HistoricalDividendChart from '@/components/divex/HistoricalDividendChart';
 import AddStockModal from '@/components/divex/AddStockModal';
 import { Stock } from '@/divextypes/types';

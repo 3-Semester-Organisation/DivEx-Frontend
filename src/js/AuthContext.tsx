@@ -1,5 +1,4 @@
-import * as React from "react";
-import { createContext, useState, useEffect } from "react";
+import React, {createContext, useState, useEffect} from "react";
 import { getSubscriptionTypeFromToken } from "./jwt";
 
 interface AuthContextType {
@@ -49,6 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Function to handle logout
   const logout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("selectedPortfolioId");
     setIsLoggedin(false);
   };
 

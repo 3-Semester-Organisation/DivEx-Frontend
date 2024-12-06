@@ -1,12 +1,9 @@
-// add these import to seperate component buy BTN
-import * as React from 'react'
-import { Portfolio, PortfolioEntryRequest, Stock } from '@/divextypes/types';
+import React, { useState, useContext } from 'react'
+import { PortfolioEntryRequest } from '@/divextypes/types';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from "react";
-import { number, z } from "zod";
+import { z } from "zod";
 import { toast } from "sonner";
 import { AuthContext } from "@/js/AuthContext";
-import { useContext } from "react";
 import { addStockToPortfolio } from "@/api/portfolio"
 import {
     Card,
@@ -15,14 +12,12 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { usePortfolios } from '@/js/PortfoliosContext';
-
-
+import { AuthContext } from '@/js/AuthContext';
 
 const addStockSchema = z.object({
     stockPrice: z.number().gt(0, { message: "Stock price must be greater than 0" }),
     quantity: z.number().min(1, { message: "Quantity must atlest be 1" }),
 });
-
 
 export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isAddingStock }) {
 
@@ -31,14 +26,15 @@ export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isA
         stockPrice: 0,
         quantity: 0
     })
-    const { portfolios, setPortfolios } = usePortfolios();
+    const { portfolios } = usePortfolios();
     const [selectedPortfolioId, setSelectedPortfolioId] = useState<number>();
+    const { subscriptionType } = React.useContext(AuthContext);
     const navigate = useNavigate();
-    const { isLoggedin } = useContext(AuthContext)
+    const token = localStorage.getItem("token");
 
 
 
-    
+
     function cancel(event: React.MouseEvent<HTMLButtonElement>) {
         event.stopPropagation();
         setIsAddingStock(false);
@@ -49,17 +45,17 @@ export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isA
         event.stopPropagation();
         event.preventDefault();
 
-        if (!isLoggedin) {
+        if (!token) {
             setIsAddingStock(false);
             navigate("/login");
             return;
         }
 
+        //form validation
         if (selectedPortfolioId === 0 || selectedPortfolioId === undefined) {
             toast("Select a portfolio");
             return;
         }
-
         const validation = addStockSchema.safeParse(addStockData);
         if (!validation.success) {
             // Display validation error messages
@@ -67,6 +63,21 @@ export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isA
 
             return;
         }
+
+        //stock limit validation
+
+        if (subscriptionType === "FREE") {
+            //TODO make use of selected portfolio in the Portfolio contex when it gets merged.
+            const PORTFOLIO_ENTRY_LIMIT = 3;
+            const selectedPortfolio: Portfolio = portfolios.find(portfolio => portfolio.id === selectedPortfolioId)
+            const portfolioEntries = selectedPortfolio.portfolioEntries.length
+
+            if (portfolioEntries === PORTFOLIO_ENTRY_LIMIT) {
+                toast(`Portfolio limit of ${PORTFOLIO_ENTRY_LIMIT} reached for free users. Upgrade to premium for unlimited entries.`);
+                return;
+            }
+        }
+
 
         try {
             const portfolioEntryRequest: PortfolioEntryRequest = {
@@ -89,12 +100,10 @@ export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isA
 
     }
 
-    
+
     function handleSelectedPortfolio(portfolioId: number) {
         setSelectedPortfolioId(portfolioId);
     }
-    console.log("ID", selectedPortfolioId)
-    console.log("ssssssssssssssssssssssssss", isAddingStock)
 
     return (
         <div className="relative">

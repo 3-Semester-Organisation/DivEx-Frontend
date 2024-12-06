@@ -1,6 +1,7 @@
 // template node.json file
  {
    "compilerOptions": {
+    "esModuleInterop": true,
      "jsx": "react",
      "baseUrl": ".",
      "paths": {

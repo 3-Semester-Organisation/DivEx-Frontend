@@ -1,7 +1,6 @@
-import * as React from "react"
+import React, { useEffect, useState } from "react"
 import { fetchStocksBySearchTerm } from "@/api/stocks";
 import { Stock } from "@/divextypes/types";
-import { useEffect, useState } from "react";
 import { Input } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +40,6 @@ export default function SearchBar() {
 
     return (
         <>
-            {/* TODO FIX BG COLOR TO MATCH THEMEPROVIDER */}
             <div className="relative w-full max-w-md ml-auto">
                 <Input
                     id="search"
@@ -67,7 +65,7 @@ export default function SearchBar() {
                                     className="w-full p-2 hover:underline cursor-pointer border-b last:border-none bg-primary-foreground"
                                 >
                                     <h1 className="flex justify-start font-semibold">{stock.name}</h1>
-                                    <h3 className="flex justify-start text-sm text-gray-500">{stock.ticker}</h3>
+                                    <h3 className="flex justify-start text-sm text-gray-500">{stock.ticker.slice(0, -3)}</h3>
                                 </div>
                             ))}
                         </div>

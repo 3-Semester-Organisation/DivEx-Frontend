@@ -1,16 +1,21 @@
 "use client";
-import * as React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import { useState, useEffect, useContext } from "react";
-import { Stock, Portfolio } from "@/divextypes/types";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
 
 import { usePortfolios } from "@/js/PortfoliosContext";
-import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/api/portfolio";
+import {
+  createPortfolio,
+  fetchUpdatePortfolioName,
+} from "@/api/portfolio";
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
 import SearchBar from "@/components/divex/searchBar";
 import PortfolioTable from "@/components/divex/PortfolioTable";
+import { PortfolioChart } from "@/components/ui/custom/pie-chart";
+import { CurrencySelect } from "@/components/ui/custom/currency-select";
+
+import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { currencyConverter } from "@/js/util";
 
@@ -18,20 +23,20 @@ import { currencyConverter } from "@/js/util";
 
 export default function PortfolioOverview() {
   // PORTFOLIO STATES
-  const { portfolios, setPortfolios } = usePortfolios();
-  const [selectedPortfolio, setSelectedPortfolio] = useState<Portfolio | null>(null);
+  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
+    
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false)
 
 
+  useCheckCredentials();
+
+
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
 
-    setPortfolios((prevPortfolios) => [
-      ...prevPortfolios,
-      newPortfolio
-    ]);
+    setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
   }
 
   useEffect(() => {
@@ -74,9 +79,10 @@ export default function PortfolioOverview() {
       return;
     }
     try {
-      const data = await fetchUpdatePortfolioName(newName, selectedPortfolio.id);
-
-      console.log("changedNAME", data)
+      const data = await fetchUpdatePortfolioName(
+        newName,
+        selectedPortfolio.id
+      );
 
       // Update local state
       const updatedPortfolio = { ...selectedPortfolio, name: data.name };
@@ -87,16 +93,12 @@ export default function PortfolioOverview() {
         )
       );
 
-      // Update localStorage
-      localStorage.setItem("selectedPortfolio", JSON.stringify(updatedPortfolio));
-
       toast.success("Portfolio name updated.");
-
     } catch (error: any) {
       console.error("Update portfolio name error", error);
       toast.error(error.message);
     }
-  }
+  };
 
   return (
     <>

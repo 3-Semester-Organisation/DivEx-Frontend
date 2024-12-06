@@ -67,4 +67,4 @@ interface PaginatedResponse<T> {
     totalPages: number;
 }
 
-export { User, HistoricalPricing, HistoricalDividend, Stock, Portfolio, PortfolioEntries, PaginatedResponse, PortfolioEntryRequest }
+export { User, HistoricalPricing, HistoricalDividend, Stock, Portfolio, PortfolioEntry, PaginatedResponse, PortfolioEntryRequest }

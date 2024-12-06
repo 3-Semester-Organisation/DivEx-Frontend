@@ -1,8 +1,6 @@
-import * as React from "react"
-import { useState, useRef, useCallback } from "react"
+import React, { useState, useRef, useCallback } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { DayPicker } from "react-day-picker"
-import { Separator } from "@/components/ui/separator"
 import "@/index.css"
 import {
   Tooltip,

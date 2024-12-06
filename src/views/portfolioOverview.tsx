@@ -11,7 +11,6 @@ import { createPortfolio, fetchPortfolios, fetchUpdatePortfolioName } from "@/ap
 import { PortfolioEditDialog } from "@/components/ui/custom/portfolioEditDialog";
 import SearchBar from "@/components/divex/searchBar";
 import PortfolioTable from "@/components/divex/PortfolioTable";
-import useCheckCredentials from "@/js/useCredentials";
 
 
 
@@ -22,9 +21,6 @@ export default function PortfolioOverview() {
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
 
-
-
-  useCheckCredentials();
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
@@ -50,6 +46,7 @@ export default function PortfolioOverview() {
     loadPortfolios();
     setSelectedPortfolio(selectedPortfolio);
   }, []);
+
 
 
   const changePortfolioName = async (newName: string) => {
@@ -87,14 +84,6 @@ export default function PortfolioOverview() {
     }
   }
 
-
-  // console.log("portfolios", portfolios)
-  // console.log("Localstorage Ports", JSON.parse(localStorage.getItem("selectedPortfolio")))
-
-  // console.log("Selected PORTs", selectedPortfolio)
-
-
-
   return (
     <>
       <div className="flex flex-row items-center gap-4 mt-5">
@@ -111,12 +100,16 @@ export default function PortfolioOverview() {
               </h1>
             </div>
 
+
             <div className="flex items-center gap-3 mt-4">
-              <PortfolioSelect
-                portfolioList={portfolios}
-                selectedPortfolio={selectedPortfolio}
-                setSelectedPortfolio={setSelectedPortfolio}
-              />
+
+              {selectedPortfolio && (
+                <PortfolioSelect
+                  portfolioList={portfolios}
+                  selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
+                />
+              )}
 
               <div className="content-center">
                 <CreatePortfolioButton
@@ -156,9 +149,11 @@ export default function PortfolioOverview() {
         )}
       </div>
 
-      <PortfolioTable
-        selectedPortfolio={selectedPortfolio}
-        currency={currency} />
+      {selectedPortfolio && (
+        <PortfolioTable
+          selectedPortfolio={selectedPortfolio}
+          currency={currency} />
+      )}
     </>
   );
 }

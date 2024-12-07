@@ -78,7 +78,6 @@ const stockChartConfig = {
 
 const CustomLegend = (props: any) => {
   const { payload } = props;
-console.log("PAYLOAD", payload)
   return (
     <ul className="flex flex-col">
       {payload.map((entry: any, index: number) => (
@@ -149,11 +148,11 @@ export function PortfolioChart({ selectedPortfolio }: PortfolioChartProps) {
 
   return (
     <Card className="bg-primary-foreground shadow-md">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Holdings</CardTitle>
-        <CardDescription>Overview of all current holdings.</CardDescription>
+      <CardHeader >
+        <CardTitle className="">Holdings</CardTitle>
+        
       </CardHeader>
-      <CardContent className="">
+      <CardContent>
         <ChartContainer
           config={stockChartConfig} // same as below, don't remove this
           
@@ -167,7 +166,7 @@ export function PortfolioChart({ selectedPortfolio }: PortfolioChartProps) {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={80}
+              outerRadius={60}
             >
               {stockData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={generateColor(entry.name)} />

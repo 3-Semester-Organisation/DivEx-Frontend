@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -69,6 +70,9 @@ export function PortfolioEditDialog({ selectedPortfolio, onSubmit }) {
           <Button onClick={handleSubmit} type="submit">
             Save changes
           </Button>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">Cancel</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

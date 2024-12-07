@@ -68,7 +68,7 @@ export default function AddStockModal({ stock, setIsAddingStock, stockToAdd, isA
         if (subscriptionType === "FREE") {
             //TODO make use of selected portfolio in the Portfolio contex when it gets merged.
             const PORTFOLIO_ENTRY_LIMIT = 3;
-            const selectedPortfolio: Portfolio = portfolios.find(portfolio => portfolio.id === selectedPortfolioId)
+            const selectedPortfolio = portfolios.find(portfolio => portfolio.id === selectedPortfolioId)
             const portfolioEntries = selectedPortfolio.portfolioEntries.length
 
             if (portfolioEntries === PORTFOLIO_ENTRY_LIMIT) {

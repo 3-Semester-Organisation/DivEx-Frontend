@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { checkHttpsErrors } from '@/js/util'
 import HistoricalDividendChart from '@/components/divex/HistoricalDividendChart';
 import AddStockModal from '@/components/divex/AddStockModal';
+import { AddStockDialog } from '@/components/ui/custom/add-stock-dialog';
 import { Stock } from '@/divextypes/types';
 
 import { Button } from '@/components/ui/button';
@@ -77,7 +78,11 @@ export default function StockDetailsPage() {
                     <div>
                         <div className="flex justify-between gap-3 mt-5">
                             <h1 className="ml-6 font-bold text-3xl">{stock.name}</h1>
-                            <p className="mt-3 mr-auto">{`(${stock.ticker.toUpperCase()})`}</p>
+                                <p className="mt-3 mr-auto">{`(${stock.ticker.toUpperCase()})`}</p>
+                                {/* NEW COMPONENT */}
+                                <AddStockDialog
+                                    stock={stock}
+                                />
                             <button
                                 onClick={(event) => showModal(stock, event)}
                                 className="px-4 py-2 bg-primary-foreground hover:underline rounded-lg border-2 border-gray-400">

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogClose,
@@ -20,31 +23,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { PortfoliosContext, usePortfolios } from "@/js/PortfoliosContext";
 import { AuthContext } from "@/js/AuthContext";
 import { addStockToPortfolio } from "@/api/portfolio";
-import { set } from "date-fns";
 
-export function AddStockDialog({
-  stock,
-  setIsAddingStock,
-  stockToAdd,
-  isAddingStock,
-}) {
-  const [open, setOpen] = useState(false);
-
-  const [addStockData, setAddStockData] = useState({
-    stockPrice: 0,
-    quantity: 0,
+const formSchema = z.object({
+    portfolio: z.string().nonempty({ message: "Please select a portfolio." }),
+    
+    price: z
+      .string()
+      .regex(/^\d+(\.\d+)?$/, { message: "Price must be a valid number." })
+      .transform((value) => parseFloat(value)),
+    
+    quantity: z
+      .string()
+      .regex(/^\d+$/, { message: "Quantity must be a valid integer." })
+      .transform((value) => parseInt(value, 10)),
   });
 
+export function AddStockDialog({ stock }) {
+  const [open, setOpen] = useState(false);
   const { portfolios } = usePortfolios();
   const { selectedPortfolio } = useContext(PortfoliosContext);
   const { subscriptionType } = useContext(AuthContext);
-  const token = localStorage.getItem("token");
 
   if (subscriptionType === "FREE" && open) {
     //TODO make use of selected portfolio in the Portfolio contex when it gets merged.
@@ -55,19 +65,25 @@ export function AddStockDialog({
       toast.error(
         `Portfolio limit of ${PORTFOLIO_ENTRY_LIMIT} reached for free users. Upgrade to premium for unlimited entries.`
       );
-        setOpen(false);
+      setOpen(false);
       return;
     }
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      portfolio: selectedPortfolio ? selectedPortfolio.id.toString() : "",
+    },
+  });
+
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const portfolioEntryRequest = {
         ticker: stock.ticker,
-        stockPrice: addStockData.stockPrice,
-        quantity: addStockData.quantity,
-        portfolioId: selectedPortfolio.id,
+        stockPrice: values.price,
+        quantity: values.quantity,
+        portfolioId: values.portfolio,
       };
 
       const isAdded = addStockToPortfolio(portfolioEntryRequest);
@@ -83,87 +99,120 @@ export function AddStockDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <div className="hover:bg-accent rounded-md cursor-pointer">Add</div>
+          <DialogTrigger asChild>
+              <Button>
+                  Add (new)
+              </Button>
+              {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Add Stock</DialogTitle>
-            <DialogDescription>
-              Add a stock to your portfolio.
-            </DialogDescription>
-          </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-6"
+          >
+            <DialogHeader>
+              <DialogTitle>Add Stock</DialogTitle>
+              <DialogDescription>
+                Fill in the details below to add the stock to your portfolio.
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="grid gap-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="">
-                portfolio
-              </Label>
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a portfolio" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {portfolios.map((portfolio) => (
-                      <SelectItem
-                        key={portfolio.id}
-                        value={portfolio.id.toString()}
+            <div className="grid gap-4">
+              {/* Portfolio Select Field */}
+              <FormField
+                control={form.control}
+                name="portfolio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Portfolio</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
                       >
-                        {portfolio.name}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="stock">stock</Label>
-              {/*  */}
-              <Input
-                id="stock"
-                className="w-[180px]"
-                value={stock.name}
-                disabled
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select a portfolio" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {portfolios &&
+                            portfolios.map((portfolio) => (
+                              <SelectItem
+                                key={portfolio.id}
+                                value={portfolio.id.toString()}
+                              >
+                                {portfolio.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Stock Name (Disabled Input) */}
+              <FormItem>
+                <FormLabel>Stock</FormLabel>
+                <FormControl>
+                  <Input value={stock.name} disabled />
+                </FormControl>
+              </FormItem>
+
+              {/* Price Input Field */}
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                            <Input
+                                type="number"
+                                inputMode="decimal"
+                        placeholder="Enter price"
+                        {...field}
+                        className="bg-primary-foreground border-primary"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Quantity Input Field */}
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input
+                                placeholder="Enter quantity"
+                                type="number"
+                                inputMode="numeric"
+                        {...field}
+                        className="bg-primary-foreground border-primary"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="price">price</Label>
-              <Input
-                id="price"
-                className="w-[180px]"
-                onChange={(e) =>
-                  setAddStockData({
-                    ...addStockData,
-                    stockPrice: parseFloat(e.target.value),
-                  })
-                }
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="quantity">quantity</Label>
-              <Input
-                id="quantity"
-                className="w-[180px]"
-                onChange={(e) =>
-                  setAddStockData({
-                    ...addStockData,
-                    quantity: parseFloat(e.target.value),
-                  })
-                }
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Add</Button>
-            <DialogClose asChild>
-              <Button type="button" variant="ghost">
-                Cancel
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </form>
+
+            <DialogFooter>
+              <Button type="submit">Add</Button>
+              <DialogClose asChild>
+                <Button type="button" variant="ghost">
+                  Cancel
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

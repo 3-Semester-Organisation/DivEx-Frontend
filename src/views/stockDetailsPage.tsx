@@ -79,11 +79,9 @@ export default function StockDetailsPage() {
                         <div className="flex justify-between gap-3 mt-5">
                             <h1 className="ml-6 font-bold text-3xl">{stock.name}</h1>
                                 <p className="mt-3 mr-auto">{`(${stock.ticker.toUpperCase()})`}</p>
+                                {/* NEW COMPONENT */}
                                 <AddStockDialog
                                     stock={stock}
-                                    setIsAddingStock={setIsAddingStock}
-                                    stockToAdd={stockToAdd}
-                                    isAddingStock={isAddingStock}
                                 />
                             <button
                                 onClick={(event) => showModal(stock, event)}

@@ -54,8 +54,6 @@ export default function StockDetailsPage() {
             setStockToAdd(stock);
             setIsAddingStock(true);
         }
-
-        
     }
 
     return (

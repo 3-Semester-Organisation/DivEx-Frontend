@@ -108,7 +108,7 @@ async function updatePortfolioName(
 
 
 async function deletePortfolioEntry(
-    portfolioEntryId: number
+    portfolioStockName: String
 ){
     try{
         const response = await fetch(`https://localhost:8080/api/v1/portfolioentry`,{
@@ -116,7 +116,7 @@ async function deletePortfolioEntry(
             headers: {
                 "Content-type": "application/json",
             },
-            body: JSON.stringify({portfolioEntryId})
+            body: JSON.stringify({portfolioStockName})
         });
         checkHttpsErrors(response);
     } catch (error) {
@@ -124,4 +124,4 @@ async function deletePortfolioEntry(
     }
 }
 
-export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName }
+export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName, deletePortfolioEntry }

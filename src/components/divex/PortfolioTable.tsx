@@ -9,6 +9,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { currencyConverter } from "@/js/util";
+import { deletePortfolioEntry } from "@/api/portfolio"
 
 
 export default function PortfolioTable({ selectedPortfolio, currency }) {
@@ -68,7 +69,12 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     }
   }
 
+  function deleteEntry(stockName: String, event: React.MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation();
+    deletePortfolioEntry(stockName);
 
+
+  }
 
   function handleSort(column: string) {
 
@@ -148,7 +154,11 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                         </TableCell>
                         <TableCell className="text-start font-medium">
                           {
-                            "Delete"
+                            <button
+                                onClick={(event) => deleteEntry(entry.stock.name, event)}
+                                className="px-4 py-2 bg-primary-foreground hover:underline rounded-lg border-2 border-gray-400">
+                              Remove
+                            </button>
                           }
                         </TableCell>
                       </TableRow>

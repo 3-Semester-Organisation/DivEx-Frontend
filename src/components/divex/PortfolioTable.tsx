@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -13,8 +13,9 @@ import { currencyConverter } from "@/js/util";
 
 export default function PortfolioTable({ selectedPortfolio, currency }) {
 
-  const navigate = useNavigate();
+  const [sort, setSort] = useState({ column: "", direction: "" })
 
+  const navigate = useNavigate();
   function showStockDetails(ticker: string) {
     navigate("/stocks/" + ticker);
   }
@@ -37,7 +38,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
 
 
 
-  function displayPortfolioPercentageChange() {
+  function calculatePortfolioPercentageChange() {
 
     const portfolioMarketValue = displayPortfolioValue();
 
@@ -55,6 +56,42 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     return percentageChange;
   }
 
+  function displayPorfolioPercentageChange() {
+    const percentageChange = calculatePortfolioPercentageChange();
+
+    if (percentageChange > 0) {
+      return <span className="text-green-700">+{numberFormater(percentageChange)}%</span>;
+    } else if (percentageChange === 0) {
+      return <span>{numberFormater(percentageChange)}%</span>;
+    } else {
+      return <span className="text-red-700">{numberFormater(percentageChange)}%</span>;
+    }
+  }
+
+
+
+  function handleSort(column: string) {
+
+  }
+
+  useEffect(() => {
+
+  }, [sort])
+
+  function numberFormater(value: number) {
+
+    // const formattedValue = new Intl.NumberFormat('de-DE', {
+    //   minimumFractionDigits: 0,
+    //   maximumFractionDigits: 2
+    // }).format(value);
+
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(value);
+  }
+
+
   return (
     <>
       <div>
@@ -68,7 +105,8 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Ticker</TableHead>
+                  <TableHead
+                    onClick={() => handleSort("Ticker")}>Ticker</TableHead>
                   <TableHead>Stock</TableHead>
                   <TableHead>Latest Price</TableHead>
                   <TableHead>Currency</TableHead>
@@ -86,9 +124,10 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                     const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
 
                     const purchasePrice = entry.stockPrice;
-                    const marketValue = new Intl.NumberFormat('en-US').format(latestClosingPrice * entry.quantity);
-                    const percentageValueChange = new Intl.NumberFormat('en-US').format((((latestClosingPrice - purchasePrice) / purchasePrice) * 100))
-
+                    const marketValue = numberFormater(latestClosingPrice * entry.quantity);
+                    const percentageValueChange = (((latestClosingPrice - purchasePrice) / purchasePrice) * 100);
+                    console.log("&CANACEGE", percentageValueChange)
+                    console.log("&CANACEGE__TRUE", percentageValueChange > 0)
                     return (
                       <TableRow
                         onClick={() => showStockDetails(entry.stock.ticker)}
@@ -102,9 +141,9 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                         <TableCell className="text-start font-medium">{marketValue}</TableCell>
                         <TableCell className="text-start font-medium">
                           {
-                            Number.parseFloat(percentageValueChange) > 0 ? (<span className="text-green-700">+{percentageValueChange}%</span>)
-                              : Number.parseFloat(percentageValueChange) === 0 ? (<span>{percentageValueChange}%</span>)
-                                : (<span className="text-red-700">{percentageValueChange}%</span>)
+                            percentageValueChange > 0 ? (<span className="text-green-700">+{numberFormater(percentageValueChange)}%</span>)
+                              : percentageValueChange === 0 ? (<span>{numberFormater(percentageValueChange)}%</span>)
+                                : (<span className="text-red-700">{numberFormater(percentageValueChange)}%</span>)
                           }
                         </TableCell>
                       </TableRow>
@@ -122,20 +161,10 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell className="text-start font-medium">
-                      {new Intl.NumberFormat('en-US').format(displayPortfolioValue())} {currency}
+                      {numberFormater(displayPortfolioValue())} {currency}
                     </TableCell>
                     <TableCell className="text-start font-medium">
-                      {(() => {
-                        const percentageChange = displayPortfolioPercentageChange();
-
-                        if (percentageChange > 0) {
-                          return <span className="text-green-700">+{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                        } else if (percentageChange === 0) {
-                          return <span>{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                        } else {
-                          return <span className="text-red-700">{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                        }
-                      })()}
+                      {displayPorfolioPercentageChange()}
                     </TableCell>
                   </TableRow>
                 )}

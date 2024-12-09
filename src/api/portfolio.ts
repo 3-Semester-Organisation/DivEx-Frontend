@@ -111,7 +111,16 @@ async function deletePortfolioEntry(
     portfolioEntryId: number
 ){
     try{
-
+        const response = await fetch(`https://localhost:8080/api/v1/portfolioentry`,{
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json",
+            },
+            body: JSON.stringify({portfolioEntryId})
+        });
+        checkHttpsErrors(response);
+    } catch (error) {
+        console.log(error);
     }
 }
 

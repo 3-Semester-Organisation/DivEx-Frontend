@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
-import { currencyConverter } from "@/js/util";
+import { stockCurrencyConverter } from "@/js/util";
 import { Portfolio } from "@/divextypes/types";
 
 export default function PortfolioOverview() {
@@ -189,8 +189,8 @@ export default function PortfolioOverview() {
                 />) : (
                 <DividendSummaryTable
                   selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
-                  currencyConverter={currencyConverter}
                   numberFormater={numberFormater}
                 />)}
               </div>

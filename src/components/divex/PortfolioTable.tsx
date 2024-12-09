@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { currencyConverter } from "@/js/util";
+import { stockCurrencyConverter } from "@/js/util";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
 
@@ -31,7 +31,7 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
       const lastElementIndex = historicalPricing.length - 1;
       const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
 
-      totalPortfolioValue += currencyConverter(latestClosingPrice, entry, currency);
+      totalPortfolioValue += stockCurrencyConverter(latestClosingPrice, entry, currency);
 
     })
 
@@ -48,7 +48,7 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
 
     selectedPortfolio.portfolioEntries.forEach(entry => {
       const purchasePrice: number = entry.stockPrice;
-      totalMoneySpent += currencyConverter(purchasePrice, entry, currency);
+      totalMoneySpent += stockCurrencyConverter(purchasePrice, entry, currency);
     })
 
     const percentageChange: number = ((portfolioMarketValue - totalMoneySpent) / totalMoneySpent) * 100;
@@ -237,7 +237,12 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
 
                   <TableHead className="hover: cursor-pointer "
                     onClick={() => handleCoulmnClick("Value")}>
-                    Value {renderSortIndicator("Value")}
+                    Value (<i>Base Currency</i>) {renderSortIndicator("Value")}
+                  </TableHead>
+                  
+                  <TableHead className="hover: cursor-pointer "
+                    onClick={() => handleCoulmnClick("Value")}>
+                    Value (<i>Selected Currency</i>) {renderSortIndicator("Value")}
                   </TableHead>
 
                   <TableHead className="hover: cursor-pointer p-1"
@@ -251,7 +256,8 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
                 {selectedPortfolio?.portfolioEntries?.length > 0 && (
                   selectedPortfolio.portfolioEntries.map((entry) => {
                     const latestClosingPrice = getLatestClosingPrice(entry);
-                    const marketValue = numberFormater(latestClosingPrice * entry.quantity);
+                    const marketValueBaseCurrency = numberFormater(latestClosingPrice * entry.quantity);
+                    const marketValueSelectedCurrency = stockCurrencyConverter(latestClosingPrice, entry, currency);
 
                     const stockPercentageChange = calculateStockPercentageChange(entry);
 
@@ -265,7 +271,8 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
                         <TableCell className="text-start font-medium">{latestClosingPrice}</TableCell>
                         <TableCell className="text-start font-medium">{entry.stock.currency}</TableCell>
                         <TableCell className="text-start font-medium">{entry.quantity}</TableCell>
-                        <TableCell className="text-start font-medium">{marketValue}</TableCell>
+                        <TableCell className="text-start font-medium">{marketValueBaseCurrency}</TableCell>
+                        <TableCell className="text-start font-medium">{numberFormater(marketValueSelectedCurrency)} {currency}</TableCell>
                         <TableCell className="text-start font-medium">{displayStockPercentageChange(stockPercentageChange)}</TableCell>
                       </TableRow>
                     );
@@ -277,6 +284,7 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
                     <TableCell className="text-start font-semibold">
                       Total:
                     </TableCell>
+                    <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>

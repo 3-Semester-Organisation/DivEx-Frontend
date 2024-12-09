@@ -44,7 +44,7 @@ function makeAuthOption(method: string, token: string, body?: any): RequestInit 
     return option;
 }
 
-function currencyConverter(stockRelatedValue, entry, currency) {
+function stockCurrencyConverter(stockRelatedValue, entry, currency) {
     // TODO fetch realtime currency in the future 
     switch (currency) {
 
@@ -103,5 +103,5 @@ function currencyConverter(stockRelatedValue, entry, currency) {
     }
   }
 
-export { checkHttpsErrors, makeOption, makeAuthOption, currencyConverter };
+export { checkHttpsErrors, makeOption, makeAuthOption, stockCurrencyConverter };
 

@@ -8,8 +8,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from 'react-router-dom';
+import { stockCurrencyConverter } from '@/js/util';
 
-export default function DividendSummaryTable( {selectedPortfolio, currency, currencyConverter, numberFormater} ) {
+export default function DividendSummaryTable( {selectedPortfolio, setSelectedPortfolio, currency, numberFormater} ) {
 
 const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ const navigate = useNavigate();
     selectedPortfolio.portfolioEntries.forEach( entry => {
       const dividendRate = entry.stock.dividendRate
 
-      totalAnnualDividends += currencyConverter(dividendRate, entry, currency);
+      totalAnnualDividends += stockCurrencyConverter(dividendRate, entry, currency);
     })
 
     return totalAnnualDividends;

@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
   Table,
   TableBody,
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Stock } from "@/divextypes/types";
+import { AddStockDialog } from "./add-stock-dialog";
 
 interface HistoricalPricing {
   openingPrice: number;
@@ -33,10 +33,12 @@ interface PaginatedResponse<T> {
 const tableHeads = [
   { id: "ticker", label: "Ticker" },
   { id: "name", label: "Name" },
+  { id: "sector", label: "Sector" },
   { id: "historical.previousDailyClosingPrice", label: "Closing price" },
   { id: "dividend.dividendRate", label: "Dividend Rate" },
   { id: "dividend.dividendYield", label: "Dividend Yield" },
   { id: "dividend.ExDividendDate", label: "Ex Date" },
+  { id: "button", label: "" },
 ];
 
 export default function StockTable({ stocks, sorting, onSortClick, isLoading }) {
@@ -98,12 +100,18 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
               >
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.ticker.slice(0, -3)}</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.name}</TableCell>
+                <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.sector}</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">
                 {stock.historicalPricing[stock.historicalPricing.length - 1].previousDailyClosingPrice} {stock.currency}
                 </TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
+                <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">
+                  <div onClick={(event) => event.stopPropagation()}>
+                    <AddStockDialog stock={stock} />
+                    </div>
+                </TableCell>
                 
               </TableRow>
             ))

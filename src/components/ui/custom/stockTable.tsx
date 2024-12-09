@@ -112,6 +112,7 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
                     <AddStockDialog stock={stock} />
                     </div>
                 </TableCell>
+
                 
               </TableRow>
             ))

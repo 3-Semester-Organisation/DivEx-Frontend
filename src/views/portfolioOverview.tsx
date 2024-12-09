@@ -38,7 +38,7 @@ export default function PortfolioOverview() {
     const newPortfolio = await createPortfolio(values);
 
     // might be redundant? idk
-    // setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+    setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
   }
 
   useEffect(() => {
@@ -59,7 +59,6 @@ export default function PortfolioOverview() {
 
       if (!selectedPortfolio && data && data.length > 0) {
         setSelectedPortfolio(data[0]);
-        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
       }
     }
 
@@ -98,6 +97,8 @@ export default function PortfolioOverview() {
       toast.error(error.message);
     }
   };
+
+  console.log(isDisplayingDividendSummary)
 
   return (
     <>
@@ -175,7 +176,7 @@ export default function PortfolioOverview() {
             </div>
 
             <div className="col-span-10">
-              {isDisplayingDividendSummary ? (
+              {!isDisplayingDividendSummary ? (
                 <PortfolioTable
                   selectedPortfolio={selectedPortfolio}
                   currency={currency}

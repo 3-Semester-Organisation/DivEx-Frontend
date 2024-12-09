@@ -36,8 +36,6 @@ export default function PortfolioOverview() {
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
-
-    // might be redundant? idk
     setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
   }
 
@@ -97,8 +95,6 @@ export default function PortfolioOverview() {
       toast.error(error.message);
     }
   };
-
-  console.log(isDisplayingDividendSummary)
 
   return (
     <>

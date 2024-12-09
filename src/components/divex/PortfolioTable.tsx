@@ -11,7 +11,7 @@ import {
 import { currencyConverter } from "@/js/util";
 
 
-export default function PortfolioTable({ selectedPortfolio, currency }) {
+export default function PortfolioTable({ selectedPortfolio, currency, numberFormater }) {
 
   const [sort, setSort] = useState({ column: "", direction: "" })
 
@@ -50,9 +50,6 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     })
 
     const percentageChange: number = ((portfolioMarketValue - totalMoneySpent) / totalMoneySpent) * 100;
-    console.log("PORTFOLIOMARKETVALUE", portfolioMarketValue)
-    console.log("TOTALMONEYSPENT", totalMoneySpent)
-    console.log("CHANGE", percentageChange)
     return percentageChange;
   }
 
@@ -91,13 +88,6 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
   useEffect(() => {
 
   }, [sort])
-
-  function numberFormater(value: number) {
-    return new Intl.NumberFormat('de-DE', {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(value);
-  }
 
 
   return (

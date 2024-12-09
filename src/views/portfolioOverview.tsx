@@ -96,6 +96,14 @@ export default function PortfolioOverview() {
     }
   };
 
+
+  function numberFormater(value: number) {
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(value);
+  }
+
   return (
     <>
       <div className="relative group">
@@ -176,11 +184,13 @@ export default function PortfolioOverview() {
                 <PortfolioTable
                   selectedPortfolio={selectedPortfolio}
                   currency={currency}
+                  numberFormater={numberFormater}
                 />) : (
                 <DividendSummaryTable
                   selectedPortfolio={selectedPortfolio}
                   currency={currency}
                   currencyConverter={currencyConverter}
+                  numberFormater={numberFormater}
                 />)}
               </div>
           </div>

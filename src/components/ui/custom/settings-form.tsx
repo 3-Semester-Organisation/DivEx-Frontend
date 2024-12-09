@@ -27,20 +27,22 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { getUserDetails } from "@/api/user";
 import { updatePassword, updateUserDetails } from "@/api/user";
 
-
-const formSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(2, { message: "Name must be at least 2 characters long" }).optional(),
-    lastName: z
-      .string()
-      .min(2, { message: "Name must be at least 2 characters long" }).optional(),
-    email: z.string().email({ message: "Invalid email address" }),
-    //phonenumber, no whitespace, no special characters, no letters
-    phone: z.string().regex(/^\d{8,12}$/, { message: "Invalid phone number" }).optional(),
-    
-  });
+const formSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters long" })
+    .optional(),
+  lastName: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters long" })
+    .optional(),
+  email: z.string().email({ message: "Invalid email address" }),
+  //phonenumber, no whitespace, no special characters, no letters
+  phone: z
+    .string()
+    .regex(/^\d{8,12}$/, { message: "Invalid phone number" })
+    .optional(),
+});
 
 const passwordFormSchema = z
   .object({
@@ -62,7 +64,7 @@ export default function SettingsForm() {
       firstName: "",
       lastName: "",
       email: "",
-      phone: ""
+      phone: "",
     },
   });
 
@@ -118,9 +120,9 @@ export default function SettingsForm() {
     values: z.infer<typeof passwordFormSchema>
   ) {
     try {
-        const password = {
-            password: values.password,
-      }
+      const password = {
+        password: values.password,
+      };
       await updatePassword(password);
       console.log("Password Change:", values);
       toast.success("Password changed successfully.");
@@ -132,175 +134,183 @@ export default function SettingsForm() {
 
   return (
     <>
-      <div>
-        <Card className="mx-auto max-w-3xl w-96">
-          <CardHeader>
-            <CardTitle className="text-2xl">Change password</CardTitle>
-            <CardDescription>Change your password here.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...passwordForm}>
-              <form
-                onSubmit={passwordForm.handleSubmit(onSubmitPasswordChange)}
-                className="space-y-8"
-              >
-                <div className="grid gap-4">
-                  {/* Password Field */}
-                  <FormField
-                    control={passwordForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="password">Password</FormLabel>
-                        <FormControl>
-                          <PasswordInput
-                            id="password"
-                            placeholder="******"
-                            autoComplete="new-password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+      <div className="grid grid-cols-12">
+        {/* User Details Form */}
+        <div className="min-h-[60vh] h-full items-center justify-center col-span-3">
+          <Card className="mx-auto max-w-3xl w-96 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl">Settings</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmitUserDetails)}
+                  className="space-y-8"
+                >
+                  <div className="grid gap-4">
+                    {/* Name Field */}
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel className="flex justify-start" htmlFor="name">First name</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="name"
+                              placeholder="John"
+                              defaultValue={user?.firstName}
+                              className="bg-primary-foreground"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {/* Confirm Password Field */}
-                  <FormField
-                    control={passwordForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="confirmPassword">
-                          Confirm Password
-                        </FormLabel>
-                        <FormControl>
-                          <PasswordInput
-                            id="confirmPassword"
-                            placeholder="******"
-                            autoComplete="new-password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    {/* Name Field */}
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel className="flex justify-start" htmlFor="lastName">Last name</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="lastName"
+                              placeholder="Doe"
+                              defaultValue={user?.lastName}
+                              className="bg-primary-foreground"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <Button type="submit" className="w-full">
-                    Change password
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
+                    {/* Email Field */}
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel className="flex justify-start" htmlFor="email">Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="email"
+                              placeholder="johndoe@mail.com"
+                              defaultValue={user?.email}
+                              className="bg-primary-foreground"
+                              type="email"
+                              autoComplete="email"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-      <div className="flex min-h-[60vh] h-full items-center justify-center px-4">
-        <Card className="mx-auto max-w-3xl w-96">
-          <CardHeader>
-            <CardTitle className="text-2xl">Settings</CardTitle>
-            <CardDescription>Change your settings here.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmitUserDetails)}
-                className="space-y-8"
-              >
-                <div className="grid gap-4">
-                  {/* Name Field */}
-                  <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="name">First name</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="name"
-                            placeholder="John"
-                            defaultValue={user?.firstName}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    {/* Phone Field */}
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel className="flex justify-start" htmlFor="phone">Phone</FormLabel>
+                          <FormControl>
+                            <Input
+                              id="phone"
+                              placeholder="12 34 56 78"
+                              defaultValue={user?.phone}
+                              className="bg-primary-foreground"
+                              type="tel"
+                              autoComplete="tel"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full">
+                      Update
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
 
-                  {/* Name Field */}
-                  <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="lastName">Last name</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="lastName"
-                            placeholder="Doe"
-                            defaultValue={user?.lastName}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+        {/* Password Change Form */}
+        <div className="col-span-3">
+          <Card className="mx-auto max-w-3xl w-96 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl">Change password</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...passwordForm}>
+                <form
+                  onSubmit={passwordForm.handleSubmit(onSubmitPasswordChange)}
+                  className="space-y-8"
+                >
+                  <div className="grid gap-4">
+                    {/* Password Field */}
+                    <FormField
+                      control={passwordForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel className="flex justify-start" htmlFor="password">Password</FormLabel>
+                          <FormControl>
+                            <PasswordInput
+                              id="password"
+                              placeholder="******"
+                              autoComplete="new-password"
+                              className="bg-primary-foreground"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {/* Email Field */}
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="email">Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="email"
-                            placeholder="johndoe@mail.com"
-                            defaultValue={user?.email}
-                            type="email"
-                            autoComplete="email"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    {/* Confirm Password Field */}
+                    <FormField
+                      control={passwordForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel className="flex justify-start" htmlFor="confirmPassword">
+                            Confirm Password
+                          </FormLabel>
+                          <FormControl>
+                            <PasswordInput
+                              id="confirmPassword"
+                              placeholder="******"
+                              autoComplete="new-password"
+                              className="bg-primary-foreground"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {/* Phone Field */}
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="phone">Phone</FormLabel>
-                        <FormControl>
-                          <Input
-                            id="phone"
-                            placeholder="12 34 56 78"
-                            defaultValue={user?.phone}
-                            type="tel"
-                            autoComplete="tel"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="w-full">
-                    Update
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                    <Button type="submit" className="w-full">
+                      Change password
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </>
   );

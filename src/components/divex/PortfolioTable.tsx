@@ -23,7 +23,6 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
   }
 
   function displayPortfolioValue() {
-
     let totalPortfolioValue: number = 0;
 
     selectedPortfolio.portfolioEntries.forEach(entry => {
@@ -32,7 +31,6 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
       const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
 
       totalPortfolioValue += stockCurrencyConverter(latestClosingPrice, entry, currency);
-
     })
 
     return totalPortfolioValue;
@@ -41,7 +39,6 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
 
 
   function calculatePortfolioPercentageChange() {
-
     const portfolioMarketValue = displayPortfolioValue();
 
     let totalMoneySpent: number = 0;
@@ -239,7 +236,7 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
                     onClick={() => handleCoulmnClick("Value")}>
                     Value (<i>Base Currency</i>) {renderSortIndicator("Value")}
                   </TableHead>
-                  
+
                   <TableHead className="hover: cursor-pointer "
                     onClick={() => handleCoulmnClick("Value")}>
                     Value (<i>Selected Currency</i>) {renderSortIndicator("Value")}
@@ -272,7 +269,7 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
                         <TableCell className="text-start font-medium">{entry.stock.currency}</TableCell>
                         <TableCell className="text-start font-medium">{entry.quantity}</TableCell>
                         <TableCell className="text-start font-medium">{marketValueBaseCurrency}</TableCell>
-                        <TableCell className="text-start font-medium">{numberFormater(marketValueSelectedCurrency)} {currency}</TableCell>
+                        <TableCell className="text-start font-medium">{currency} {numberFormater(marketValueSelectedCurrency)}</TableCell>
                         <TableCell className="text-start font-medium">{displayStockPercentageChange(stockPercentageChange)}</TableCell>
                       </TableRow>
                     );
@@ -290,7 +287,7 @@ export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell className="text-start font-medium">
-                      {numberFormater(displayPortfolioValue())} {currency}
+                      {currency} {numberFormater(displayPortfolioValue())}
                     </TableCell>
                     <TableCell className="text-start font-medium">
                       {displayPorfolioPercentageChange()}

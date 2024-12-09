@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { useNavigate } from 'react-router-dom';
 
-export default function DividendSummaryTable( {selectedPortfolio, currency, currencyConverter} ) {
+export default function DividendSummaryTable( {selectedPortfolio, currency, currencyConverter, numberFormater} ) {
 
 const navigate = useNavigate();
 
@@ -67,6 +67,7 @@ const navigate = useNavigate();
                     return (
                       <TableRow
                         className="hover:cursor-pointer"
+                        key={entry.stock.ticker}
                         onClick={() => navigate("/stocks/" + entry.stock.ticker)}>
                         <TableCell className="text-start">{entry.stock.ticker}</TableCell>
                         <TableCell className="text-start">{entry.stock.name}</TableCell>
@@ -77,7 +78,7 @@ const navigate = useNavigate();
                         <TableCell className="text-start">{dividendRate}</TableCell>
                         <TableCell className="text-start">{entry.quantity}</TableCell>
                         <TableCell className="text-start">{new Date(entry.stock.exDividendDate * 1000).toDateString()}</TableCell>
-                        <TableCell className="text-start text-green-700 font-semibold">{new Intl.NumberFormat('en-US').format(entry.stock.dividendRate * entry.quantity)}</TableCell>
+                        <TableCell className="text-start text-green-700 font-semibold">{numberFormater(entry.stock.dividendRate * entry.quantity)}</TableCell>
                       </TableRow>
                     )
                   })
@@ -93,7 +94,7 @@ const navigate = useNavigate();
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
-                  <TableCell className="text-start text-green-700 font-semibold"> {new Intl.NumberFormat('en-US').format(displayTotalAnnualDividends())} {currency}</TableCell>
+                  <TableCell className="text-start text-green-700 font-semibold"> {numberFormater(displayTotalAnnualDividends())} {currency}</TableCell>
                 </TableRow>
               </TableBody>
 

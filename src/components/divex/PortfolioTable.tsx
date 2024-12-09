@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import {
   Table,
@@ -9,12 +9,15 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { currencyConverter } from "@/js/util";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { Portfolio, PortfolioEntry } from "@/divextypes/types";
 
 
-export default function PortfolioTable({ selectedPortfolio, currency }) {
+export default function PortfolioTable({ selectedPortfolio, setSelectedPortfolio, currency, numberFormater }) {
+
+  const [sort, setSort] = useState({ column: "", direction: "asc" })
 
   const navigate = useNavigate();
-
   function showStockDetails(ticker: string) {
     navigate("/stocks/" + ticker);
   }
@@ -37,7 +40,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
 
 
 
-  function displayPortfolioPercentageChange() {
+  function calculatePortfolioPercentageChange() {
 
     const portfolioMarketValue = displayPortfolioValue();
 
@@ -49,11 +52,150 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     })
 
     const percentageChange: number = ((portfolioMarketValue - totalMoneySpent) / totalMoneySpent) * 100;
-    // console.log("PORTFOLIOMARKETVALUE", portfolioMarketValue)
-    // console.log("TOTALMONEYSPENT", totalMoneySpent)
-    // console.log("CHANGE", percentageChange)
     return percentageChange;
   }
+
+
+
+  function displayPorfolioPercentageChange() {
+    const percentageChange = calculatePortfolioPercentageChange();
+
+    if (percentageChange > 0) {
+      return <span className="text-green-700">+{numberFormater(percentageChange)}%</span>;
+
+    } else if (percentageChange === 0) {
+      return <span>{numberFormater(percentageChange)}%</span>;
+
+    } else {
+      return <span className="text-red-700">{numberFormater(percentageChange)}%</span>;
+    }
+  }
+
+
+
+  function getLatestClosingPrice(entry: PortfolioEntry) {
+    const historicalPricing = entry.stock.historicalPricing ?? [];
+    const lastElementIndex = historicalPricing.length - 1;
+    return historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
+  }
+
+
+  function calculateStockPercentageChange(entry: PortfolioEntry) {
+    const latestClosingPrice = getLatestClosingPrice(entry);
+    const purchasePrice = entry.stockPrice;
+    const stockPercentageChange = (((latestClosingPrice - purchasePrice) / purchasePrice) * 100);
+    return stockPercentageChange;
+  }
+
+
+  function displayStockPercentageChange(percentageValueChange: number) {
+
+    if (percentageValueChange > 0) {
+      return <span className="text-green-700">+{numberFormater(percentageValueChange)}%</span>
+
+    } else if (percentageValueChange === 0) {
+      return <span>{numberFormater(percentageValueChange)}%</span>
+
+    } else {
+      return <span className="text-red-700">{numberFormater(percentageValueChange)}%</span>
+    }
+  }
+
+
+
+  function handleCoulmnClick(column: string) {
+
+    const columnHeader = column.toLocaleLowerCase();
+    setSort((previous) => ({
+      column: columnHeader,
+      direction: columnHeader === previous.column && previous.direction === 'asc' ? 'desc' : 'asc'
+    }))
+
+  }
+
+  function renderSortIndicator(column: string) {
+    const columnHeader = column.toLocaleLowerCase();
+    if (sort.column === columnHeader) {
+      return sort.direction === "asc" ? <ChevronUp className="inline-block h-4 w-4" /> : <ChevronDown className="inline-block h-4 w-4" />;
+    }
+    return ""; // No indicator if the column is not currently sorted
+  }
+
+
+  function sortColumn() {
+    const columnToSort = sort.column;
+    const sortingDirection = sort.direction;
+    const ASCENDING = "asc";
+
+    let sortedPortfolioEntries = [...selectedPortfolio.portfolioEntries];
+
+    switch (columnToSort.toLocaleLowerCase()) {
+      case "ticker": {
+        sortingDirection === ASCENDING
+          ? sortedPortfolioEntries.sort((entryA, entryB) => entryA.stock.name.localeCompare(entryB.stock.name))
+          : sortedPortfolioEntries.sort((entryA, entryB) => entryB.stock.name.localeCompare(entryA.stock.name))
+        break;
+      }
+
+      case "stock": {
+        sortingDirection === ASCENDING
+          ? sortedPortfolioEntries.sort((entryA, entryB) => entryA.stock.name.localeCompare(entryB.stock.name))
+          : sortedPortfolioEntries.sort((entryA, entryB) => entryB.stock.name.localeCompare(entryA.stock.name))
+        break;
+      }
+
+      case "latest price": {
+        sortedPortfolioEntries.sort((entryA, entryB) => {
+
+          const lateClosingPriceA = getLatestClosingPrice(entryA);
+          const lateClosingPriceB = getLatestClosingPrice(entryB);
+
+          return sortingDirection === ASCENDING
+            ? lateClosingPriceA - lateClosingPriceB
+            : lateClosingPriceB - lateClosingPriceA
+        })
+        break;
+      }
+
+      case "no. shares": {
+        sortingDirection === ASCENDING
+          ? sortedPortfolioEntries.sort((entryA, entryB) => entryA.quantity - entryB.quantity)
+          : sortedPortfolioEntries.sort((entryA, entryB) => entryB.quantity - entryA.quantity)
+        break;
+      }
+
+      case "value": {
+        sortedPortfolioEntries.sort((entryA, entryB) => {
+          const stockValueA = getLatestClosingPrice(entryA) * entryA.quantity;
+          const stockValueB = getLatestClosingPrice(entryB) * entryB.quantity;
+
+          return sortingDirection === ASCENDING
+            ? stockValueA - stockValueB
+            : stockValueB - stockValueA
+        })
+        break;
+      }
+
+      case "change": {
+        sortedPortfolioEntries.sort((entryA, entryB) => {
+          const stockPercentageChangeA = calculateStockPercentageChange(entryA);
+          const stockPercentageChangeB = calculateStockPercentageChange(entryB);
+
+          return sortingDirection === ASCENDING
+            ? stockPercentageChangeA - stockPercentageChangeB
+            : stockPercentageChangeB - stockPercentageChangeA
+        })
+        break;
+      }
+    }
+
+    setSelectedPortfolio({ ...selectedPortfolio, portfolioEntries: sortedPortfolioEntries });
+  }
+
+
+  useEffect(() => {
+    sortColumn();
+  }, [sort])
 
   return (
     <>
@@ -68,26 +210,50 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Ticker</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Latest Price</TableHead>
+                  <TableHead
+                    className="hover: cursor-pointer"
+                    onClick={() => handleCoulmnClick("Ticker")}>
+                    Ticker {renderSortIndicator("Ticker")}
+                  </TableHead>
+
+                  <TableHead
+                    className="hover: cursor-pointer"
+                    onClick={() => handleCoulmnClick("Stock")}>
+                    Stock {renderSortIndicator("Stock")}
+                  </TableHead>
+
+                  <TableHead
+                    className="hover: cursor-pointer"
+                    onClick={() => handleCoulmnClick("Latest Price")}>
+                    Latest Price {renderSortIndicator("Latest Price")}
+                  </TableHead>
+
                   <TableHead>Currency</TableHead>
-                  <TableHead>no. shares</TableHead>
-                  <TableHead>value</TableHead>
-                  <TableHead className="p-1">Change</TableHead>
+
+                  <TableHead className="hover: cursor-pointer"
+                    onClick={() => handleCoulmnClick("no. shares")}>
+                    no. shares {renderSortIndicator("no. shares")}
+                  </TableHead>
+
+                  <TableHead className="hover: cursor-pointer "
+                    onClick={() => handleCoulmnClick("Value")}>
+                    Value {renderSortIndicator("Value")}
+                  </TableHead>
+
+                  <TableHead className="hover: cursor-pointer p-1"
+                    onClick={() => handleCoulmnClick("Change")}>
+                    Change {renderSortIndicator("Change")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
 
               <TableBody>
                 {selectedPortfolio?.portfolioEntries?.length > 0 && (
                   selectedPortfolio.portfolioEntries.map((entry) => {
-                    const historicalPricing = entry.stock.historicalPricing ?? []; // Default to empty array if undefined
-                    const lastElementIndex = historicalPricing.length - 1;
-                    const latestClosingPrice = historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
+                    const latestClosingPrice = getLatestClosingPrice(entry);
+                    const marketValue = numberFormater(latestClosingPrice * entry.quantity);
 
-                    const purchasePrice = entry.stockPrice;
-                    const marketValue = new Intl.NumberFormat('en-US').format(latestClosingPrice * entry.quantity);
-                    const percentageValueChange = new Intl.NumberFormat('en-US').format((((latestClosingPrice - purchasePrice) / purchasePrice) * 100))
+                    const stockPercentageChange = calculateStockPercentageChange(entry);
 
                     return (
                       <TableRow
@@ -100,13 +266,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                         <TableCell className="text-start font-medium">{entry.stock.currency}</TableCell>
                         <TableCell className="text-start font-medium">{entry.quantity}</TableCell>
                         <TableCell className="text-start font-medium">{marketValue}</TableCell>
-                        <TableCell className="text-start font-medium">
-                          {
-                            Number.parseFloat(percentageValueChange) > 0 ? (<span className="text-green-700">+{percentageValueChange}%</span>)
-                              : Number.parseFloat(percentageValueChange) === 0 ? (<span>{percentageValueChange}%</span>)
-                                : (<span className="text-red-700">{percentageValueChange}%</span>)
-                          }
-                        </TableCell>
+                        <TableCell className="text-start font-medium">{displayStockPercentageChange(stockPercentageChange)}</TableCell>
                       </TableRow>
                     );
                   })
@@ -122,20 +282,10 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell className="text-start font-medium">
-                      {new Intl.NumberFormat('en-US').format(displayPortfolioValue())} {currency}
+                      {numberFormater(displayPortfolioValue())} {currency}
                     </TableCell>
                     <TableCell className="text-start font-medium">
-                      {(() => {
-                        const percentageChange = displayPortfolioPercentageChange();
-
-                        if (percentageChange > 0) {
-                          return <span className="text-green-700">+{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                        } else if (percentageChange === 0) {
-                          return <span>{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                        } else {
-                          return <span className="text-red-700">{new Intl.NumberFormat('en-US').format(percentageChange)}%</span>;
-                        }
-                      })()}
+                      {displayPorfolioPercentageChange()}
                     </TableCell>
                   </TableRow>
                 )}

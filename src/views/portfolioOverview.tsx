@@ -40,9 +40,7 @@ export default function PortfolioOverview() {
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
-
-    // might be redundant? idk
-    // setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+    setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
   }
 
   useEffect(() => {
@@ -63,7 +61,6 @@ export default function PortfolioOverview() {
 
       if (!selectedPortfolio && data && data.length > 0) {
         setSelectedPortfolio(data[0]);
-        localStorage.setItem("selectedPortfolio", JSON.stringify(data[0]));
       }
     }
 
@@ -102,6 +99,14 @@ export default function PortfolioOverview() {
       toast.error(error.message);
     }
   };
+
+
+  function numberFormater(value: number) {
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(value);
+  }
 
   return (
     <>
@@ -194,15 +199,18 @@ export default function PortfolioOverview() {
             </div>
 
             <div className="col-span-10">
-              {isDisplayingDividendSummary ? (
+              {!isDisplayingDividendSummary ? (
                 <PortfolioTable
                   selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
+                  numberFormater={numberFormater}
                 />) : (
                 <DividendSummaryTable
                   selectedPortfolio={selectedPortfolio}
                   currency={currency}
                   currencyConverter={currencyConverter}
+                  numberFormater={numberFormater}
                 />)}
               </div>
           </div>

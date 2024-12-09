@@ -27,26 +27,19 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { getUserDetails } from "@/api/user";
 import { updatePassword, updateUserDetails } from "@/api/user";
 
-// Define validation schema using Zod
+
 const formSchema = z
   .object({
-    firstname: z
+    firstName: z
       .string()
-      .min(2, { message: "Name must be at least 2 characters long" }),
-    lastname: z
+      .min(2, { message: "Name must be at least 2 characters long" }).optional(),
+    lastName: z
       .string()
-      .min(2, { message: "Name must be at least 2 characters long" }),
+      .min(2, { message: "Name must be at least 2 characters long" }).optional(),
     email: z.string().email({ message: "Invalid email address" }),
-    phone: z.string().min(10, { message: "Phone number must be valid" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
+    //phonenumber, no whitespace, no special characters, no letters
+    phone: z.string().regex(/^\d{8,12}$/, { message: "Invalid phone number" }).optional(),
+    
   });
 
 const passwordFormSchema = z
@@ -66,12 +59,10 @@ export default function SettingsForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
+      firstName: "",
+      lastName: "",
       email: "",
-      phone: "",
-      password: "",
-      confirmPassword: "",
+      phone: ""
     },
   });
 
@@ -92,8 +83,8 @@ export default function SettingsForm() {
         const fetchedUser = await getUserDetails(); // Replace with your data fetching function
         setUser(fetchedUser);
         form.reset({
-          firstname: fetchedUser.firstname || "",
-          lastname: fetchedUser.lastname || "",
+          firstName: fetchedUser.firstName || "",
+          lastName: fetchedUser.lastName || "",
           email: fetchedUser.email || "",
           phone: fetchedUser.phone || "",
         });
@@ -109,8 +100,8 @@ export default function SettingsForm() {
   async function onSubmitUserDetails(values: z.infer<typeof formSchema>) {
     try {
       const user = {
-        firstname: values.firstname,
-        lastname: values.lastname,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         phone: values.phone,
       };
@@ -222,7 +213,7 @@ export default function SettingsForm() {
                   {/* Name Field */}
                   <FormField
                     control={form.control}
-                    name="firstname"
+                    name="firstName"
                     render={({ field }) => (
                       <FormItem className="grid gap-2">
                         <FormLabel htmlFor="name">First name</FormLabel>
@@ -230,7 +221,7 @@ export default function SettingsForm() {
                           <Input
                             id="name"
                             placeholder="John"
-                            defaultValue={user?.firstname}
+                            defaultValue={user?.firstName}
                             {...field}
                           />
                         </FormControl>
@@ -242,15 +233,15 @@ export default function SettingsForm() {
                   {/* Name Field */}
                   <FormField
                     control={form.control}
-                    name="lastname"
+                    name="lastName"
                     render={({ field }) => (
                       <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="lastname">Last name</FormLabel>
+                        <FormLabel htmlFor="lastName">Last name</FormLabel>
                         <FormControl>
                           <Input
-                            id="lastname"
+                            id="lastName"
                             placeholder="Doe"
-                            defaultValue={user?.lastname}
+                            defaultValue={user?.lastName}
                             {...field}
                           />
                         </FormControl>

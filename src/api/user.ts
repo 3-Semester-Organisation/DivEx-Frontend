@@ -30,11 +30,7 @@ async function updateUserDetails(user: any) {
     }
     try {
         const putOption = makeAuthOption("PUT", token, user);
-        const res = await fetch("http://localhost:8080/api/v1/user", putOption);
-        await checkHttpsErrors(res);
-        const updatedUser = await res.json();
-        console.log("updatedUser: ", updatedUser);
-        return updatedUser;
+        await fetch("http://localhost:8080/api/v1/user", putOption);
     } catch (error) {
         console.error("Update user error", error);
         toast.error(error.message);

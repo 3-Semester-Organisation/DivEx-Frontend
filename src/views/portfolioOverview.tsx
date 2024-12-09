@@ -19,7 +19,6 @@ import { Button } from "@/components/ui/button";
 
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
-import { stockCurrencyConverter } from "@/js/util";
 import { Portfolio } from "@/divextypes/types";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
 import { IoMdShareAlt } from "react-icons/io";
@@ -27,14 +26,13 @@ import { IoMdShareAlt } from "react-icons/io";
 export default function PortfolioOverview() {
   // SUBSCRIPTION TYPE
   const subType = getSubscriptionTypeFromToken();
+
   // PORTFOLIO STATES
-  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } =
-    usePortfolios();
+  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
 
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
-  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] =
-    useState(false);
+  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
 
   useCheckCredentials();
 
@@ -198,20 +196,22 @@ export default function PortfolioOverview() {
               <PortfolioChart selectedPortfolio={selectedPortfolio} />
             </div>
 
+            {}
+
             <div className="col-span-10">
-              {!isDisplayingDividendSummary ? (
-                <PortfolioTable
-                  selectedPortfolio={selectedPortfolio}
-                  setSelectedPortfolio={setSelectedPortfolio}
-                  currency={currency}
-                  numberFormater={numberFormater}
-                />) : (
+              {isDisplayingDividendSummary ? (
                 <DividendSummaryTable
                   selectedPortfolio={selectedPortfolio}
                   setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
-                />)}
+                />) : (
+                  <PortfolioTable
+                    selectedPortfolio={selectedPortfolio}
+                    setSelectedPortfolio={setSelectedPortfolio}
+                    currency={currency}
+                    numberFormater={numberFormater}
+                  />)}
               </div>
           </div>
         )}

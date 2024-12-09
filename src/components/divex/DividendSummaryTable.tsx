@@ -10,14 +10,14 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { stockCurrencyConverter } from '@/js/util';
 
-export default function DividendSummaryTable( {selectedPortfolio, setSelectedPortfolio, currency, numberFormater} ) {
+export default function DividendSummaryTable({ selectedPortfolio, setSelectedPortfolio, currency, numberFormater }) {
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   function displayTotalAnnualDividends() {
     let totalAnnualDividends = 0;
 
-    selectedPortfolio.portfolioEntries.forEach( entry => {
+    selectedPortfolio.portfolioEntries.forEach(entry => {
       const dividendRate = entry.stock.dividendRate
 
       totalAnnualDividends += stockCurrencyConverter(dividendRate, entry, currency);
@@ -26,14 +26,17 @@ const navigate = useNavigate();
     return totalAnnualDividends;
   }
 
-    return(
-        <div className="w-50% bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
-        {selectedPortfolio?.portfolioEntries?.length === 0 && (
-          <h2>Add dividend stocks to see a summary</h2>
-        )}
+  return (
+    <div className="w-50% bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
+      {selectedPortfolio?.portfolioEntries?.length === 0 && (
+        <h2 className="font-semibold text-2xl">Add dividend stocks to see a summary</h2>
+      )}
 
-        <div>
-          {selectedPortfolio !== null && (
+      <div>
+        {selectedPortfolio !== null && (
+          <div>
+            <h2 className='flex justify-start font-semibold text-2xl mb-3'>Dividends Summary</h2>
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -65,7 +68,7 @@ const navigate = useNavigate();
                     const annualDividendBaseCurrency = dividendRate * quantity;
                     const annualDividendSelectedCurrency = stockCurrencyConverter(dividendRate, entry, currency);
                     //filters out stock that do not payout dividends.
-                    if(dividendYield === 0 && fiveYearAvgDividendYield === 0 && dividendRatio === 0 && dividendRate === 0) {
+                    if (dividendYield === 0 && fiveYearAvgDividendYield === 0 && dividendRatio === 0 && dividendRate === 0) {
                       return;
                     }
 
@@ -106,8 +109,9 @@ const navigate = useNavigate();
               </TableBody>
 
             </Table>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    )
+    </div>
+  )
 }

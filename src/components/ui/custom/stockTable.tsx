@@ -38,7 +38,7 @@ const tableHeads = [
   { id: "dividend.dividendRate", label: "Dividend Rate" },
   { id: "dividend.dividendYield", label: "Dividend Yield" },
   { id: "dividend.ExDividendDate", label: "Ex Date" },
-  { id: "button", label: "" },
+  { id: "actions", label: "Actions" },
 ];
 
 export default function StockTable({ stocks, sorting, onSortClick, isLoading }) {

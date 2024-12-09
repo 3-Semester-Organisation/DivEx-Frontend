@@ -197,7 +197,7 @@ export default function PortfolioOverview() {
               <PortfolioChart selectedPortfolio={selectedPortfolio} />
             </div>
 
-            <div className="col-span-10">
+            <div className="col-span-12">
               {!isDisplayingDividendSummary ? (
                 <PortfolioTable
                   selectedPortfolio={selectedPortfolio}

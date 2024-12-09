@@ -15,6 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import StockTable from "@/components/ui/custom/stockTable";
 
 
 export default function StocksPage() {
@@ -32,6 +33,8 @@ export default function StocksPage() {
         async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 9) {
             try {
                 setIsLoading(true);
+                // simulate slow network
+                await new Promise((resolve) => setTimeout(resolve, 1000));
                 const response = await fetch(
                     `http://localhost:8080/api/v1/stocks?page=${pageNumber}&size=${pageSize}&sort=${sorting.column},${sorting.direction}`
                 );
@@ -113,88 +116,12 @@ export default function StocksPage() {
                 onChange={(e) => setSearchValue(e.target.value)}
             />
 
-            {isLoading ? (
-                <p>Loading...</p>
-            ) : (
-                <div className="rounded-xl bg-primary-foreground">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead
-                                    id="ticker"
-                                    className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("ticker")}
-                                >
-                                    Ticker {renderSortIndicator("ticker")}
-                                </TableHead>
-
-                                <TableHead
-                                    id="name"
-                                    className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("name")}
-                                >
-                                    Name {renderSortIndicator("name")}
-                                </TableHead>
-
-                                <TableHead
-                                    id="previousDailyClosingPrice"
-                                    className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("historicalPricings.previousDailyClosingPrice")}
-                                >
-                                    Closing price {renderSortIndicator("historicalPricings.previousDailyClosingPrice")}
-                                </TableHead>
-
-                                <TableHead
-                                    id="dividendRate"
-                                    className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("dividendDividendRate")}
-                                >
-                                    Dividend Rate {renderSortIndicator("dividendDividendRate")}
-                                </TableHead>
-
-                                <TableHead
-                                    id="dividendYield"
-                                    className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("dividendDividendYield")}
-                                >
-                                    Dividend Yield {renderSortIndicator("dividendDividendYield")}
-                                </TableHead>
-
-                                <TableHead
-                                    id="exDate"
-                                    className="text-center hover:cursor-pointer"
-                                    onClick={() => handleSortClick("dividendExDividendDate")}
-                                >
-                                    Ex Date {renderSortIndicator("dividendExDividendDate")}
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-
-                        <TableBody>
-                            {stocks.map((stock) => (
-                                <TableRow
-                                    onClick={() => showStockDetails(stock)}
-                                    className="hover:cursor-pointer"
-                                    key={stock.ticker}>
-                                    <TableCell>{stock.ticker}</TableCell>
-                                    <TableCell>{stock.name}</TableCell>
-                                    <TableCell>{stock.historicalPricing[stock.historicalPricing.length - 1].previousDailyClosingPrice} {stock.currency} </TableCell>
-                                    <TableCell>{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
-                                    <TableCell>{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
-                                    <TableCell>{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
-                                    <TableCell>
-                                        <button
-                                            // onClick={addToPortfolio()}
-                                            className="border-2 border-gray-600 rounded-lg pr-2 pl-2 pt-1 pb-1 hover:underline">
-                                            Add
-                                        </button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
-            )}
+            <StockTable
+                stocks={stocks}
+                sorting={sorting}
+                onSortClick={handleSortClick}
+                isLoading={isLoading}
+            />
 
             <PaginationBar
                 currentPage={currecntPage}

@@ -159,14 +159,10 @@ export default function PortfolioOverview() {
       </div>
 
       <div>
-        {portfolios !== null && (
-          <div>
-            {portfolios === null && (
+        {portfolios === null && (
               <h1 className="text-4xl font-semibold">
                 Create a portfolio to get started
               </h1>
-            )}
-          </div>
         )}
 
         {selectedPortfolio && (

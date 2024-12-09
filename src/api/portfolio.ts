@@ -107,4 +107,12 @@ async function updatePortfolioName(
 }
 
 
+async function deletePortfolioEntry(
+    portfolioEntryId: number
+){
+    try{
+
+    }
+}
+
 export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName }

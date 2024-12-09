@@ -146,6 +146,11 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                                 : (<span className="text-red-700">{numberFormater(percentageValueChange)}%</span>)
                           }
                         </TableCell>
+                        <TableCell className="text-start font-medium">
+                          {
+                            "Delete"
+                          }
+                        </TableCell>
                       </TableRow>
                     );
                   })

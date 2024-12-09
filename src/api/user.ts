@@ -21,7 +21,24 @@ async function getUserDetails() {
         console.error("Fetch user error", error);
         toast.error(error.message);
     }
+}
 
+async function updateUserDetails(user) { 
+    const token = localStorage.getItem("token");
+    if (!token) {
+        return null;
+    }
+    try {
+        const putOption = makeAuthOption("PUT", token, user);
+        const res = await fetch("http://localhost:8080/api/v1/user", putOption);
+        await checkHttpsErrors(res);
+        const updatedUser = await res.json();
+        console.log("updatedUser: ", updatedUser);
+        return updatedUser;
+    } catch (error) {
+        console.error("Update user error", error);
+        toast.error(error.message);
+    }
 }
 
 export { getUserDetails };

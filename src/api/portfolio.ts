@@ -111,7 +111,7 @@ async function deletePortfolioEntry(
     portfolioStockName: String
 ){
     try{
-        const response = await fetch(`https://localhost:8080/api/v1/portfolioentry`,{
+        const response = await fetch(`http://localhost:8080/api/v1/portfolioentry`,{
             method: "DELETE",
             headers: {
                 "Content-type": "application/json",

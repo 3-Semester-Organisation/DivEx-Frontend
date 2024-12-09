@@ -41,4 +41,22 @@ async function updateUserDetails(user) {
     }
 }
 
+async function updatePasword(password) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        return null;
+    }
+    try {
+        const putOption = makeAuthOption("PUT", token, password);
+        const res = await fetch("http://localhost:8080/api/v1/user/password", putOption);
+        await checkHttpsErrors(res);
+        const updatedUser = await res.json();
+        console.log("updatedUser: ", updatedUser);
+        return updatedUser;
+    } catch (error) {
+        console.error("Update password error", error);
+        toast.error(error.message);
+    }
+}
+
 export { getUserDetails };

@@ -69,9 +69,9 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
     }
   }
 
-  function deleteEntry(stockName: String, event: React.MouseEvent<HTMLButtonElement>) {
+  function deleteEntry(stockTicker: String, event: React.MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
-    deletePortfolioEntry(stockName);
+    deletePortfolioEntry(stockTicker);
 
 
   }
@@ -155,7 +155,7 @@ export default function PortfolioTable({ selectedPortfolio, currency }) {
                         <TableCell className="text-start font-medium">
                           {
                             <button
-                                onClick={(event) => deleteEntry(entry.stock.name, event)}
+                                onClick={(event) => deleteEntry(entry.stock.ticker, event)}
                                 className="px-4 py-2 bg-primary-foreground hover:underline rounded-lg border-2 border-gray-400">
                               Remove
                             </button>

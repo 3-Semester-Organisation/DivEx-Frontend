@@ -1,19 +1,20 @@
 import useCheckCredentials from '@/js/useCredentials';
-import * as React from 'react';
+import React from 'react';
+import SettingsForm from '@/components/ui/custom/settings-form';
 
 
-export default function settings( {isLoggedIn} ) {
+export default function Settings( {isLoggedIn} ) {
     
   useCheckCredentials();
 
-    return (
+  
+
+    
+  return (
     <>
-    <div>
-        <h1>Settings</h1>
-                <p>settings page</p>
-                
-                
-    </div>
+    <SettingsForm />
     </>
-)
+
+
+  )
 }

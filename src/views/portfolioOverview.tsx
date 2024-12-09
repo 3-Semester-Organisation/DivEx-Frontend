@@ -21,8 +21,12 @@ import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { stockCurrencyConverter } from "@/js/util";
 import { Portfolio } from "@/divextypes/types";
+import { getSubscriptionTypeFromToken } from "@/js/jwt";
+import { IoMdShareAlt } from "react-icons/io";
 
 export default function PortfolioOverview() {
+  // SUBSCRIPTION TYPE
+  const subType = getSubscriptionTypeFromToken();
   // PORTFOLIO STATES
   const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } =
     usePortfolios();
@@ -157,21 +161,36 @@ export default function PortfolioOverview() {
           />
         </div>
 
+        {subType === "PREMIUM" && portfolios?.length > 0 && (
+            <div>
+              <Button
+                  variant="default"
+                  onClick={() => {
+                    if (selectedPortfolio) {
+                      //sharePortfolio(selectedPortfolio); //logic here
+                      toast.success("\"" + selectedPortfolio.name + "\" shared mf's!!!");
+                    } else {
+                      toast.error("No portfolio selected. Choose a portfolio");
+                    }
+                  }}
+              >
+                Share Portfolio
+                <IoMdShareAlt/>
+              </Button>
+            </div>
+        )}
+
         <div className="w-80 ml-auto">
           <SearchBar />
         </div>
       </div>
 
       <div>
-        {portfolios !== null && (
-          <div>
-            {portfolios === null && (
+            {portfolios?.length === 0 && (
               <h1 className="text-4xl font-semibold">
                 Create a portfolio to get started
               </h1>
             )}
-          </div>
-        )}
 
         {selectedPortfolio && (
           <div className="grid grid-cols-12">

@@ -183,6 +183,7 @@ export default function PortfolioOverview() {
               {!isDisplayingDividendSummary ? (
                 <PortfolioTable
                   selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
                 />) : (

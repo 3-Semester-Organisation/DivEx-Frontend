@@ -101,7 +101,7 @@ export function AddStockDialog({ stock }) {
     <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
               <Button>
-                  Add (new)
+                  Add
               </Button>
               {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}
       </DialogTrigger>

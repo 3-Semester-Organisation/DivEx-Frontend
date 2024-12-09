@@ -24,9 +24,8 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { NavLink } from "react-router-dom";
 import { getUserDetails } from "@/api/user";
-import { get } from "http";
+import { updatePassword, updateUserDetails } from "@/api/user";
 
 // Define validation schema using Zod
 const formSchema = z
@@ -51,17 +50,17 @@ const formSchema = z
   });
 
 const passwordFormSchema = z
-    .object({
-        password: z
-        .string()
-        .min(6, { message: "Password must be at least 6 characters long" })
-        .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
-      confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      path: ["confirmPassword"],
-      message: "Passwords do not match",
-    });
+  .object({
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters long" })
+      .regex(/[a-zA-Z0-9]/, { message: "Password must be alphanumeric" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords do not match",
+  });
 
 export default function SettingsForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,14 +74,14 @@ export default function SettingsForm() {
       confirmPassword: "",
     },
   });
-    
-    const passwordForm = useForm<z.infer<typeof passwordFormSchema>>({
-        resolver: zodResolver(passwordFormSchema),
-        defaultValues: {
-            password: "",
-            confirmPassword: "",
-        },
-    });
+
+  const passwordForm = useForm<z.infer<typeof passwordFormSchema>>({
+    resolver: zodResolver(passwordFormSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -93,10 +92,10 @@ export default function SettingsForm() {
         const fetchedUser = await getUserDetails(); // Replace with your data fetching function
         setUser(fetchedUser);
         form.reset({
-          firstname: fetchedUser.firstname,
-          lastname: fetchedUser.lastname,
-          email: fetchedUser.email,
-          phone: fetchedUser.phone,
+          firstname: fetchedUser.firstname || "",
+          lastname: fetchedUser.lastname || "",
+          email: fetchedUser.email || "",
+          phone: fetchedUser.phone || "",
         });
         setLoading(false);
       } catch (error) {
@@ -107,10 +106,15 @@ export default function SettingsForm() {
     fetchUserData();
   }, []);
 
-    
   async function onSubmitUserDetails(values: z.infer<typeof formSchema>) {
     try {
-      // Handle user details submission
+      const user = {
+        firstname: values.firstname,
+        lastname: values.lastname,
+        email: values.email,
+        phone: values.phone,
+      };
+      await updateUserDetails(user);
       console.log("User Details:", values);
       toast.success("User details updated successfully.");
     } catch (error) {
@@ -118,10 +122,15 @@ export default function SettingsForm() {
       toast.error("Failed to update user details. Please try again.");
     }
   }
-  
-  async function onSubmitPasswordChange(values: z.infer<typeof passwordFormSchema>) {
+
+  async function onSubmitPasswordChange(
+    values: z.infer<typeof passwordFormSchema>
+  ) {
     try {
-      // Handle password change
+        const password = {
+            password: values.password,
+      }
+      await updatePassword(password);
       console.log("Password Change:", values);
       toast.success("Password changed successfully.");
     } catch (error) {
@@ -147,7 +156,7 @@ export default function SettingsForm() {
                 <div className="grid gap-4">
                   {/* Password Field */}
                   <FormField
-                    control={form.control}
+                    control={passwordForm.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem className="grid gap-2">
@@ -167,7 +176,7 @@ export default function SettingsForm() {
 
                   {/* Confirm Password Field */}
                   <FormField
-                    control={form.control}
+                    control={passwordForm.control}
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem className="grid gap-2">

@@ -22,6 +22,7 @@ import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { Portfolio } from "@/divextypes/types";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
 import { IoMdShareAlt } from "react-icons/io";
+import DividendBarChart from "@/components/divex/DividendBarChart";
 
 export default function PortfolioOverview() {
   // SUBSCRIPTION TYPE
@@ -196,7 +197,9 @@ export default function PortfolioOverview() {
               <PortfolioChart selectedPortfolio={selectedPortfolio} />
             </div>
 
-            {}
+            {isDisplayingDividendSummary && (
+              <DividendBarChart/>
+            )}
 
             <div className="col-span-10">
               {isDisplayingDividendSummary ? (

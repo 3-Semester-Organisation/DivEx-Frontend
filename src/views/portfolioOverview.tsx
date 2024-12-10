@@ -21,7 +21,7 @@ import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { Portfolio } from "@/divextypes/types";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
-import { IoMdShareAlt } from "react-icons/io";
+import { SquareArrowOutUpRight } from "lucide-react";
 import DividendBarChart from "@/components/divex/DividendBarChart";
 
 export default function PortfolioOverview() {
@@ -99,11 +99,10 @@ export default function PortfolioOverview() {
     }
   };
 
-
   function numberFormater(value: number) {
-    return new Intl.NumberFormat('de-DE', {
+    return new Intl.NumberFormat("de-DE", {
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     }).format(value);
   }
 
@@ -161,22 +160,22 @@ export default function PortfolioOverview() {
         </div>
 
         {subType === "PREMIUM" && portfolios?.length > 0 && (
-            <div>
-              <Button
-                  variant="default"
-                  onClick={() => {
-                    if (selectedPortfolio) {
-                      //sharePortfolio(selectedPortfolio); //logic here
-                      toast.success("\"" + selectedPortfolio.name + "\" shared mf's!!!");
-                    } else {
-                      toast.error("No portfolio selected. Choose a portfolio");
-                    }
-                  }}
-              >
-                Share Portfolio
-                <IoMdShareAlt/>
-              </Button>
-            </div>
+          <div>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (selectedPortfolio) {
+                  //sharePortfolio(selectedPortfolio); //logic here
+                  toast.info("Feature coming soon.");
+                } else {
+                  toast.error("No portfolio selected.");
+                }
+              }}
+            >
+              Share Portfolio
+              <SquareArrowOutUpRight />
+            </Button>
+          </div>
         )}
 
         <div className="w-80 ml-auto">
@@ -185,11 +184,11 @@ export default function PortfolioOverview() {
       </div>
 
       <div>
-            {portfolios?.length === 0 && (
-              <h1 className="text-4xl font-semibold">
-                Create a portfolio to get started
-              </h1>
-            )}
+        {portfolios?.length === 0 && (
+          <h1 className="text-4xl font-semibold">
+            Create a portfolio to get started
+          </h1>
+        )}
 
         {selectedPortfolio && (
           <div className="grid grid-cols-12">
@@ -201,20 +200,20 @@ export default function PortfolioOverview() {
               <DividendBarChart/>
             )}
 
-            <div className="col-span-10">
-              {isDisplayingDividendSummary ? (
-                <DividendSummaryTable
+            <div className="col-span-12">
+              {!isDisplayingDividendSummary ? (
+                <PortfolioTable
                   selectedPortfolio={selectedPortfolio}
                   setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
                 />) : (
-                  <PortfolioTable
-                    selectedPortfolio={selectedPortfolio}
-                    setSelectedPortfolio={setSelectedPortfolio}
-                    currency={currency}
-                    numberFormater={numberFormater}
-                  />)}
+                <DividendSummaryTable
+                  selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
+                  currency={currency}
+                  numberFormater={numberFormater}
+                />)}
               </div>
           </div>
         )}

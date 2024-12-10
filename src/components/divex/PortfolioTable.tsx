@@ -139,28 +139,33 @@ export default function PortfolioTable({
     const sortingDirection = sort.direction;
     const ASCENDING = "asc";
 
+    console.log(selectedPortfolio.portfolioEntries)
+    if (selectedPortfolio === undefined || selectedPortfolio.portfolioEntries === null) {
+      return;
+    }
+
     let sortedPortfolioEntries = [...selectedPortfolio.portfolioEntries];
 
     switch (columnToSort.toLocaleLowerCase()) {
       case "ticker": {
         sortingDirection === ASCENDING
           ? sortedPortfolioEntries.sort((entryA, entryB) =>
-              entryA.stock.name.localeCompare(entryB.stock.name)
-            )
+            entryA.stock.name.localeCompare(entryB.stock.name)
+          )
           : sortedPortfolioEntries.sort((entryA, entryB) =>
-              entryB.stock.name.localeCompare(entryA.stock.name)
-            );
+            entryB.stock.name.localeCompare(entryA.stock.name)
+          );
         break;
       }
 
       case "stock": {
         sortingDirection === ASCENDING
           ? sortedPortfolioEntries.sort((entryA, entryB) =>
-              entryA.stock.name.localeCompare(entryB.stock.name)
-            )
+            entryA.stock.name.localeCompare(entryB.stock.name)
+          )
           : sortedPortfolioEntries.sort((entryA, entryB) =>
-              entryB.stock.name.localeCompare(entryA.stock.name)
-            );
+            entryB.stock.name.localeCompare(entryA.stock.name)
+          );
         break;
       }
 
@@ -179,11 +184,11 @@ export default function PortfolioTable({
       case "no. shares": {
         sortingDirection === ASCENDING
           ? sortedPortfolioEntries.sort(
-              (entryA, entryB) => entryA.quantity - entryB.quantity
-            )
+            (entryA, entryB) => entryA.quantity - entryB.quantity
+          )
           : sortedPortfolioEntries.sort(
-              (entryA, entryB) => entryB.quantity - entryA.quantity
-            );
+            (entryA, entryB) => entryB.quantity - entryA.quantity
+          );
         break;
       }
 

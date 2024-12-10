@@ -3,8 +3,9 @@ import { usePortfolios } from '@/js/PortfoliosContext';
 import { stockCurrencyConverter } from '@/js/util';
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import { Bar, BarChart, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts';
+import { Bar, BarChart, Rectangle, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend, CartesianGrid } from 'recharts';
 import MonthSelector from './MonthSelector';
+import { ChartTooltip } from '../ui/chart';
 
 
 interface DividendData {
@@ -123,13 +124,19 @@ export default function dividendBarChart({ currency }) {
                     {filteredDividendData.length > 0 && (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart
-                                className=""
                                 data={filteredDividendData}
                             >
-                                <XAxis dataKey="stockName" padding={{ right: 500 }} />
-                                <YAxis dataKey="dividendAmount"/>
-                                <Tooltip content={<DividendChartToolTip selectedCurrency={currency} />} />
-                                <Bar dataKey="dividendAmount" fill="#183e7a" />
+                                <CartesianGrid vertical={false} />
+                                <XAxis
+                                    dataKey="stockName"
+                                    padding="gap"
+                                    tickMargin={10}
+                                    axisLine={false} />
+                                <YAxis
+                                    allowDecimals={false}
+                                    />
+                                <ChartTooltip content={<DividendChartToolTip selectedCurrency={currency} />} />
+                                <Bar dataKey="dividendAmount" fill="#183e7a" radius={8} maxBarSize={100} />
                             </BarChart>
                         </ResponsiveContainer>
                     )}

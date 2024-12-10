@@ -106,7 +106,7 @@ export default function dividendBarChart({ currency }) {
 
     return (
         <>
-            <div className='flex flex-col ml-5 bg-primary-foreground rounded-lg w-[1347px] h-[475px] shadow-lg'>
+            <div className='flex flex-col ml-5 bg-primary-foreground h-full rounded-lg shadow-lg'>
                 {filteredDividendData.length === 0 && (
                     <p className='font-semibold text-2xl mt-52'>No dividends for this month.</p>
                 )}
@@ -123,11 +123,11 @@ export default function dividendBarChart({ currency }) {
                     {filteredDividendData.length > 0 && (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart
-                                className="p-5"
+                                className="flex-1 p-5"
                                 data={filteredDividendData}
                             >
                                 <XAxis dataKey="stockName" padding={{ right: 500 }} />
-                                <YAxis dataKey="dividendAmount" />
+                                <YAxis dataKey="dividendAmount"/>
                                 <Tooltip content={<DividendChartToolTip selectedCurrency={currency} />} />
                                 <Bar dataKey="dividendAmount" fill="#183e7a" />
                             </BarChart>

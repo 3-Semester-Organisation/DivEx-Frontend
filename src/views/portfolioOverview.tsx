@@ -196,10 +196,12 @@ export default function PortfolioOverview() {
               <PortfolioChart selectedPortfolio={selectedPortfolio} />
             </div>
 
+            <div className="col-span-8 mt-5">
             {isDisplayingDividendSummary && (
               <DividendBarChart 
               currency={currency} />
-            )}
+              )}
+            </div>
 
             <div className="col-span-12">
               {isDisplayingDividendSummary ? (

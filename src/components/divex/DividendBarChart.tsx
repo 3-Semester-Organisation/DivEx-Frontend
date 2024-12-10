@@ -119,7 +119,7 @@ export default function dividendBarChart({ currency }) {
                     </h2>
                 )}
 
-                <div className="flex-grow w-full">
+                <div className="flex-grow w-full h-0">
                     {filteredDividendData.length > 0 && (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart

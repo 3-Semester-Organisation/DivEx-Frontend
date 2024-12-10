@@ -23,17 +23,22 @@ import { Portfolio } from "@/divextypes/types";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
 import { SquareArrowOutUpRight } from "lucide-react";
 import DividendBarChart from "@/components/divex/DividendBarChart";
+import { PortfolioGoalProgress } from "@/components/ui/custom/portfolio-goal-progress";
+import { updatePortfolioGoal } from "@/api/portfolio";
+import { PortfolioGoalDialog } from "@/components/ui/custom/portfolio-goal-dialog";
 
 export default function PortfolioOverview() {
   // SUBSCRIPTION TYPE
   const subType = getSubscriptionTypeFromToken();
 
   // PORTFOLIO STATES
-  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
+  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } =
+    usePortfolios();
 
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
-  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
+  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] =
+    useState(false);
 
   useCheckCredentials();
 
@@ -106,18 +111,32 @@ export default function PortfolioOverview() {
     }).format(value);
   }
 
+  const onUpdatePortfolioGoal = (goal: number) => {
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    updatePortfolioGoal(selectedPortfolio.id, goal);
+  };
+
   return (
     <>
-      <div className="relative group">
-        <h1 className="text-semibold flex text-5xl">
+      <div className="relative group flex">
+        <h1 className="text-semibold flex text-5xl mr-5">
           {selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
           <PortfolioEditDialog
             onSubmit={changePortfolioName}
             selectedPortfolio={selectedPortfolio}
           />
         </h1>
-      </div>
-
+        
+        {selectedPortfolio && (
+          
+            <PortfolioGoalProgress currency={currency} />
+          
+        )}
+        </div>
+        
       <div className="flex flex-row content-center gap-3 pt-5">
         <div className="">
           {selectedPortfolio && (
@@ -151,6 +170,14 @@ export default function PortfolioOverview() {
           )}
         </div>
 
+        {/* Set portfolio goal */}
+      <div>
+          <PortfolioGoalDialog
+            selectedPortfolio={selectedPortfolio}
+            onSubmit={onUpdatePortfolioGoal}
+          />
+      </div>
+
         <div>
           <CurrencySelect
             selectedCurrency={currency}
@@ -178,10 +205,14 @@ export default function PortfolioOverview() {
           </div>
         )}
 
+        
+
         <div className="w-80 ml-auto">
           <SearchBar />
         </div>
       </div>
+
+      
 
       <div>
         {portfolios?.length === 0 && (
@@ -197,9 +228,8 @@ export default function PortfolioOverview() {
             </div>
 
             <div className="col-span-8 mt-5">
-            {isDisplayingDividendSummary && (
-              <DividendBarChart 
-              currency={currency} />
+              {isDisplayingDividendSummary && (
+                <DividendBarChart currency={currency} />
               )}
             </div>
 
@@ -210,13 +240,15 @@ export default function PortfolioOverview() {
                   setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
-                />) : (
+                />
+              ) : (
                 <PortfolioTable
                   selectedPortfolio={selectedPortfolio}
                   setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
-                />)}
+                />
+              )}
             </div>
           </div>
         )}

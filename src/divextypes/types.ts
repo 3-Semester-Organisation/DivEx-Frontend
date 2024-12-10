@@ -58,6 +58,7 @@ interface PortfolioEntry {
 interface Portfolio {
     id: number;
     name: string;
+    goal: number;
     portfolioEntries: PortfolioEntry[]
     user: User;
 }

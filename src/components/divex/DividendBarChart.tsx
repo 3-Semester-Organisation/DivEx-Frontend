@@ -62,10 +62,6 @@ export default function dividendBarChart({ currency }) {
     }
 
     function calculatePayoutFrequenzy(portfolioEntry: PortfolioEntry) {
-
-        let isQuartly: boolean = false;
-        let isHalfYearly: boolean = false;
-        let isYearly: boolean = false;
         let payoutFrequenzy = 0;
 
         const historicalDividends = portfolioEntry.stock.historicalDividends;
@@ -76,16 +72,18 @@ export default function dividendBarChart({ currency }) {
         const previousExDate = new Date(historicalDividends[lastIndex - 1].exDividendDate * SECONDS_CONVERSION_VALUE).getMonth();
         const priorExDate = new Date(historicalDividends[lastIndex - 2].exDividendDate * SECONDS_CONVERSION_VALUE).getMonth();
 
+        let isYearly: boolean = latestExDate === previousExDate;
+        let isHalfYearly: boolean = latestExDate === priorExDate;
+        let isQuartly: boolean = false;
+        
         console.log("LATEST", latestExDate)
         console.log("previous", previousExDate)
         console.log("piror", priorExDate)
 
-        if (latestExDate === previousExDate) {
-            isYearly = true;
+        if (isYearly) {
             payoutFrequenzy = 1;
 
-        } else if (latestExDate === priorExDate) {
-            isHalfYearly = true;
+        } else if (isHalfYearly) {
             payoutFrequenzy = 2;
 
         } else {

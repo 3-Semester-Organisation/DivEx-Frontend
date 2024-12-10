@@ -14,23 +14,6 @@ import {
 import { PieChart, Pie, Cell, Legend } from "recharts";
 import { Portfolio } from "@/divextypes/types";
 
-// Define TypeScript interfaces for type safety
-// interface Stock {
-//   ticker: string;
-//   name: string;
-//   fullName: string;
-//   sector: string;
-// }
-
-// interface PortfolioEntry {
-//   quantity: number;
-//   stock: Stock;
-// }
-
-// interface Portfolio {
-//   id: string;
-//   portfolioEntries: PortfolioEntry[] | null;
-// }
 
 interface PortfolioChartProps {
   selectedPortfolio: Portfolio | null;

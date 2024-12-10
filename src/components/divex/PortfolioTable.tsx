@@ -139,7 +139,6 @@ export default function PortfolioTable({
     const sortingDirection = sort.direction;
     const ASCENDING = "asc";
 
-    console.log(selectedPortfolio.portfolioEntries)
     if (selectedPortfolio === undefined || selectedPortfolio.portfolioEntries === null) {
       return;
     }

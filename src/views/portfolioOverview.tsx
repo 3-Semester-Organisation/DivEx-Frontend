@@ -197,24 +197,25 @@ export default function PortfolioOverview() {
             </div>
 
             {isDisplayingDividendSummary && (
-              <DividendBarChart/>
+              <DividendBarChart 
+              currency={currency} />
             )}
 
             <div className="col-span-12">
-              {!isDisplayingDividendSummary ? (
-                <PortfolioTable
-                  selectedPortfolio={selectedPortfolio}
-                  setSelectedPortfolio={setSelectedPortfolio}
-                  currency={currency}
-                  numberFormater={numberFormater}
-                />) : (
+              {isDisplayingDividendSummary ? (
                 <DividendSummaryTable
                   selectedPortfolio={selectedPortfolio}
                   setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
+                />) : (
+                <PortfolioTable
+                  selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
+                  currency={currency}
+                  numberFormater={numberFormater}
                 />)}
-              </div>
+            </div>
           </div>
         )}
       </div>

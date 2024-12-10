@@ -115,7 +115,7 @@ export default function dividendBarChart({ currency }) {
                     <h2 className='flex justify-start font-semibold text-lg p-4'>
                         Expected dividends this month:
                         <span className="ml-2 mr-1 text-green-700">{currency}</span>
-                        <span className="text-green-700">{totalDividendsBySelectedMonth()}</span>
+                        <span className="text-green-700">{totalDividendsBySelectedMonth().toFixed(2)}</span>
                     </h2>
                 )}
 
@@ -123,7 +123,7 @@ export default function dividendBarChart({ currency }) {
                     {filteredDividendData.length > 0 && (
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart
-                                className="flex-1 p-5"
+                                className=""
                                 data={filteredDividendData}
                             >
                                 <XAxis dataKey="stockName" padding={{ right: 500 }} />

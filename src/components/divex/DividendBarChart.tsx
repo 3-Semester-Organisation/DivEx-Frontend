@@ -128,7 +128,7 @@ export default function dividendBarChart({ currency }) {
                                 className="p-5"
                                 data={filteredDividendData}
                             >
-                                <XAxis dataKey="exDividendDate" padding={{ right: 500 }} />
+                                <XAxis dataKey="stockName" padding={{ right: 500 }} />
                                 <YAxis dataKey="dividendAmount" />
                                 <Tooltip content={<DividendChartToolTip selectedCurrency={currency} />} />
                                 <Bar dataKey="dividendAmount" fill="#183e7a" />
@@ -149,15 +149,15 @@ export default function dividendBarChart({ currency }) {
 
 function DividendChartToolTip({ active, payload, label, selectedCurrency }) {
     if (active && payload && payload.length) {
-        const { stockName, dividendRate, dividendAmount, currency } = payload[0].payload; // Access stockName from payload
+        const { exDividendDate, dividendRate, dividendAmount, currency } = payload[0].payload; // Access stockName from payload
 
         return (
             <div className="p-4 bg-primary-foreground flex flex-col gap-0 rounded-md border-2 border-gray-600 w-auto">
                 <h1 className="text-medium text-lg w-auto mb-1">{label}</h1>
                 <div className="flex justify-start flex-col text-small text-gray-500">
-                    <p className='flex justify-start'>Stock: <span className="ml-2">{stockName}</span> </p>
                     <p className='flex justify-start'>Dividends: <span className="ml-2">{dividendAmount} {selectedCurrency}</span></p>
                     <p className='flex justify-start'>Dividend Rate: <span className="ml-2">{dividendRate} {currency}</span></p>
+                    <p className='flex justify-start'>Ex Date: <span className="ml-2">{exDividendDate}</span> </p>
                 </div>
             </div>
         );

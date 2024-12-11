@@ -6,23 +6,15 @@ import PaginationBar from "../components/divex/PaginationBar";
 import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Stock, PaginatedResponse } from "@/divextypes/types";
-
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import StockTable from "@/components/ui/custom/stockTable";
+import SearchBar from "@/components/divex/searchBar";
 
 
 export default function StocksPage() {
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [originalStocks, setOriginalStocks] = useState<Stock[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [currecntPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [sorting, setSorting] = useState({ column: "", direction: "asc" });
     const [searchValue, setSearchValue] = useState("");
@@ -51,8 +43,8 @@ export default function StocksPage() {
             }
         }
 
-        fetchPaginatedStocks(currecntPage);
-    }, [currecntPage, sorting]);
+        fetchPaginatedStocks(currentPage);
+    }, [currentPage, sorting]);
 
 
 
@@ -106,16 +98,11 @@ export default function StocksPage() {
             
 
             <h1 className='text-5xl mb-10 text-start'>Nordic Dividend Stocks</h1>
-
-            <Input
-                id="search"
-                placeholder="Search..."
-                type="search"
-                className="mb-4 w-1/4 border-gray-600 border-2"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-            />
-
+            <div className="mb-5">
+                <SearchBar
+                    placeholder={"Search..."} />
+            </div>
+            
             <StockTable
                 stocks={stocks}
                 sorting={sorting}
@@ -124,7 +111,7 @@ export default function StocksPage() {
             />
 
             <PaginationBar
-                currentPage={currecntPage}
+                currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
             />

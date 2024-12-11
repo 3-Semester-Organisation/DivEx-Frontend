@@ -23,13 +23,17 @@ import { Portfolio, PortfolioEntry } from "@/divextypes/types";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
 import { SquareArrowOutUpRight } from "lucide-react";
 import DividendBarChart from "@/components/divex/DividendBarChart";
+import { PortfolioGoalProgress } from "@/components/ui/custom/portfolio-goal-progress";
+import { updatePortfolioGoal } from "@/api/portfolio";
+import { PortfolioGoalDialog } from "@/components/ui/custom/portfolio-goal-dialog";
 
 export default function PortfolioOverview() {
   // SUBSCRIPTION TYPE
   const subType = getSubscriptionTypeFromToken();
 
   // PORTFOLIO STATES
-  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
+  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } =
+    usePortfolios();
 
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
@@ -96,18 +100,8 @@ export default function PortfolioOverview() {
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
     setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+    setSelectedPortfolio(newPortfolio);
   }
-
-  useEffect(() => {
-    function getLatestPortfolio(portfolios: Portfolio[]) {
-      const lastElement = portfolios.length - 1;
-      return portfolios[lastElement];
-    }
-
-    if (portfolios?.length > 0) {
-      setSelectedPortfolio(getLatestPortfolio(portfolios));
-    }
-  }, [portfolios]);
 
   useEffect(() => {
     async function loadPortfolios() {
@@ -166,18 +160,32 @@ export default function PortfolioOverview() {
     }).format(value);
   }
 
+  const onUpdatePortfolioGoal = (goal: number) => {
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    updatePortfolioGoal(selectedPortfolio.id, goal);
+  };
+
   return (
     <>
-      <div className="relative group">
-        <h1 className="text-semibold flex text-5xl">
+      <div className="relative group flex">
+        <h1 className="text-semibold flex text-5xl mr-5">
           {selectedPortfolio ? selectedPortfolio.name : "Select a portfolio"}
           <PortfolioEditDialog
             onSubmit={changePortfolioName}
             selectedPortfolio={selectedPortfolio}
           />
         </h1>
-      </div>
-
+        
+        {selectedPortfolio && (
+          
+            <PortfolioGoalProgress currency={currency} />
+          
+        )}
+        </div>
+        
       <div className="flex flex-row content-center gap-3 pt-5">
         <div>
           {selectedPortfolio && (
@@ -211,6 +219,14 @@ export default function PortfolioOverview() {
           )}
         </div>
 
+        {/* Set portfolio goal */}
+      <div>
+          <PortfolioGoalDialog
+            selectedPortfolio={selectedPortfolio}
+            onSubmit={onUpdatePortfolioGoal}
+          />
+      </div>
+
         <div>
           <CurrencySelect
             selectedCurrency={currency}
@@ -238,10 +254,15 @@ export default function PortfolioOverview() {
           </div>
         )}
 
+        
+
         <div className="w-80 ml-auto">
-          <SearchBar />
+          <SearchBar
+            placeholder={"Search for stocks to add..."} />
         </div>
       </div>
+
+      
 
       <div>
         {portfolios?.length === 0 && (
@@ -271,13 +292,15 @@ export default function PortfolioOverview() {
                   setSelectedPortfolio={setSummarizedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
-                />) : (
+                />
+              ) : (
                 <PortfolioTable
                   selectedPortfolio={summarizedPortfolio}
                   setSelectedPortfolio={setSummarizedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
-                />)}
+                />
+              )}
             </div>
           </div>
         )}

@@ -52,6 +52,33 @@ async function fetchPortfolios() {
     }
 }
 
+async function updatePortfolioGoal(portfolioId: number, goal: number) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        toast.error("No token found. Please log in.");
+        return;
+    }
+
+    console.log(JSON.stringify({ portfolioId, goal }));
+    try {
+        const res = await fetch("http://localhost:8080/api/v1/portfolio/goal", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ portfolioId, goal }),
+        });
+        await checkHttpsErrors(res);
+
+        toast.success("Portfolio goal updated.");
+
+    } catch (error) {
+        console.error("Update portfolio goal error", error);
+        toast.error(error.message);
+    }
+}
+
 
 
 const formSchema = z.object({
@@ -106,4 +133,4 @@ async function updatePortfolioName(
 }
 
 
-export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName }
+export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName, updatePortfolioGoal }

@@ -338,7 +338,7 @@ export default function PortfolioTable({
                           <Button
                               variant={"destructive"}
                               onClick={()=>
-                                  deleteEntry(entry.stock.ticker)
+                                  deletePortfolioEntry(entry.stock.ticker,selectedPortfolio.id)
                               }
                           >
                             Delete

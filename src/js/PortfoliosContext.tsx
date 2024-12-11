@@ -45,7 +45,6 @@ export const PortfoliosProvider = ({ children }) => {
     }
 
     fetchAndSetPortfolios();
-    console.log("INSIDE PORT CONTEXT")
   }, []);  // Fetch on mount
 
   useEffect(() => {

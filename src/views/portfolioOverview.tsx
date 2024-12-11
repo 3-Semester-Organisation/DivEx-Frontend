@@ -41,10 +41,9 @@ export default function PortfolioOverview() {
   function summarizePortfolioEntries() {
 
     if (selectedPortfolio === null) {
-      console.log("NOT")
       return;
     }
-    console.log("HAS RUN")
+
     const summarizedEntries = [];
     let totalCost = 0;
     let totalNumberOfShares = 0;
@@ -90,10 +89,7 @@ export default function PortfolioOverview() {
       portfolioEntries: summarizedEntries,
     };
 
-    // setSelectedPortfolio(updatedPortfolio);
     setSummarizedPortfolio(updatedPortfolio);
-
-    console.log("Updated Portfolios:", updatedPortfolio);
   }
 
 
@@ -125,10 +121,11 @@ export default function PortfolioOverview() {
 
     loadPortfolios();
     setSelectedPortfolio(selectedPortfolio);
-    console.log(selectedPortfolio)
   }, []);
 
-  useEffect(() => { summarizePortfolioEntries(); console.log("SELECTED", selectedPortfolio); console.log("SUMMARIZED", summarizedPortfolio) }, [selectedPortfolio])
+  useEffect(() => {
+    summarizePortfolioEntries();
+  }, [selectedPortfolio])
 
   const changePortfolioName = async (newName: string) => {
     const token = localStorage.getItem("token");

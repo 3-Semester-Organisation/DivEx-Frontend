@@ -12,7 +12,6 @@ async function addStockToPortfolio(portfolioEntryRequest: PortfolioEntryRequest)
         checkHttpsErrors(response);
         const data = await response.json();
 
-        console.log("datdatatdtadtat", data)
         if (data) {
             return true;
 

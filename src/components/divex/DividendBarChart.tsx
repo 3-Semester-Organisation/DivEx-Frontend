@@ -19,9 +19,8 @@ interface DividendData {
 
 
 
-export default function dividendBarChart({ currency }) {
+export default function dividendBarChart({ selectedPortfolio, currency }) {
 
-    const { selectedPortfolio } = usePortfolios();
     const [latestDividendData, setLatestDividendData] = useState<DividendData[]>([])
     const [filteredDividendData, setFilteredDividendData] = useState<DividendData[]>([])
     const [selectedMonth, setSelectedMonth] = useState<number>();
@@ -29,10 +28,6 @@ export default function dividendBarChart({ currency }) {
     function convertUnixToDateString(unixDate: number) {
         return new Date(unixDate * 1000).toDateString();
     }
-
-    // function getCurrentMonth() {
-    //     return new Date().toDateString().split(" ")[1]
-    // }
 
     function getCurrentMonthIndex() {
         return new Date().getMonth();
@@ -76,10 +71,6 @@ export default function dividendBarChart({ currency }) {
         let isYearly: boolean = latestExDate === previousExDate;
         let isHalfYearly: boolean = latestExDate === priorExDate;
         let isQuartly: boolean = false;
-        
-        console.log("LATEST", latestExDate)
-        console.log("previous", previousExDate)
-        console.log("piror", priorExDate)
 
         if (isYearly) {
             payoutFrequenzy = 1;

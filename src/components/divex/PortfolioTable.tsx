@@ -327,7 +327,7 @@ export default function PortfolioTable({
                       entry.stock.ticker.slice(0, -3),
                       entry.stock.name,
                       latestClosingPrice,
-                      entry.avgAcquiredPrice,
+                      numberFormater(entry.avgAcquiredPrice),
                       entry.stock.currency,
                       entry.quantity,
                       marketValueBaseCurrency,

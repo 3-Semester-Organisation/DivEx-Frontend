@@ -50,6 +50,7 @@ export default function PortfolioOverview() {
       const fetchedPortfolios = await fetchPortfolios();
       setPortfolios(fetchedPortfolios || []);
 
+      //sets the selected portfolio to the one that was selected last. Since setting state is asynchronize, make use of the variable instead.
       const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
       const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
       setSelectedPortfolio(cachedSelectedPortfolio);
@@ -59,7 +60,7 @@ export default function PortfolioOverview() {
   }, []);
 
 
-  
+
   useEffect(() => {
     summarizePortfolioEntries();
   }, [selectedPortfolio, portfolios])

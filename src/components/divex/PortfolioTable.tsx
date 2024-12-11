@@ -11,6 +11,9 @@ import {
 import { stockCurrencyConverter } from "@/js/util";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
+import {Button} from "@/components/ui/button";
+import {deletePortfolioEntry, fetchUpdatePortfolioName} from "@/api/portfolio";
+import {toast} from "sonner";
 
 export default function PortfolioTable({
   selectedPortfolio,
@@ -78,6 +81,31 @@ export default function PortfolioTable({
       );
     }
   }
+
+  const deleteEntry = async (
+      portfolioStockTicker: string
+  )=> {
+    const token = localStorage.getItem("token");
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    if (!token) {
+      toast.error("No token found. Please log in.");
+      return;
+    }
+    try {
+      await deletePortfolioEntry(
+          portfolioStockTicker,
+          selectedPortfolio.id
+      );
+
+      toast.success("Entry deleted.");
+    } catch (error: any) {
+      console.error("Delete portfolio entry error", error);
+      toast.error(error.message);
+    }
+  };
 
   function getLatestClosingPrice(entry: PortfolioEntry) {
     const historicalPricing = entry.stock.historicalPricing ?? [];
@@ -304,8 +332,18 @@ export default function PortfolioTable({
                             key={index}
                           >
                             {cell}
-                          </TableCell> //how do i add a delete button here?
+                          </TableCell>
                         ))}
+                        <TableCell>
+                          <Button
+                              variant={"destructive"}
+                              onClick={()=>
+                                  deleteEntry(entry.stock.ticker)
+                              }
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     );
                   })}

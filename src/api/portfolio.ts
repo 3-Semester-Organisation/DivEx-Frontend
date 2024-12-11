@@ -85,7 +85,7 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
 }
 
 async function deletePortfolioEntry(
-    portfolioStockTicker: String,
+    portfolioStockTicker: string,
     portfolioId: number,
 ){
     const token = localStorage.getItem("token");
@@ -134,4 +134,5 @@ async function updatePortfolioName(
 
 
 
-export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName, deletePortfolioEntry }
+export { addStockToPortfolio, fetchPortfolios, createPortfolio,
+    updatePortfolioName as fetchUpdatePortfolioName, deletePortfolioEntry }

@@ -4,7 +4,7 @@ import { Stock } from "@/divextypes/types";
 import { Input } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 
-export default function SearchBar() {
+export default function SearchBar({placeholder}: {placeholder: string}) {
 
     //SEARCH STATES
     const [searchValue, setSearchValue] = useState("");
@@ -40,19 +40,19 @@ export default function SearchBar() {
 
     return (
         <>
-            <div className="relative w-full max-w-md ml-auto">
+            <div className="relative w-full max-w-md">
                 <Input
                     id="search"
-                    placeholder="Search stocks by ticker or name..."
+                    placeholder={placeholder}
                     type="search"
-                    className="p-2 border-2 border-gray-400 w-full rounded-lg bg-primary-foreground"
+                    className="p-2 border-2 border-primary w-full rounded-lg bg-primary-foreground"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
 
                 {searchResults.length > 0 && (
                     <div
-                        className="absolute left-0 w-full border-2 border-gray-400 bg-white z-50 shadow-lg overflow-y-auto"
+                        className="absolute left-0 w-full border-2 border-primary rounded-md mt-2 z-50 shadow-lg overflow-y-auto"
                         style={{
                             maxHeight: "calc(100vh - 300px)", // Adjust the dropdown height to fit within the viewport
                         }}
@@ -62,7 +62,7 @@ export default function SearchBar() {
                                 <div
                                     onClick={() => showStockDetails(stock.ticker)}
                                     key={stock.ticker}
-                                    className="w-full p-2 opacity-100 hover:opacity-75 hover:underline cursor-pointer border-b last:border-none bg-primary-foreground"
+                                    className="w-full p-2 opacity-100 hover:underline hover:bg-accent cursor-pointer border-b last:border-none bg-primary-foreground"
                                 >
                                     <h1 className="flex justify-start font-semibold">{stock.name}</h1>
                                     <h3 className="flex justify-start text-sm text-gray-500">{stock.ticker.slice(0, -3)}</h3>
@@ -73,7 +73,7 @@ export default function SearchBar() {
                 )}
 
                 {searchValue && searchResults.length === 0 && (
-                    <div className="flex flex-col items-start absolute w-full border-2 border-gray-400 bg-white z-50 shadow-lg p-4">
+                    <div className="flex flex-col items-start absolute w-full border-2 border-primary bg-primary-foreground rounded-md mt-2 z-50 shadow-lg p-4">
                         <p>No results found for "{searchValue}".</p>
                     </div>
                 )}

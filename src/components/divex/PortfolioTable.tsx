@@ -337,8 +337,10 @@ export default function PortfolioTable({
                         <TableCell>
                           <Button
                               variant={"destructive"}
-                              onClick={()=>
+                              onClick={(event)=>{
+                                  event.stopPropagation()
                                   deletePortfolioEntry(entry.stock.ticker,selectedPortfolio.id)
+                                }
                               }
                           >
                             Delete

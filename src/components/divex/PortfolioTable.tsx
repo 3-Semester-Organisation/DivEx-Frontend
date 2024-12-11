@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { stockCurrencyConverter } from "@/js/util";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Portfolio, PortfolioEntry } from "@/divextypes/types";
+import { PortfolioEntry } from "@/divextypes/types";
 
 export default function PortfolioTable({
   selectedPortfolio,
@@ -24,6 +24,8 @@ export default function PortfolioTable({
   function showStockDetails(ticker: string) {
     navigate("/stocks/" + ticker);
   }
+
+
 
   function displayPortfolioValue() {
     let totalPortfolioValue: number = 0;
@@ -44,6 +46,8 @@ export default function PortfolioTable({
     return totalPortfolioValue;
   }
 
+
+
   function calculatePortfolioPercentageChange() {
     const portfolioMarketValue = displayPortfolioValue();
 
@@ -59,31 +63,15 @@ export default function PortfolioTable({
     return percentageChange;
   }
 
-  function displayPorfolioPercentageChange() {
-    const percentageChange = calculatePortfolioPercentageChange();
 
-    if (percentageChange > 0) {
-      return (
-        <span className="text-green-700">
-          +{numberFormater(percentageChange)}%
-        </span>
-      );
-    } else if (percentageChange === 0) {
-      return <span>{numberFormater(percentageChange)}%</span>;
-    } else {
-      return (
-        <span className="text-red-700">
-          {numberFormater(percentageChange)}%
-        </span>
-      );
-    }
-  }
 
   function getLatestClosingPrice(entry: PortfolioEntry) {
     const historicalPricing = entry.stock.historicalPricing ?? [];
     const lastElementIndex = historicalPricing.length - 1;
     return historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
   }
+
+
 
   function calculateStockPercentageChange(entry: PortfolioEntry) {
     const latestClosingPrice = getLatestClosingPrice(entry);
@@ -93,7 +81,9 @@ export default function PortfolioTable({
     return stockPercentageChange;
   }
 
-  function displayStockPercentageChange(percentageValueChange: number) {
+
+
+  function displayPercentageChange(percentageValueChange: number) {
     if (percentageValueChange > 0) {
       return (
         <span className="text-green-700">
@@ -111,6 +101,28 @@ export default function PortfolioTable({
     }
   }
 
+
+
+  function displayChange(change: number) {
+    if (change > 0) {
+      return (
+        <span className="text-green-700">
+          +{numberFormater(change)} {currency}
+        </span>
+      );
+    } else if (change === 0) {
+      return <span>{numberFormater(change)} {currency}</span>;
+    } else {
+      return (
+        <span className="text-red-700">
+          {numberFormater(change)} {currency}
+        </span>
+      );
+    }
+  }
+
+
+  
   function handleCoulmnClick(column: string) {
     const columnHeader = column.toLocaleLowerCase();
     setSort((previous) => ({
@@ -121,6 +133,8 @@ export default function PortfolioTable({
           : "asc",
     }));
   }
+
+
 
   function renderSortIndicator(column: string) {
     const columnHeader = column.toLocaleLowerCase();
@@ -134,12 +148,14 @@ export default function PortfolioTable({
     return ""; // No indicator if the column is not currently sorted
   }
 
+
+
   function sortColumn() {
     const columnToSort = sort.column;
     const sortingDirection = sort.direction;
     const ASCENDING = "asc";
 
-    if (selectedPortfolio === undefined || selectedPortfolio.portfolioEntries === null) {
+    if (selectedPortfolio === null || selectedPortfolio.portfolioEntries === null) {
       return;
     }
 
@@ -222,27 +238,56 @@ export default function PortfolioTable({
     });
   }
 
+
+
   useEffect(() => {
     sortColumn();
   }, [sort]);
+
+
 
   const tableHeads = [
     "Ticker",
     "Stock",
     "Latest Price",
+    "Avg. Acquired Price",
     "Currency",
     "No. shares",
     "Value (Base Currency)",
     "Value (Selected Currency)",
+    "P/L",
     "Change",
   ];
+
+
+
+  function calculateProfitLoss(entry: PortfolioEntry) {
+    const avgAcquiredPrice = entry.avgAcquiredPrice
+    let valueSincePurchase = stockCurrencyConverter(avgAcquiredPrice, entry, currency);
+
+    return valueSincePurchase * (calculateStockPercentageChange(entry) / 100)
+  }
+
+
+
+  function summarizeProfitLoss() {
+    let totalProfitLoss = 0;
+
+    selectedPortfolio.portfolioEntries.forEach(entry => {
+      totalProfitLoss += calculateProfitLoss(entry);
+    });
+
+    return totalProfitLoss;
+  }
+
+
 
   return (
     <>
       <div>
         {selectedPortfolio !== null && (
           <div className="bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
-            {selectedPortfolio?.portfolioEntries?.length === 0 && (
+            {(selectedPortfolio?.portfolioEntries?.length === 0 || selectedPortfolio.portfolioEntries === null) && (
               <h1 className="text-4xl font-semibold mb-12">
                 Add stocks to the portfolio
               </h1>
@@ -264,7 +309,7 @@ export default function PortfolioTable({
               </TableHeader>
 
               <TableBody>
-                {selectedPortfolio?.portfolioEntries?.length > 0 &&
+                {selectedPortfolio?.portfolioEntries?.length > 0 && (
                   selectedPortfolio.portfolioEntries.map((entry) => {
                     const latestClosingPrice = getLatestClosingPrice(entry);
                     const marketValueBaseCurrency = numberFormater(
@@ -276,20 +321,19 @@ export default function PortfolioTable({
                       currency
                     );
 
-                    const stockPercentageChange =
-                      calculateStockPercentageChange(entry);
+                    const stockPercentageChange = calculateStockPercentageChange(entry);
 
                     const cellData = [
                       entry.stock.ticker.slice(0, -3),
                       entry.stock.name,
                       latestClosingPrice,
+                      entry.avgAcquiredPrice,
                       entry.stock.currency,
                       entry.quantity,
                       marketValueBaseCurrency,
-                      `${numberFormater(
-                        marketValueSelectedCurrency
-                      )} ${currency}`,
-                      displayStockPercentageChange(stockPercentageChange),
+                      `${numberFormater(marketValueSelectedCurrency)} ${currency}`,
+                      displayChange(calculateProfitLoss(entry)),
+                      displayPercentageChange(stockPercentageChange),
                     ];
 
                     return (
@@ -299,16 +343,14 @@ export default function PortfolioTable({
                         key={entry.stock.ticker}
                       >
                         {cellData.map((cell, index) => (
-                          <TableCell
-                            className="text-center truncate"
-                            key={index}
-                          >
+                          <TableCell className="text-center truncate" key={index}>
                             {cell}
                           </TableCell>
                         ))}
                       </TableRow>
                     );
-                  })}
+                  })
+                )}
 
                 {selectedPortfolio?.portfolioEntries?.length > 0 && (
                   <TableRow>
@@ -320,11 +362,18 @@ export default function PortfolioTable({
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
+                    <TableCell></TableCell>
+
                     <TableCell className="font-medium text-center">
                       {currency} {numberFormater(displayPortfolioValue())}
                     </TableCell>
+
+                    <TableCell>
+                      {displayChange(summarizeProfitLoss())}
+                    </TableCell>
+
                     <TableCell className="font-medium text-center">
-                      {displayPorfolioPercentageChange()}
+                      {displayPercentageChange(calculatePortfolioPercentageChange())}
                     </TableCell>
                   </TableRow>
                 )}

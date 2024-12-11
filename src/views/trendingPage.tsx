@@ -10,7 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { checkHttpsErrors } from '@/js/util'
 
-export default function homepage() {
+export default function Trending() {
 
     const navigate = useNavigate();
     const [weeklyTopStocks, setWeeklyTopStocks] = useState([]);
@@ -61,7 +61,7 @@ export default function homepage() {
         <>
             <div className='grid grid-cols-4 gap-6'>
                 <div className="col-span-4">
-                        <h1 className='text-5xl text-start'>Homepage</h1>
+                        <h1 className='text-5xl text-start'>Trending Stocks</h1>
                 </div>
                 <div className='col-span-2 bg-primary-foreground rounded-md p-6'>
                     <h2 className='flex justify-start font-semibold text-xl'>Monthly top stocks</h2>

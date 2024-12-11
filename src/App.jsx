@@ -3,7 +3,7 @@ import { AuthContext } from "@/js/AuthContext";
 import Navbar from "@/components/ui/custom/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
-import Homepage from "@/views/homepage";
+import Trending from "@/views/trendingPage";
 import StockDetailsPage from "@/views/stockDetailsPage";
 import ModeToggle from "@/components/ui/mode-toggle";
 
@@ -36,10 +36,10 @@ function App() {
         <Router>
           {isLoggedIn ? <Navbar/> : <DefaultNavbar/>}
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={<p>homepage</p>} />
+            <Route path="/trending" element={<Trending />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<p>dashboard</p>} />
             <Route path="/account" element={<p>account</p>} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/calendar" element={<CalendarPage />} />

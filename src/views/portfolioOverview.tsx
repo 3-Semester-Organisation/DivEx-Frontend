@@ -32,15 +32,39 @@ export default function PortfolioOverview() {
   const subType = getSubscriptionTypeFromToken();
 
   // PORTFOLIO STATES
-  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } =
-    usePortfolios();
+  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
 
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
   const [summarizedPortfolio, setSummarizedPortfolio] = useState<Portfolio>(null)
 
+
+
   useCheckCredentials();
+
+
+
+  useEffect(() => {
+    async function loadPortfolios() {
+      const fetchedPortfolios = await fetchPortfolios();
+      setPortfolios(fetchedPortfolios || []);
+
+      const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
+      const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
+      setSelectedPortfolio(cachedSelectedPortfolio);
+    }
+
+    loadPortfolios();
+  }, []);
+
+
+  
+  useEffect(() => {
+    summarizePortfolioEntries();
+  }, [selectedPortfolio, portfolios])
+
+
 
   function summarizePortfolioEntries() {
 
@@ -54,7 +78,7 @@ export default function PortfolioOverview() {
     let avgAcquiredPrice = 0;
     let previousEntry = null;
 
-    const portfolioEntries = [...selectedPortfolio.portfolioEntries];
+    const portfolioEntries = selectedPortfolio.portfolioEntries;
     portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
 
     for (const currentEntry of portfolioEntries) {
@@ -97,29 +121,14 @@ export default function PortfolioOverview() {
   }
 
 
+
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
     setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
     setSelectedPortfolio(newPortfolio);
   }
 
-  useEffect(() => {
-    async function loadPortfolios() {
-      const data = await fetchPortfolios();
-      setPortfolios(data || []);
 
-      if (!selectedPortfolio && data && data.length > 0) {
-        setSelectedPortfolio(data[0]);
-      }
-    }
-
-    loadPortfolios();
-    setSelectedPortfolio(selectedPortfolio);
-  }, []);
-
-  useEffect(() => {
-    summarizePortfolioEntries();
-  }, [selectedPortfolio])
 
   const changePortfolioName = async (newName: string) => {
     const token = localStorage.getItem("token");
@@ -178,14 +187,14 @@ export default function PortfolioOverview() {
             selectedPortfolio={selectedPortfolio}
           />
         </h1>
-        
+
         {selectedPortfolio && (
-          
-            <PortfolioGoalProgress currency={currency} />
-          
+
+          <PortfolioGoalProgress currency={currency} />
+
         )}
-        </div>
-        
+      </div>
+
       <div className="flex flex-row content-center gap-3 pt-5">
         <div>
           {selectedPortfolio && (
@@ -220,12 +229,12 @@ export default function PortfolioOverview() {
         </div>
 
         {/* Set portfolio goal */}
-      <div>
+        <div>
           <PortfolioGoalDialog
             selectedPortfolio={selectedPortfolio}
             onSubmit={onUpdatePortfolioGoal}
           />
-      </div>
+        </div>
 
         <div>
           <CurrencySelect
@@ -254,7 +263,7 @@ export default function PortfolioOverview() {
           </div>
         )}
 
-        
+
 
         <div className="w-80 ml-auto">
           <SearchBar
@@ -262,7 +271,7 @@ export default function PortfolioOverview() {
         </div>
       </div>
 
-      
+
 
       <div>
         {portfolios?.length === 0 && (

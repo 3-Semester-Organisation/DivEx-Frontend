@@ -36,8 +36,7 @@ export const PortfoliosProvider = ({ children }) => {
             // If stored ID is invalid, default to the first portfolio
             setSelectedPortfolio(data[0]);
             localStorage.setItem('selectedPortfolioId', data[0].id.toString());
-          } else {
-          }
+          } 
         } 
         setIsInitialLoad(false);
       } catch (error) {
@@ -46,6 +45,7 @@ export const PortfoliosProvider = ({ children }) => {
     }
 
     fetchAndSetPortfolios();
+    console.log("INSIDE PORT CONTEXT")
   }, []);  // Fetch on mount
 
   useEffect(() => {

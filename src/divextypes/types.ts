@@ -53,6 +53,7 @@ interface PortfolioEntry {
     stockPrice: number;
     quantity: number;
     entryDate: number;
+    avgAcquiredPrice: number;
 }
 
 interface Portfolio {

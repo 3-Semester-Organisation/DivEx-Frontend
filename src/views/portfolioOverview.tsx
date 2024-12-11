@@ -83,38 +83,41 @@ export default function PortfolioOverview() {
     let avgAcquiredPrice = 0;
     let previousEntry = null;
 
-    const portfolioEntries = selectedPortfolio.portfolioEntries;
-    portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
+    if (selectedPortfolio) {
 
-    for (const currentEntry of portfolioEntries) {
+      const portfolioEntries = selectedPortfolio.portfolioEntries;
+      portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
 
-      if (previousEntry !== null && previousEntry.stock.name.toLowerCase() === currentEntry.stock.name.toLowerCase()) {
-        totalCost += currentEntry.stockPrice * currentEntry.quantity;
-        totalNumberOfShares += currentEntry.quantity;
-      } else {
+      for (const currentEntry of portfolioEntries) {
 
-        if (previousEntry !== null) {
-          avgAcquiredPrice = totalCost / totalNumberOfShares;
-          summarizedEntries.push({
-            ...previousEntry,
-            avgAcquiredPrice: avgAcquiredPrice.toFixed(2),
-            quantity: totalNumberOfShares,
-          });
+        if (previousEntry !== null && previousEntry.stock.name.toLowerCase() === currentEntry.stock.name.toLowerCase()) {
+          totalCost += currentEntry.stockPrice * currentEntry.quantity;
+          totalNumberOfShares += currentEntry.quantity;
+        } else {
+
+          if (previousEntry !== null) {
+            avgAcquiredPrice = totalCost / totalNumberOfShares;
+            summarizedEntries.push({
+              ...previousEntry,
+              avgAcquiredPrice: avgAcquiredPrice.toFixed(2),
+              quantity: totalNumberOfShares,
+            });
+          }
+
+          previousEntry = currentEntry;
+          totalCost = currentEntry.stockPrice * currentEntry.quantity;
+          totalNumberOfShares = currentEntry.quantity;
         }
-
-        previousEntry = currentEntry;
-        totalCost = currentEntry.stockPrice * currentEntry.quantity;
-        totalNumberOfShares = currentEntry.quantity;
       }
-    }
 
-    if (previousEntry !== null) {
-      avgAcquiredPrice = totalCost / totalNumberOfShares;
-      summarizedEntries.push({
-        ...previousEntry,
-        avgAcquiredPrice: avgAcquiredPrice.toFixed(2),
-        quantity: totalNumberOfShares,
-      });
+      if (previousEntry !== null) {
+        avgAcquiredPrice = totalCost / totalNumberOfShares;
+        summarizedEntries.push({
+          ...previousEntry,
+          avgAcquiredPrice: avgAcquiredPrice.toFixed(2),
+          quantity: totalNumberOfShares,
+        });
+      }
     }
 
     const updatedPortfolio = {

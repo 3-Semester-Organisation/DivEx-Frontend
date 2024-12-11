@@ -13,11 +13,16 @@ export function PortfolioGoalProgress({ currency }) {
     function totalAnnualDividends() {
         let totalAnnualDividends = 0;
     
-        selectedPortfolio.portfolioEntries.forEach(entry => {
-          const dividendRate = entry.stock.dividendRate
-    
-          totalAnnualDividends += stockCurrencyConverter(dividendRate, entry, currency);
-        })
+        if (selectedPortfolio.portfolioEntries === null) {
+          return totalAnnualDividends;
+        } else {
+            selectedPortfolio.portfolioEntries.forEach(entry => {
+                const dividendRate = entry.stock.dividendRate
+          
+                totalAnnualDividends += stockCurrencyConverter(dividendRate, entry, currency);
+              })
+        }
+        
     
         return totalAnnualDividends;
     }
@@ -43,7 +48,9 @@ export function PortfolioGoalProgress({ currency }) {
             if (current > goal) {
                 setProgress(100);
                 return;
-            } else {
+            } else if (!goal) {
+                setProgress(0);
+             } else {
                 setProgress((current / goal) * 100);
             }
           
@@ -67,7 +74,7 @@ export function PortfolioGoalProgress({ currency }) {
                                     <Progress value={progress} className="mt-1.5" />
                                 </div>
                             </TooltipTrigger>
-                            <TooltipContent side="top" align="center" className="bg-gray-800 text-white p-2 rounded-md shadow-lg">
+                            <TooltipContent side="top" align="center" className="bg-primary-foreground text-foreground p-2 rounded-md shadow-lg">
                                 <span>Current: {totalAnnualDividends()} / {convertGoal(selectedPortfolio.goal, currency)} {currency}</span>
                             </TooltipContent>
                         </Tooltip>

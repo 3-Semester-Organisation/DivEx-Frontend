@@ -45,18 +45,8 @@ export default function PortfolioOverview() {
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
     setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
+    setSelectedPortfolio(newPortfolio);
   }
-
-  useEffect(() => {
-    function getLatestPortfolio(portfolios: Portfolio[]) {
-      const lastElement = portfolios.length - 1;
-      return portfolios[lastElement];
-    }
-
-    if (portfolios?.length > 0) {
-      setSelectedPortfolio(getLatestPortfolio(portfolios));
-    }
-  }, [portfolios]);
 
   useEffect(() => {
     async function loadPortfolios() {

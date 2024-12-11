@@ -62,7 +62,7 @@ export default function SearchBar() {
                                 <div
                                     onClick={() => showStockDetails(stock.ticker)}
                                     key={stock.ticker}
-                                    className="w-full p-2 hover:underline cursor-pointer border-b last:border-none bg-primary-foreground"
+                                    className="w-full p-2 opacity-100 hover:opacity-75 hover:underline cursor-pointer border-b last:border-none bg-primary-foreground"
                                 >
                                     <h1 className="flex justify-start font-semibold">{stock.name}</h1>
                                     <h3 className="flex justify-start text-sm text-gray-500">{stock.ticker.slice(0, -3)}</h3>

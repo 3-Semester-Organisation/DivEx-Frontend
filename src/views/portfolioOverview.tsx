@@ -19,25 +19,26 @@ import { Button } from "@/components/ui/button";
 
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
-import { currencyConverter } from "@/js/util";
 import { Portfolio } from "@/divextypes/types";
+import { getSubscriptionTypeFromToken } from "@/js/jwt";
+import { SquareArrowOutUpRight } from "lucide-react";
+import DividendBarChart from "@/components/divex/DividendBarChart";
 
 export default function PortfolioOverview() {
+  // SUBSCRIPTION TYPE
+  const subType = getSubscriptionTypeFromToken();
+
   // PORTFOLIO STATES
-  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } =
-    usePortfolios();
+  const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
 
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
-  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] =
-    useState(false);
+  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
 
   useCheckCredentials();
 
   async function handlePortfolioCreation(values) {
     const newPortfolio = await createPortfolio(values);
-
-    // might be redundant? idk
     setPortfolios((prevPortfolios) => [...prevPortfolios, newPortfolio]);
   }
 
@@ -98,7 +99,12 @@ export default function PortfolioOverview() {
     }
   };
 
-  console.log(isDisplayingDividendSummary)
+  function numberFormater(value: number) {
+    return new Intl.NumberFormat("de-DE", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
 
   return (
     <>
@@ -153,13 +159,32 @@ export default function PortfolioOverview() {
           />
         </div>
 
+        {subType === "PREMIUM" && portfolios?.length > 0 && (
+          <div>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (selectedPortfolio) {
+                  //sharePortfolio(selectedPortfolio); //logic here
+                  toast.info("Feature coming soon.");
+                } else {
+                  toast.error("No portfolio selected.");
+                }
+              }}
+            >
+              Share Portfolio
+              <SquareArrowOutUpRight />
+            </Button>
+          </div>
+        )}
+
         <div className="w-80 ml-auto">
           <SearchBar />
         </div>
       </div>
 
       <div>
-        {portfolios === null && (
+        {portfolios?.length === 0 && (
           <h1 className="text-4xl font-semibold">
             Create a portfolio to get started
           </h1>
@@ -171,18 +196,28 @@ export default function PortfolioOverview() {
               <PortfolioChart selectedPortfolio={selectedPortfolio} />
             </div>
 
-            <div className="col-span-10">
-              {!isDisplayingDividendSummary ? (
-                <PortfolioTable
-                  selectedPortfolio={selectedPortfolio}
-                  currency={currency}
-                />) : (
+            <div className="col-span-8 mt-5">
+            {isDisplayingDividendSummary && (
+              <DividendBarChart 
+              currency={currency} />
+              )}
+            </div>
+
+            <div className="col-span-12">
+              {isDisplayingDividendSummary ? (
                 <DividendSummaryTable
                   selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
                   currency={currency}
-                  currencyConverter={currencyConverter}
+                  numberFormater={numberFormater}
+                />) : (
+                <PortfolioTable
+                  selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
+                  currency={currency}
+                  numberFormater={numberFormater}
                 />)}
-              </div>
+            </div>
           </div>
         )}
       </div>

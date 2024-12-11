@@ -8,31 +8,35 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from 'react-router-dom';
+import { stockCurrencyConverter } from '@/js/util';
 
-export default function DividendSummaryTable( {selectedPortfolio, currency, currencyConverter} ) {
+export default function DividendSummaryTable({ selectedPortfolio, setSelectedPortfolio, currency, numberFormater }) {
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   function displayTotalAnnualDividends() {
     let totalAnnualDividends = 0;
 
-    selectedPortfolio.portfolioEntries.forEach( entry => {
+    selectedPortfolio.portfolioEntries.forEach(entry => {
       const dividendRate = entry.stock.dividendRate
 
-      totalAnnualDividends += currencyConverter(dividendRate, entry, currency);
+      totalAnnualDividends += stockCurrencyConverter(dividendRate, entry, currency);
     })
 
     return totalAnnualDividends;
   }
 
-    return(
-        <div className="w-50% bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
-        {selectedPortfolio?.portfolioEntries?.length === 0 && (
-          <h2>Add dividend stocks to see a summary</h2>
-        )}
+  return (
+    <div className="w-50% bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
+      {selectedPortfolio?.portfolioEntries?.length === 0 && (
+        <h2 className="font-semibold text-2xl">Add dividend stocks to see a summary</h2>
+      )}
 
-        <div>
-          {selectedPortfolio !== null && (
+      <div>
+        {selectedPortfolio !== null && (
+          <div>
+            <h2 className='flex justify-start font-semibold text-2xl mb-3'>Dividends Summary</h2>
+
             <Table>
               <TableHeader>
                 <TableRow>
@@ -41,11 +45,12 @@ const navigate = useNavigate();
                   <TableHead>Yield</TableHead>
                   <TableHead>5-Year Avg. Yield</TableHead>
                   <TableHead>Ratio</TableHead>
-                  <TableHead>Currency</TableHead>
                   <TableHead>Rate</TableHead>
                   <TableHead>no. shares</TableHead>
                   <TableHead>Ex Date</TableHead>
-                  <TableHead>Annual Dividend</TableHead>
+                  <TableHead>Currency</TableHead>
+                  <TableHead>Annual Dividend <i>(Base Currency)</i></TableHead>
+                  <TableHead>Annual Dividend <i>(Selected Currency)</i></TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -59,25 +64,30 @@ const navigate = useNavigate();
                     const dividendRatio = entry.stock.dividendRatio;
                     const dividendRate = entry.stock.dividendRate;
 
+                    const quantity = entry.quantity;
+                    const annualDividendBaseCurrency = dividendRate * quantity;
+                    const annualDividendSelectedCurrency = stockCurrencyConverter(dividendRate, entry, currency);
                     //filters out stock that do not payout dividends.
-                    if(dividendYield === 0 && fiveYearAvgDividendYield === 0 && dividendRatio === 0 && dividendRate === 0) {
+                    if (dividendYield === 0 && fiveYearAvgDividendYield === 0 && dividendRatio === 0 && dividendRate === 0) {
                       return;
                     }
 
                     return (
                       <TableRow
                         className="hover:cursor-pointer"
+                        key={entry.stock.ticker}
                         onClick={() => navigate("/stocks/" + entry.stock.ticker)}>
                         <TableCell className="text-start">{entry.stock.ticker}</TableCell>
                         <TableCell className="text-start">{entry.stock.name}</TableCell>
                         <TableCell className="text-start">{(dividendYield * 100).toFixed(2)}%</TableCell>
                         <TableCell className="text-start">{(fiveYearAvgDividendYield).toFixed(2)}%</TableCell>
                         <TableCell className="text-start">{(dividendRatio * 100).toFixed(2)}%</TableCell>
-                        <TableCell className="text-start">{entry.stock.currency}</TableCell>
                         <TableCell className="text-start">{dividendRate}</TableCell>
-                        <TableCell className="text-start">{entry.quantity}</TableCell>
+                        <TableCell className="text-start">{quantity}</TableCell>
                         <TableCell className="text-start">{new Date(entry.stock.exDividendDate * 1000).toDateString()}</TableCell>
-                        <TableCell className="text-start text-green-700 font-semibold">{new Intl.NumberFormat('en-US').format(entry.stock.dividendRate * entry.quantity)}</TableCell>
+                        <TableCell className="text-start">{entry.stock.currency}</TableCell>
+                        <TableCell className="text-start text-green-700 font-semibold">{numberFormater(annualDividendBaseCurrency)}</TableCell>
+                        <TableCell className="text-start text-green-700 font-semibold">{currency} {numberFormater(annualDividendSelectedCurrency)}</TableCell>
                       </TableRow>
                     )
                   })
@@ -93,13 +103,15 @@ const navigate = useNavigate();
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
-                  <TableCell className="text-start text-green-700 font-semibold"> {new Intl.NumberFormat('en-US').format(displayTotalAnnualDividends())} {currency}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell className="text-start text-green-700 font-semibold">{currency} {numberFormater(displayTotalAnnualDividends())}</TableCell>
                 </TableRow>
               </TableBody>
 
             </Table>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    )
+    </div>
+  )
 }

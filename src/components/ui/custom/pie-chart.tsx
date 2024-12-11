@@ -14,23 +14,6 @@ import {
 import { PieChart, Pie, Cell, Legend } from "recharts";
 import { Portfolio } from "@/divextypes/types";
 
-// Define TypeScript interfaces for type safety
-// interface Stock {
-//   ticker: string;
-//   name: string;
-//   fullName: string;
-//   sector: string;
-// }
-
-// interface PortfolioEntry {
-//   quantity: number;
-//   stock: Stock;
-// }
-
-// interface Portfolio {
-//   id: string;
-//   portfolioEntries: PortfolioEntry[] | null;
-// }
 
 interface PortfolioChartProps {
   selectedPortfolio: Portfolio | null;
@@ -95,14 +78,13 @@ const CustomLegend = (props: any) => {
 };
 
 export function PortfolioChart({ selectedPortfolio }: PortfolioChartProps) {
-  console.log("Selected Portfolio:", selectedPortfolio);
 
   // Memoize stockData to optimize performance
   const stockData = React.useMemo(() => {
     if (!selectedPortfolio || !selectedPortfolio.portfolioEntries) {
-      console.log("No portfolio entries");
       return [];
     }
+
     return selectedPortfolio.portfolioEntries.map((entry) => ({
       name: entry.stock.ticker.slice(0, -3),
       fullName: entry.stock.name,
@@ -112,7 +94,6 @@ export function PortfolioChart({ selectedPortfolio }: PortfolioChartProps) {
     
   }, [selectedPortfolio]);
 
-  console.log("Stock Data:", stockData);
   // If selectedPortfolio is null, display a loading indicator
   if (!selectedPortfolio) {
     return (

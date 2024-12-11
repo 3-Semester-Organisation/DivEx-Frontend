@@ -54,8 +54,8 @@ export default function PortfolioTable({
     let totalMoneySpent: number = 0;
 
     selectedPortfolio.portfolioEntries.forEach((entry) => {
-      const purchasePrice: number = entry.stockPrice;
-      totalMoneySpent += stockCurrencyConverter(purchasePrice, entry, currency);
+      const avgPurchasePrice: number = entry.avgAcquiredPrice;
+      totalMoneySpent += stockCurrencyConverter(avgPurchasePrice, entry, currency);
     });
 
     const percentageChange: number =
@@ -75,9 +75,9 @@ export default function PortfolioTable({
 
   function calculateStockPercentageChange(entry: PortfolioEntry) {
     const latestClosingPrice = getLatestClosingPrice(entry);
-    const purchasePrice = entry.stockPrice;
+    const avgPurchasePrice = entry.avgAcquiredPrice;
     const stockPercentageChange =
-      ((latestClosingPrice - purchasePrice) / purchasePrice) * 100;
+      ((latestClosingPrice - avgPurchasePrice) / avgPurchasePrice) * 100;
     return stockPercentageChange;
   }
 

@@ -304,7 +304,7 @@ export default function PortfolioTable({
                             key={index}
                           >
                             {cell}
-                          </TableCell>
+                          </TableCell> //how do i add a delete button here?
                         ))}
                       </TableRow>
                     );

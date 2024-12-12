@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Target } from "lucide-react";
 
 export function PortfolioGoalDialog({ selectedPortfolio, onSubmit }) {
-  const [goal, setGoal] = useState<string>(selectedPortfolio?.name || "");
+  const [goal, setGoal] = useState<string>(selectedPortfolio?.name || "")
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

@@ -31,17 +31,20 @@ const formSchema = z.object({
   firstName: z
     .string()
     .min(2, { message: "Name must be at least 2 characters long" })
-    .optional(),
+    .or(z.literal('')),
   lastName: z
     .string()
     .min(2, { message: "Name must be at least 2 characters long" })
-    .optional(),
-  email: z.string().email({ message: "Invalid email address" }),
+    .or(z.literal('')),
+  email: z.
+    string()
+    .email({ message: "Invalid email address" })
+    .or(z.literal('')),
   //phonenumber, no whitespace, no special characters, no letters
   phone: z
     .string()
     .regex(/^\d{8,12}$/, { message: "Invalid phone number" })
-    .optional(),
+    .or(z.literal('')),
 });
 
 const passwordFormSchema = z
@@ -136,10 +139,10 @@ export default function SettingsForm() {
     <>
       <div className="grid grid-cols-12">
         {/* User Details Form */}
-        <div className="min-h-[60vh] h-full items-center justify-center col-span-3">
+        <div className="min-h-[60vh] h-full items-center justify-center col-span-4">
           <Card className="mx-auto max-w-3xl w-96 shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl">Settings</CardTitle>
+              <CardTitle className="text-2xl">Details</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -246,7 +249,7 @@ export default function SettingsForm() {
         </div>
 
         {/* Password Change Form */}
-        <div className="col-span-3">
+        <div className="col-span-4">
           <Card className="mx-auto max-w-3xl w-96 shadow-lg">
             <CardHeader>
               <CardTitle className="text-2xl">Change password</CardTitle>

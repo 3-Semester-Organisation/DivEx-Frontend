@@ -86,7 +86,7 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
               <TableRow key={`skeleton-${index}`}>
                 {tableHeads.map((head) => (
                   <TableCell key={head.id} className={`text-center`} >
-                    <div className="h-3-5 bg-gray-600 rounded-md w-3/4 mx-auto animate-pulse"></div>
+                    <div className="h-7 bg-gray-600 rounded-md w-3/4 mx-auto animate-pulse"></div>
                   </TableCell>
                 ))}
               </TableRow>
@@ -109,7 +109,7 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">
                   <div onClick={(event) => event.stopPropagation()}>
-                    <AddStockDialog stock={stock} />
+                    <AddStockDialog stock={stock} buttonSize={"sm"} />
                     </div>
                 </TableCell>
 

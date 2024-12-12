@@ -200,13 +200,10 @@ export default function PortfolioOverview() {
           />
         </h1>
 
-        {selectedPortfolio && (
-
+        {selectedPortfolio && selectedPortfolio.goal !== 0 && (
           <PortfolioGoalProgress
             currency={currency}
           />
-          
-
         )}
       </div>
 
@@ -290,7 +287,7 @@ export default function PortfolioOverview() {
 
       <div>
         {portfolios?.length === 0 && (
-          <h1 className="text-4xl font-semibold">
+          <h1 className="text-4xl font-semibold mt-20">
             Create a portfolio to get started
           </h1>
         )}

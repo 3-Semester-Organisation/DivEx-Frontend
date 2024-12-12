@@ -9,7 +9,10 @@ export default function Settings() {
   
   return (
     <>
-      <div>
+      <div className="flex">
+        <h1 className="text-5xl mb-10">Settings</h1>
+      </div>
+        <div>
         <SettingsForm />
         <DeleteAccountDialog />    
       </div>

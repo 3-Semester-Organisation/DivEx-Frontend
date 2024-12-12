@@ -72,6 +72,7 @@ async function updatePortfolioGoal(portfolioId: number, goal: number) {
         await checkHttpsErrors(res);
 
         toast.success("Portfolio goal updated.");
+        return await res.json();
 
     } catch (error) {
         console.error("Update portfolio goal error", error);

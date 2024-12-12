@@ -6,7 +6,7 @@ import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioBut
 
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
-  createPortfolio, deletePortfolio,
+  createPortfolio, deletePortfolio, deletePortfolioEntry,
   fetchPortfolios,
   fetchUpdatePortfolioName,
 } from "@/api/portfolio";
@@ -189,7 +189,41 @@ export default function PortfolioOverview() {
     }
   }
 
+  const deleteSelectedPortfolio = async (
+      portfolioId: number,
+      portfolioName: String
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    if (!token) {
+      toast.error("No token found. Please log in.");
+      return;
+    }
+    try {
+      await deletePortfolio(
+          portfolioId,
+          portfolioName
+      );
 
+      setPortfolios((prevPortfolios) => prevPortfolios
+          .filter((portfolio) => portfolio.id !== portfolioId));
+
+      if (portfolios.length > 0) {
+        setSelectedPortfolio(portfolios[0])
+      }
+      //TODO make something that handles what happens if there are no portfolios
+      //I thought about making a "setSelectedPortfolio(null)" but that's bad code
+
+
+      toast.success("Entry deleted.");
+    } catch (error: any) {
+      console.error("Delete portfolio entry error", error);
+      toast.error(error.message);
+    }
+  }
 
   return (
     <>

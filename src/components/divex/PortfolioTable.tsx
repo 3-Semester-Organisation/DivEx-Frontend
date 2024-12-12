@@ -11,7 +11,6 @@ import {
 import { stockCurrencyConverter } from "@/js/util";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortfolioEntry } from "@/divextypes/types";
-import { Portfolio, PortfolioEntry } from "@/divextypes/types";
 import {Button} from "@/components/ui/button";
 import {deletePortfolioEntry, fetchUpdatePortfolioName} from "@/api/portfolio";
 import {toast} from "sonner";

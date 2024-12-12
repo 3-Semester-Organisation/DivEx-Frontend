@@ -102,6 +102,16 @@ export default function PortfolioTable({
           selectedPortfolio.id
       );
 
+      //makes a new list of entries based on selectedPortfolio's entries and filtering out
+      //the entry set to be deleted, and then setting selectedPortfolio to the new list
+      let deletedPortfolioEntryList = [...selectedPortfolio.portfolioEntries]
+          .filter((entry) => entry.id !== portfolioEntryId);
+
+      setSelectedPortfolio({
+        ...selectedPortfolio,
+        portfolioEntries: deletedPortfolioEntryList,
+      });
+
       toast.success("Entry deleted.");
     } catch (error: any) {
       console.error("Delete portfolio entry error", error);

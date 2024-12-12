@@ -6,8 +6,10 @@ export default function MonthSelector({selectedMonth, setSelectedMonth, filterDi
     return(
         <>
          <div className='flex justify-center items-center'>
-                    {months.map((month, index) =>
-                        <button
+                {months.map((month, index) =>
+                        
+                    <button
+                        key={index}
                             onClick={() => {
                                 setSelectedMonth(index);
                                 filterDividendsBySelectedMonth(index);

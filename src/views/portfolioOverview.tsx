@@ -38,13 +38,8 @@ export default function PortfolioOverview() {
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
   const [summarizedPortfolio, setSummarizedPortfolio] = useState<Portfolio>(null)
-  const [ goal, setGoal ] = useState<number>(0);
-
-
-
+  
   useCheckCredentials();
-
-
 
   useEffect(() => {
     async function loadPortfolios() {

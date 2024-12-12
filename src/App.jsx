@@ -32,7 +32,7 @@ function App() {
       </div>
 
 
-      <PortfoliosProvider>
+     
         <Router>
           {isLoggedIn ? <Navbar/> : <DefaultNavbar/>}
           <Routes>
@@ -49,7 +49,6 @@ function App() {
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
           </Routes>
         </Router>
-      </PortfoliosProvider>
     </ThemeProvider>
   );
 }

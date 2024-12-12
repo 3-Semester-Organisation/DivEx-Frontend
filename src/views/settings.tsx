@@ -1,20 +1,18 @@
 import useCheckCredentials from '@/js/useCredentials';
-import React from 'react';
+import React, { useState } from 'react';
 import SettingsForm from '@/components/ui/custom/settings-form';
+import DeleteAccountDialog from '@/components/divex/DeleteAccountDialog';
 
+export default function Settings() {
 
-export default function Settings( {isLoggedIn} ) {
-    
   useCheckCredentials();
-
   
-
-    
   return (
     <>
-    <SettingsForm />
+      <div>
+        <SettingsForm />
+        <DeleteAccountDialog />    
+      </div>
     </>
-
-
   )
 }

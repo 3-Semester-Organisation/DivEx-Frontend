@@ -23,7 +23,7 @@ async function getUserDetails() {
     }
 }
 
-async function updateUserDetails(user: any) { 
+async function updateUserDetails(user: any) {
     const token = localStorage.getItem("token");
     if (!token) {
         return null;
@@ -52,4 +52,27 @@ async function updatePassword(password: any) {
     }
 }
 
-export { getUserDetails, updateUserDetails, updatePassword };
+
+
+async function deleteUser() {
+    try {
+        const token = localStorage.getItem("token");
+        const deleteOption = makeAuthOption("DELETE", token)
+        const response = await fetch("http://localhost:8080/api/v1/user", deleteOption);
+        checkHttpsErrors(response);
+
+        let isDeleted = false;
+        if (response.status === 204) {
+            isDeleted = true;
+            return isDeleted;
+
+        } else {
+            return isDeleted
+        }
+        
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export { getUserDetails, updateUserDetails, updatePassword, deleteUser };

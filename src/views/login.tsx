@@ -62,7 +62,7 @@ export default function Login({ onLogin }) {
       
       login();
       toast.success('Login successful.')
-      navigate('/dashboard')
+      navigate('/portfolio/overview')
     } catch (error) {
       console.error('Form submission error', error)
       toast.error(error.message)

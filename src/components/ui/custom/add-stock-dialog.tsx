@@ -48,7 +48,7 @@ const formSchema = z.object({
       .transform((value) => parseInt(value, 10)),
   });
 
-export function AddStockDialog({ stock }) {
+export function AddStockDialog({ stock, buttonSize }) {
   const [open, setOpen] = useState(false);
   const { portfolios } = usePortfolios();
   const { selectedPortfolio } = useContext(PortfoliosContext);
@@ -98,7 +98,7 @@ export function AddStockDialog({ stock }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-              <Button>
+              <Button size={buttonSize}>
                   Add
               </Button>
               {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}

@@ -64,7 +64,7 @@ export default function Register({ onLogin }) {
       
       login();
       toast.success('Registration successful.')
-      navigate('/dashboard')
+      navigate('/portfolio/overview')
     } catch (error) {
       console.error('Form submission error', error)
       toast.error(error.message)

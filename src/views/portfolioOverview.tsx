@@ -38,12 +38,8 @@ export default function PortfolioOverview() {
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
   const [summarizedPortfolio, setSummarizedPortfolio] = useState<Portfolio>(null)
-
-
-
+  
   useCheckCredentials();
-
-
 
   useEffect(() => {
     async function loadPortfolios() {
@@ -177,12 +173,20 @@ export default function PortfolioOverview() {
     }).format(value);
   }
 
-  const onUpdatePortfolioGoal = (goal: number) => {
+  const onUpdatePortfolioGoal = async (goal: number) => {
     if (!selectedPortfolio) {
       toast.error("No portfolio selected.");
       return;
     }
-    updatePortfolioGoal(selectedPortfolio.id, goal);
+    try {
+      const updatedPortfolio = await updatePortfolioGoal(selectedPortfolio.id, goal);
+      setSelectedPortfolio(updatedPortfolio);
+
+      toast.success("Portfolio goal updated.");
+    } catch (error: any) {
+      console.error("Update portfolio goal error", error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -198,7 +202,10 @@ export default function PortfolioOverview() {
 
         {selectedPortfolio && (
 
-          <PortfolioGoalProgress currency={currency} />
+          <PortfolioGoalProgress
+            currency={currency}
+          />
+          
 
         )}
       </div>

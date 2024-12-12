@@ -75,7 +75,7 @@ export function PortfolioGoalProgress({ currency }) {
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent side="top" align="center" className="bg-primary-foreground text-foreground p-2 rounded-md shadow-lg">
-                                <span>Current: {totalAnnualDividends()} / {convertGoal(selectedPortfolio.goal, currency)} {currency}</span>
+                                <span>Current: {totalAnnualDividends().toFixed(2)} / {convertGoal(selectedPortfolio.goal, currency)} {currency}</span>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>

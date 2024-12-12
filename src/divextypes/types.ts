@@ -53,11 +53,13 @@ interface PortfolioEntry {
     stockPrice: number;
     quantity: number;
     entryDate: number;
+    avgAcquiredPrice: number;
 }
 
 interface Portfolio {
     id: number;
     name: string;
+    goal: number;
     portfolioEntries: PortfolioEntry[]
     user: User;
 }

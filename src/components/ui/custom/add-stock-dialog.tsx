@@ -17,9 +17,7 @@ import {
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -83,7 +81,7 @@ export function AddStockDialog({ stock }) {
         ticker: stock.ticker,
         stockPrice: values.price,
         quantity: values.quantity,
-        portfolioId: values.portfolio,
+        portfolioId: values.portfolio, // this has to be a number, or just change the type for "portfolioEntryRequest" to string in the divextype folder.
       };
 
       const isAdded = addStockToPortfolio(portfolioEntryRequest);

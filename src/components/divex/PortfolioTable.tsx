@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { stockCurrencyConverter } from "@/js/util";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { PortfolioEntry } from "@/divextypes/types";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
 import {Button} from "@/components/ui/button";
 import {deletePortfolioEntry, fetchUpdatePortfolioName} from "@/api/portfolio";
@@ -53,8 +54,8 @@ export default function PortfolioTable({
     let totalMoneySpent: number = 0;
 
     selectedPortfolio.portfolioEntries.forEach((entry) => {
-      const purchasePrice: number = entry.stockPrice;
-      totalMoneySpent += stockCurrencyConverter(purchasePrice, entry, currency);
+      const avgPurchasePrice: number = entry.avgAcquiredPrice;
+      totalMoneySpent += stockCurrencyConverter(avgPurchasePrice, entry, currency);
     });
 
     const percentageChange: number =
@@ -62,25 +63,7 @@ export default function PortfolioTable({
     return percentageChange;
   }
 
-  function displayPorfolioPercentageChange() {
-    const percentageChange = calculatePortfolioPercentageChange();
 
-    if (percentageChange > 0) {
-      return (
-        <span className="text-green-700">
-          +{numberFormater(percentageChange)}%
-        </span>
-      );
-    } else if (percentageChange === 0) {
-      return <span>{numberFormater(percentageChange)}%</span>;
-    } else {
-      return (
-        <span className="text-red-700">
-          {numberFormater(percentageChange)}%
-        </span>
-      );
-    }
-  }
 
   const deleteEntry = async (
       portfolioStockTicker: string,
@@ -127,13 +110,15 @@ export default function PortfolioTable({
 
   function calculateStockPercentageChange(entry: PortfolioEntry) {
     const latestClosingPrice = getLatestClosingPrice(entry);
-    const purchasePrice = entry.stockPrice;
+    const avgPurchasePrice = entry.avgAcquiredPrice;
     const stockPercentageChange =
-      ((latestClosingPrice - purchasePrice) / purchasePrice) * 100;
+      ((latestClosingPrice - avgPurchasePrice) / avgPurchasePrice) * 100;
     return stockPercentageChange;
   }
 
-  function displayStockPercentageChange(percentageValueChange: number) {
+
+
+  function displayPercentageChange(percentageValueChange: number) {
     if (percentageValueChange > 0) {
       return (
         <span className="text-green-700">
@@ -150,6 +135,28 @@ export default function PortfolioTable({
       );
     }
   }
+
+
+
+  function displayChange(change: number) {
+    if (change > 0) {
+      return (
+        <span className="text-green-700">
+          +{numberFormater(change)} {currency}
+        </span>
+      );
+    } else if (change === 0) {
+      return <span>{numberFormater(change)} {currency}</span>;
+    } else {
+      return (
+        <span className="text-red-700">
+          {numberFormater(change)} {currency}
+        </span>
+      );
+    }
+  }
+
+
 
   function handleCoulmnClick(column: string) {
     const columnHeader = column.toLocaleLowerCase();
@@ -179,7 +186,7 @@ export default function PortfolioTable({
     const sortingDirection = sort.direction;
     const ASCENDING = "asc";
 
-    if (selectedPortfolio === undefined || selectedPortfolio.portfolioEntries === null) {
+    if (selectedPortfolio === null || selectedPortfolio.portfolioEntries === null) {
       return;
     }
 
@@ -270,19 +277,44 @@ export default function PortfolioTable({
     "Ticker",
     "Stock",
     "Latest Price",
+    "Avg. Acquired Price",
     "Currency",
     "No. shares",
     "Value (Base Currency)",
     "Value (Selected Currency)",
+    "P/L",
     "Change",
   ];
+
+
+
+  function calculateProfitLoss(entry: PortfolioEntry) {
+    const avgAcquiredPrice = entry.avgAcquiredPrice
+    let valueSincePurchase = stockCurrencyConverter(avgAcquiredPrice, entry, currency);
+
+    return valueSincePurchase * (calculateStockPercentageChange(entry) / 100)
+  }
+
+
+
+  function summarizeProfitLoss() {
+    let totalProfitLoss = 0;
+
+    selectedPortfolio.portfolioEntries.forEach(entry => {
+      totalProfitLoss += calculateProfitLoss(entry);
+    });
+
+    return totalProfitLoss;
+  }
+
+
 
   return (
     <>
       <div>
         {selectedPortfolio !== null && (
           <div className="bg-primary-foreground shadow-md rounded-lg p-6 mt-5">
-            {selectedPortfolio?.portfolioEntries?.length === 0 && (
+            {(selectedPortfolio?.portfolioEntries?.length === 0 || selectedPortfolio.portfolioEntries === null) && (
               <h1 className="text-4xl font-semibold mb-12">
                 Add stocks to the portfolio
               </h1>
@@ -304,7 +336,7 @@ export default function PortfolioTable({
               </TableHeader>
 
               <TableBody>
-                {selectedPortfolio?.portfolioEntries?.length > 0 &&
+                {selectedPortfolio?.portfolioEntries?.length > 0 && (
                   selectedPortfolio.portfolioEntries.map((entry) => {
                     const latestClosingPrice = getLatestClosingPrice(entry);
                     const marketValueBaseCurrency = numberFormater(
@@ -316,20 +348,19 @@ export default function PortfolioTable({
                       currency
                     );
 
-                    const stockPercentageChange =
-                      calculateStockPercentageChange(entry);
+                    const stockPercentageChange = calculateStockPercentageChange(entry);
 
                     const cellData = [
                       entry.stock.ticker.slice(0, -3),
                       entry.stock.name,
                       latestClosingPrice,
+                      numberFormater(entry.avgAcquiredPrice),
                       entry.stock.currency,
                       entry.quantity,
                       marketValueBaseCurrency,
-                      `${numberFormater(
-                        marketValueSelectedCurrency
-                      )} ${currency}`,
-                      displayStockPercentageChange(stockPercentageChange),
+                      `${numberFormater(marketValueSelectedCurrency)} ${currency}`,
+                      displayChange(calculateProfitLoss(entry)),
+                      displayPercentageChange(stockPercentageChange),
                     ];
 
                     return (
@@ -339,10 +370,7 @@ export default function PortfolioTable({
                         key={entry.stock.ticker}
                       >
                         {cellData.map((cell, index) => (
-                          <TableCell
-                            className="text-center truncate"
-                            key={index}
-                          >
+                          <TableCell className="text-center truncate" key={index}>
                             {cell}
                           </TableCell>
                         ))}
@@ -360,7 +388,8 @@ export default function PortfolioTable({
                         </TableCell>
                       </TableRow>
                     );
-                  })}
+                  })
+                )}
 
                 {selectedPortfolio?.portfolioEntries?.length > 0 && (
                   <TableRow>
@@ -372,11 +401,18 @@ export default function PortfolioTable({
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
+                    <TableCell></TableCell>
+
                     <TableCell className="font-medium text-center">
                       {currency} {numberFormater(displayPortfolioValue())}
                     </TableCell>
+
+                    <TableCell>
+                      {displayChange(summarizeProfitLoss())}
+                    </TableCell>
+
                     <TableCell className="font-medium text-center">
-                      {displayPorfolioPercentageChange()}
+                      {displayPercentageChange(calculatePortfolioPercentageChange())}
                     </TableCell>
                   </TableRow>
                 )}

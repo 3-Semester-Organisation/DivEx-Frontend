@@ -27,18 +27,17 @@ export const PortfoliosProvider = ({ children }) => {
         const data: Portfolio[] = await fetchPortfolios();  // Adjust this call if necessary
         const storedPortfolioId = localStorage.getItem("selectedPortfolioId");
         setPortfolios(data);
+        console.log("storedPortfolioId", storedPortfolioId);
+        console.log("data", data);
 
         if (storedPortfolioId && data) {
           const foundPortfolio = data.find((portfolio) => portfolio.id.toString() === storedPortfolioId);
           if (foundPortfolio) {
             setSelectedPortfolio(foundPortfolio);
-          } else if (data.length > 0) {
-            // If stored ID is invalid, default to the first portfolio
-            setSelectedPortfolio(data[0]);
-            localStorage.setItem('selectedPortfolioId', data[0].id.toString());
-          } else {
           }
-        } 
+        } else if (data && data.length > 0) {
+          setSelectedPortfolio(data[0]);
+        }
         setIsInitialLoad(false);
       } catch (error) {
         console.error("Error fetching portfolios:", error);

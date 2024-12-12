@@ -39,11 +39,6 @@ const portfolioNavigation: {
 
 const homeNavigation: { title: string; to: string; description: string }[] = [
   {
-    title: "Dashboard",
-    to: "/dashboard",
-    description: "Overview of all your data.",
-  },
-  {
     title: "Calendar",
     to: "/calendar",
     description: "Info about upcoming and past dividends.",
@@ -55,7 +50,7 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
   },
   {
     title: "Trending stocks",
-    to: "/",
+    to: "/trending",
     description: "The most viewed stocks this week.",
   },
 ];

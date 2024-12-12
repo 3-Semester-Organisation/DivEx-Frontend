@@ -1,5 +1,6 @@
 import React, {createContext, useState, useEffect} from "react";
 import { getSubscriptionTypeFromToken } from "./jwt";
+import { usePortfolios } from "./PortfoliosContext";
 
 interface AuthContextType {
   isLoggedin: boolean;
@@ -25,6 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [subscriptionType, setSubscriptionType] = useState<string | null>(null);
+  const { setSelectedPortfolio } = usePortfolios();
 
   // Check for token on initial load
   useEffect(() => {
@@ -49,6 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("selectedPortfolioId");
+    setSelectedPortfolio(null);
     setIsLoggedin(false);
   };
 

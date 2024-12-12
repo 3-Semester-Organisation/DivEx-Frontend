@@ -52,12 +52,16 @@ export default function PortfolioOverview() {
 
       if(!selectedPortfolio && fetchedPortfolios.length > 0 ) {
         setSelectedPortfolio(fetchedPortfolios[0])
+        console.log("New login portfolio set")
+        console.log("fetched data", fetchedPortfolios[0])
+        return;
       }
       
       //sets the selected portfolio to the one that was selected last. Since setting state is asynchronize, make use of the variable instead.
       const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
       const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
       setSelectedPortfolio(cachedSelectedPortfolio);
+      console.log("Not new login set cached POrtfolio")
     }
 
     loadPortfolios();
@@ -73,17 +77,13 @@ export default function PortfolioOverview() {
 
   function summarizePortfolioEntries() {
 
-    if (selectedPortfolio === null) {
-      return;
-    }
-
     const summarizedEntries = [];
     let totalCost = 0;
     let totalNumberOfShares = 0;
     let avgAcquiredPrice = 0;
     let previousEntry = null;
 
-    if (selectedPortfolio) {
+    if (selectedPortfolio && selectedPortfolio.portfolioEntries !== null) {
 
       const portfolioEntries = selectedPortfolio.portfolioEntries;
       portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));

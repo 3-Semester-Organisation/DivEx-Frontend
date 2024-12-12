@@ -319,6 +319,7 @@ export default function PortfolioTable({
               </h1>
             )}
 
+            <h2 className='flex justify-start font-semibold text-2xl mb-3'>Your stocks</h2>
             <Table>
               <TableHeader>
                 <TableRow>

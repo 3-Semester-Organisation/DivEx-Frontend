@@ -40,17 +40,17 @@ export default function DividendSummaryTable({ selectedPortfolio, setSelectedPor
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Ticker</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Yield</TableHead>
-                  <TableHead>5-Year Avg. Yield</TableHead>
-                  <TableHead>Ratio</TableHead>
-                  <TableHead>Rate</TableHead>
-                  <TableHead>no. shares</TableHead>
-                  <TableHead>Ex Date</TableHead>
-                  <TableHead>Currency</TableHead>
-                  <TableHead>Annual Dividend <i>(Base Currency)</i></TableHead>
-                  <TableHead>Annual Dividend <i>(Selected Currency)</i></TableHead>
+                  <TableHead className="text-center">Ticker</TableHead>
+                  <TableHead className="text-center">Stock</TableHead>
+                  <TableHead className="text-center">Yield</TableHead>
+                  <TableHead className="text-center">5-Year Avg. Yield</TableHead>
+                  <TableHead className="text-center">Ratio</TableHead>
+                  <TableHead className="text-center">Rate</TableHead>
+                  <TableHead className="text-center">no. shares</TableHead>
+                  <TableHead className="text-center">Ex Date</TableHead>
+                  <TableHead className="text-center">Currency</TableHead>
+                  <TableHead className="text-center">Annual Dividend <i>(Base Currency)</i></TableHead>
+                  <TableHead className="text-center">Annual Dividend <i>(Selected Currency)</i></TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -77,17 +77,17 @@ export default function DividendSummaryTable({ selectedPortfolio, setSelectedPor
                         className="hover:cursor-pointer"
                         key={entry.stock.ticker}
                         onClick={() => navigate("/stocks/" + entry.stock.ticker)}>
-                        <TableCell className="text-start">{entry.stock.ticker}</TableCell>
-                        <TableCell className="text-start">{entry.stock.name}</TableCell>
-                        <TableCell className="text-start">{(dividendYield * 100).toFixed(2)}%</TableCell>
-                        <TableCell className="text-start">{(fiveYearAvgDividendYield).toFixed(2)}%</TableCell>
-                        <TableCell className="text-start">{(dividendRatio * 100).toFixed(2)}%</TableCell>
-                        <TableCell className="text-start">{dividendRate}</TableCell>
-                        <TableCell className="text-start">{quantity}</TableCell>
-                        <TableCell className="text-start">{new Date(entry.stock.exDividendDate * 1000).toDateString()}</TableCell>
-                        <TableCell className="text-start">{entry.stock.currency}</TableCell>
-                        <TableCell className="text-start text-green-700 font-semibold">{numberFormater(annualDividendBaseCurrency)}</TableCell>
-                        <TableCell className="text-start text-green-700 font-semibold">{currency} {numberFormater(annualDividendSelectedCurrency)}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.stock.ticker.slice(0, -3)}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.stock.name}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(dividendYield * 100).toFixed(2)}%</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(fiveYearAvgDividendYield).toFixed(2)}%</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(dividendRatio * 100).toFixed(2)}%</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{dividendRate}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{quantity}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{new Date(entry.stock.exDividendDate * 1000).toDateString()}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{entry.stock.currency}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap text-green-700 font-semibold">{numberFormater(annualDividendBaseCurrency)}</TableCell>
+                        <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap text-green-700 font-semibold">{currency} {numberFormater(annualDividendSelectedCurrency)}</TableCell>
                       </TableRow>
                     )
                   })
@@ -104,7 +104,7 @@ export default function DividendSummaryTable({ selectedPortfolio, setSelectedPor
                   <TableCell></TableCell>
                   <TableCell></TableCell>
                   <TableCell></TableCell>
-                  <TableCell className="text-start text-green-700 font-semibold">{currency} {numberFormater(displayTotalAnnualDividends())}</TableCell>
+                  <TableCell className="text-center text-green-700 font-semibold">{currency} {numberFormater(displayTotalAnnualDividends())}</TableCell>
                 </TableRow>
               </TableBody>
 

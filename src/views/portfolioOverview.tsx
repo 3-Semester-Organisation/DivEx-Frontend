@@ -265,7 +265,7 @@ export default function PortfolioOverview() {
                 }
               }}
             >
-              Share Portfolio
+              Share
               <SquareArrowOutUpRight />
             </Button>
           </div>

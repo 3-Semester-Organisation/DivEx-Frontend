@@ -54,8 +54,6 @@ export default function StockDetailsPage() {
             setStockToAdd(stock);
             setIsAddingStock(true);
         }
-
-        
     }
 
     return (
@@ -89,9 +87,6 @@ export default function StockDetailsPage() {
                                 Add
                             </button>
 
-                            <button className="mr-4 px-4 py-2 bg-primary-foreground hover:underline rounded-lg border-2 border-gray-400">
-                                Remove
-                            </button>
                         </div>
 
                         <div className="flex gap-6 p-4">

@@ -11,6 +11,9 @@ import {
 import { stockCurrencyConverter } from "@/js/util";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { PortfolioEntry } from "@/divextypes/types";
+import {Button} from "@/components/ui/button";
+import {deletePortfolioEntry, fetchUpdatePortfolioName} from "@/api/portfolio";
+import {toast} from "sonner";
 
 export default function PortfolioTable({
   selectedPortfolio,
@@ -24,8 +27,6 @@ export default function PortfolioTable({
   function showStockDetails(ticker: string) {
     navigate("/stocks/" + ticker);
   }
-
-
 
   function displayPortfolioValue() {
     let totalPortfolioValue: number = 0;
@@ -46,8 +47,6 @@ export default function PortfolioTable({
     return totalPortfolioValue;
   }
 
-
-
   function calculatePortfolioPercentageChange() {
     const portfolioMarketValue = displayPortfolioValue();
 
@@ -65,13 +64,48 @@ export default function PortfolioTable({
 
 
 
+  const deleteEntry = async (
+      portfolioStockTicker: string,
+      portfolioEntryId: number
+  )=> {
+    const token = localStorage.getItem("token");
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    if (!token) {
+      toast.error("No token found. Please log in.");
+      return;
+    }
+    try {
+      await deletePortfolioEntry(
+          portfolioStockTicker,
+          portfolioEntryId,
+          selectedPortfolio.id
+      );
+
+      //makes a new list of entries based on selectedPortfolio's entries and filtering out
+      //the entry set to be deleted, and then setting selectedPortfolio to the new list
+      let deletedPortfolioEntryList = [...selectedPortfolio.portfolioEntries]
+          .filter((entry) => entry.id !== portfolioEntryId);
+
+      setSelectedPortfolio({
+        ...selectedPortfolio,
+        portfolioEntries: deletedPortfolioEntryList,
+      });
+
+      toast.success("Entry deleted.");
+    } catch (error: any) {
+      console.error("Delete portfolio entry error", error);
+      toast.error(error.message);
+    }
+  };
+
   function getLatestClosingPrice(entry: PortfolioEntry) {
     const historicalPricing = entry.stock.historicalPricing ?? [];
     const lastElementIndex = historicalPricing.length - 1;
     return historicalPricing[lastElementIndex]?.previousDailyClosingPrice ?? 0;
   }
-
-
 
   function calculateStockPercentageChange(entry: PortfolioEntry) {
     const latestClosingPrice = getLatestClosingPrice(entry);
@@ -122,7 +156,7 @@ export default function PortfolioTable({
   }
 
 
-  
+
   function handleCoulmnClick(column: string) {
     const columnHeader = column.toLocaleLowerCase();
     setSort((previous) => ({
@@ -133,8 +167,6 @@ export default function PortfolioTable({
           : "asc",
     }));
   }
-
-
 
   function renderSortIndicator(column: string) {
     const columnHeader = column.toLocaleLowerCase();
@@ -147,8 +179,6 @@ export default function PortfolioTable({
     }
     return ""; // No indicator if the column is not currently sorted
   }
-
-
 
   function sortColumn() {
     const columnToSort = sort.column;
@@ -238,13 +268,9 @@ export default function PortfolioTable({
     });
   }
 
-
-
   useEffect(() => {
     sortColumn();
   }, [sort]);
-
-
 
   const tableHeads = [
     "Ticker",
@@ -347,6 +373,18 @@ export default function PortfolioTable({
                             {cell}
                           </TableCell>
                         ))}
+                        <TableCell>
+                          <Button
+                              variant={"destructive"}
+                              onClick={(event)=>{
+                                  event.stopPropagation()
+                                  deleteEntry(entry.stock.ticker, entry.id)
+                                }
+                              }
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     );
                   })

@@ -110,6 +110,32 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
     }
 }
 
+async function deletePortfolioEntry(
+    portfolioStockTicker: string,
+    portfolioEntryId: number,
+    portfolioId: number,
+){
+    const token = localStorage.getItem("token");
+    if (!token) {
+        toast.error("No token found. Please log in.");
+        return;
+    }
+    try{
+        const response = await fetch(`http://localhost:8080/api/v1/portfolioentry`,{
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+            body: JSON.stringify({portfolioStockTicker, portfolioEntryId, portfolioId})
+        });
+        checkHttpsErrors(response);
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+    }
+}
+
 async function updatePortfolioName(
     portfolioName: string,
     portfolioId: number,
@@ -133,4 +159,5 @@ async function updatePortfolioName(
 }
 
 
-export { addStockToPortfolio, fetchPortfolios, createPortfolio, updatePortfolioName as fetchUpdatePortfolioName, updatePortfolioGoal }
+export { addStockToPortfolio, fetchPortfolios, createPortfolio,
+    updatePortfolioName as fetchUpdatePortfolioName, updatePortfolioGoal, deletePortfolioEntry }

@@ -83,7 +83,8 @@ export default function PortfolioTable({
   }
 
   const deleteEntry = async (
-      portfolioStockTicker: string
+      portfolioStockTicker: string,
+      portfolioEntryId: number
   )=> {
     const token = localStorage.getItem("token");
     if (!selectedPortfolio) {
@@ -97,6 +98,7 @@ export default function PortfolioTable({
     try {
       await deletePortfolioEntry(
           portfolioStockTicker,
+          portfolioEntryId,
           selectedPortfolio.id
       );
 
@@ -339,7 +341,7 @@ export default function PortfolioTable({
                               variant={"destructive"}
                               onClick={(event)=>{
                                   event.stopPropagation()
-                                  deletePortfolioEntry(entry.stock.ticker,selectedPortfolio.id)
+                                  deleteEntry(entry.stock.ticker, entry.id)
                                 }
                               }
                           >

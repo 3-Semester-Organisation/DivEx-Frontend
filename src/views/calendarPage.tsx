@@ -119,8 +119,6 @@ export default function CalendarPage() {
   useEffect(() => {
     const fetchStocks = async () => {
       setLoading(true);
-      // simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
       let url = "";
       if (date !== undefined) {
         // Fetch stocks filtered by dividend date

@@ -25,8 +25,6 @@ export default function StocksPage() {
         async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 9) {
             try {
                 setIsLoading(true);
-                // simulate slow network
-                await new Promise((resolve) => setTimeout(resolve, 1000));
                 const response = await fetch(
                     `http://localhost:8080/api/v1/stocks?page=${pageNumber}&size=${pageSize}&sort=${sorting.column},${sorting.direction}`
                 );
@@ -91,12 +89,8 @@ export default function StocksPage() {
     }
 
 
-
-
     return (
         <>
-            
-
             <h1 className='text-5xl mb-10 text-start'>Nordic Dividend Stocks</h1>
             <div className="mb-5">
                 <SearchBar

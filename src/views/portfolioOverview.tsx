@@ -19,7 +19,7 @@ import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
-import { SquareArrowOutUpRight } from "lucide-react";
+import { SquareArrowOutUpRight, Plus } from "lucide-react";
 import DividendBarChart from "@/components/divex/DividendBarChart";
 import { PortfolioGoalProgress } from "@/components/ui/custom/portfolio-goal-progress";
 import { updatePortfolioGoal } from "@/api/portfolio";
@@ -256,6 +256,16 @@ export default function PortfolioOverview() {
           />
         </div>
 
+        
+
+        {/* Set portfolio goal */}
+        <div>
+          <PortfolioGoalDialog
+              selectedPortfolio={selectedPortfolio}
+              onSubmit={onUpdatePortfolioGoal}
+          />
+        </div>
+
         <div>
           {selectedPortfolio && (
               <>
@@ -270,6 +280,7 @@ export default function PortfolioOverview() {
               </>
           )}
         </div>
+
 
         {/* Set portfolio goal */}
         {selectedPortfolio && (

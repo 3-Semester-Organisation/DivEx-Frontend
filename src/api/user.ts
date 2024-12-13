@@ -14,7 +14,6 @@ async function getUserDetails() {
         const res = await fetch("http://localhost:8080/api/v1/user", getOption);
         await checkHttpsErrors(res);
         const user = await res.json();
-        console.log("user: ", user);
         return user;
 
     } catch (error) {

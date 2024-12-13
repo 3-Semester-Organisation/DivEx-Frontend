@@ -16,6 +16,7 @@ export function PortfolioGoalProgress({ currency }) {
         if (selectedPortfolio.portfolioEntries === null) {
           return totalAnnualDividends;
         } else {
+            
             selectedPortfolio.portfolioEntries.forEach(entry => {
                 const dividendRate = entry.stock.dividendRate
           
@@ -41,7 +42,7 @@ export function PortfolioGoalProgress({ currency }) {
         }
     }
 
-      useEffect(() => {
+    useEffect(() => {
         if (selectedPortfolio) {
           const goal = convertGoal(selectedPortfolio.goal, currency);
             const current = totalAnnualDividends();

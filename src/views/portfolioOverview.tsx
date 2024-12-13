@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
-
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
   createPortfolio, deletePortfolio, deletePortfolioEntry,
@@ -16,7 +15,6 @@ import PortfolioTable from "@/components/divex/PortfolioTable";
 import { PortfolioChart } from "@/components/ui/custom/pie-chart";
 import { CurrencySelect } from "@/components/ui/custom/currency-select";
 import { Button } from "@/components/ui/button";
-
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
@@ -48,8 +46,6 @@ export default function PortfolioOverview() {
 
       if(!selectedPortfolio && fetchedPortfolios.length > 0 ) {
         setSelectedPortfolio(fetchedPortfolios[0])
-        console.log("New login portfolio set")
-        console.log("fetched data", fetchedPortfolios[0])
         return;
       }
       
@@ -57,7 +53,6 @@ export default function PortfolioOverview() {
       const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
       const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
       setSelectedPortfolio(cachedSelectedPortfolio);
-      console.log("Not new login set cached POrtfolio")
     }
 
     loadPortfolios();

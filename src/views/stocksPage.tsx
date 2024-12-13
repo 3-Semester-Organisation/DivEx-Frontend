@@ -1,13 +1,12 @@
 
 import React, { useState, useEffect } from "react";
-import { checkHttpsErrors } from "@/js/util";
 import { useNavigate } from 'react-router-dom';
 import PaginationBar from "../components/divex/PaginationBar";
-import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Stock, PaginatedResponse } from "@/divextypes/types";
 import StockTable from "@/components/ui/custom/stockTable";
 import SearchBar from "@/components/divex/searchBar";
+import { fetchPaginatedStocks } from "@/api/stocks";
 
 
 export default function StocksPage() {
@@ -22,15 +21,11 @@ export default function StocksPage() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 9) {
+        async function getPaginatedStocks(pageNumber: number, pageSize: number = 9) {
             try {
                 setIsLoading(true);
-                const response = await fetch(
-                    `http://localhost:8080/api/v1/stocks?page=${pageNumber}&size=${pageSize}&sort=${sorting.column},${sorting.direction}`
-                );
-                checkHttpsErrors(response);
-
-                const fetchedPage: PaginatedResponse<Stock> = await response.json();
+                const response = await fetchPaginatedStocks(pageNumber, pageSize, sorting);
+                const fetchedPage: PaginatedResponse<Stock> = response;
                 setStocks(fetchedPage.content);
                 setOriginalStocks(fetchedPage.content); // <-- Update originalStocks here
                 setTotalPages(fetchedPage.totalPages);
@@ -41,7 +36,7 @@ export default function StocksPage() {
             }
         }
 
-        fetchPaginatedStocks(currentPage);
+        getPaginatedStocks(currentPage);
     }, [currentPage, sorting]);
 
 
@@ -55,14 +50,6 @@ export default function StocksPage() {
                     : "asc",
         }));
     }
-
-    function renderSortIndicator(column: string) {
-        if (sorting.column === column) {
-            return sorting.direction === "asc" ? <ChevronUp className="inline-block h-4 w-4" /> : <ChevronDown className="inline-block h-4 w-4" />;
-        }
-        return ""; // No indicator if the column is not currently sorted
-    }
-
 
     const filterStocks = (searchValue: string) => {
         if (!searchValue) {
@@ -81,13 +68,6 @@ export default function StocksPage() {
         const filteredStocks = filterStocks(searchValue);
         setStocks(filteredStocks);
     }, [searchValue, originalStocks]);
-
-
-
-    function showStockDetails(stock: Stock) {
-        navigate("/stocks/" + stock.ticker, { state: { stock } });
-    }
-
 
     return (
         <>

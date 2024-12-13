@@ -111,7 +111,6 @@ export default function SettingsForm() {
         phone: values.phone,
       };
       await updateUserDetails(user);
-      console.log("User Details:", values);
       toast.success("User details updated successfully.");
     } catch (error) {
       console.error("Error updating user details:", error);
@@ -127,7 +126,6 @@ export default function SettingsForm() {
         password: values.password,
       };
       await updatePassword(password);
-      console.log("Password Change:", values);
       toast.success("Password changed successfully.");
     } catch (error) {
       console.error("Error changing password:", error);

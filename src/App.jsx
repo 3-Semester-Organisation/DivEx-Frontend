@@ -15,8 +15,7 @@ import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
-
-import { PortfoliosProvider } from '@/js/PortfoliosContext'
+import NotFoundView from "@/views/errorviews/404"
 
 function App() {
   // gets login state from AuthContext
@@ -47,6 +46,8 @@ function App() {
 
             <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
+
+            <Route path="*" element={<NotFoundView />} />
           </Routes>
         </Router>
     </ThemeProvider>

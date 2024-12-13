@@ -15,8 +15,28 @@ import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
+import Landing from "@/Landing.jsx";
 
-import { PortfoliosProvider } from '@/js/PortfoliosContext'
+
+// eslint-disable-next-line react/prop-types
+function Layout({ children, isLoggedIn}) {
+  return (
+      <>
+        <div className="flex justify-between mb-2">
+          <a href="/"><h1 className="font-semibold text-2xl">DivEX</h1></a>
+          <div>
+            <ModeToggle/>
+          </div>
+        </div>
+        {isLoggedIn ? <Navbar/> : <DefaultNavbar/>}
+        {children}
+      </>
+  );
+}
+
+
+
+
 
 function App() {
   // gets login state from AuthContext
@@ -24,31 +44,35 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="flex justify-between mb-2">
-        <h1 className="font-semibold text-2xl">DivEX</h1>
-        <div>
-          <ModeToggle />
-        </div>
-      </div>
+      <Router>
+        <Routes>
+          {/* Landing Page */}
+          <Route path="/" element={<Landing />} />
 
-
-     
-        <Router>
-          {isLoggedIn ? <Navbar/> : <DefaultNavbar/>}
-          <Routes>
-            <Route path="/" element={<p>homepage</p>} />
-            <Route path="/trending" element={<Trending />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/account" element={<p>account</p>} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/stocks" element={<StocksPage />} />
-
-            <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
-            <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
-          </Routes>
-        </Router>
+          {/* Other Routes with Shared Layout */}
+          <Route
+            path="/*"
+            element={
+              <Layout isLoggedIn={isLoggedIn}>
+                <Routes>
+                  <Route path="/trending" element={<Trending />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/account" element={<p>account</p>} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/stocks" element={<StocksPage />} />
+                  <Route
+                    path="/portfolio/overview"
+                    element={<PortfolioOverview isLoggedIn={isLoggedIn} />}
+                  />
+                  <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
+                </Routes>
+              </Layout>
+            }
+          />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

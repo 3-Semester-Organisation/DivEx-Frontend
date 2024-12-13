@@ -17,8 +17,9 @@ import Settings from "@/views/settings";
 import Pricing from "@/views/pricingPage";
 import PortfolioOverview from "@/views/portfolioOverview";
 import CardInput from "@/views/cardInput";
+import NotFoundView from "@/views/errorviews/404"
 
-import { PortfoliosProvider } from '@/js/PortfoliosContext'
+
 
 function App() {
   // gets login state from AuthContext
@@ -51,6 +52,8 @@ function App() {
 
             <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
+
+            <Route path="*" element={<NotFoundView />} />
           </Routes>
         </Router>
     </ThemeProvider>

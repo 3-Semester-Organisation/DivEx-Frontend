@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
-
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
   createPortfolio, deletePortfolio, deletePortfolioEntry,
@@ -16,7 +15,6 @@ import PortfolioTable from "@/components/divex/PortfolioTable";
 import { PortfolioChart } from "@/components/ui/custom/pie-chart";
 import { CurrencySelect } from "@/components/ui/custom/currency-select";
 import { Button } from "@/components/ui/button";
-
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
@@ -28,12 +26,8 @@ import { updatePortfolioGoal } from "@/api/portfolio";
 import { PortfolioGoalDialog } from "@/components/ui/custom/portfolio-goal-dialog";
 
 export default function PortfolioOverview() {
-  // SUBSCRIPTION TYPE
   const subType = getSubscriptionTypeFromToken();
-
-  // PORTFOLIO STATES
   const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
-
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
@@ -48,8 +42,6 @@ export default function PortfolioOverview() {
 
       if(!selectedPortfolio && fetchedPortfolios.length > 0 ) {
         setSelectedPortfolio(fetchedPortfolios[0])
-        console.log("New login portfolio set")
-        console.log("fetched data", fetchedPortfolios[0])
         return;
       }
       
@@ -57,7 +49,6 @@ export default function PortfolioOverview() {
       const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
       const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
       setSelectedPortfolio(cachedSelectedPortfolio);
-      console.log("Not new login set cached POrtfolio")
     }
 
     loadPortfolios();
@@ -80,6 +71,7 @@ export default function PortfolioOverview() {
     let previousEntry = null;
 
     if (selectedPortfolio && selectedPortfolio.portfolioEntries !== null) {
+      
 
       const portfolioEntries = selectedPortfolio.portfolioEntries;
       portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
@@ -181,7 +173,7 @@ export default function PortfolioOverview() {
     try {
       const updatedPortfolio = await updatePortfolioGoal(selectedPortfolio.id, goal);
       setSelectedPortfolio(updatedPortfolio);
-
+      
       toast.success("Portfolio goal updated.");
     } catch (error: any) {
       console.error("Update portfolio goal error", error);
@@ -211,16 +203,19 @@ export default function PortfolioOverview() {
       setPortfolios((prevPortfolios) => prevPortfolios
           .filter((portfolio) => portfolio.id !== portfolioId));
 
-      if (portfolios.length > 0) {
+      //the shortening of portfolios.length seems to happen after the scope ends,
+      //not within, which means the following if-statement has to be +1. Technically,
+      //when we delete the last portfolio, the length is registered as 1 in this scope
+      //and thus we are checking it this way. Seems a quirk of either JS or React.
+      if(portfolios.length > 1) {
         setSelectedPortfolio(portfolios[0])
+      }else{
+        setSelectedPortfolio(null)
       }
-      //TODO make something that handles what happens if there are no portfolios
-      //I thought about making a "setSelectedPortfolio(null)" but that's bad code
 
-
-      toast.success("Entry deleted.");
+      toast.success("Portfolio deleted.");
     } catch (error: any) {
-      console.error("Delete portfolio entry error", error);
+      console.error("Delete portfolio error", error);
       toast.error(error.message);
     }
   }

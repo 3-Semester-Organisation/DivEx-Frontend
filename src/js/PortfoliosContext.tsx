@@ -27,8 +27,6 @@ export const PortfoliosProvider = ({ children }) => {
         const data: Portfolio[] = await fetchPortfolios();  // Adjust this call if necessary
         const storedPortfolioId = localStorage.getItem("selectedPortfolioId");
         setPortfolios(data);
-        console.log("storedPortfolioId", storedPortfolioId);
-        console.log("data", data);
 
         if (storedPortfolioId && data) {
           const foundPortfolio = data.find((portfolio) => portfolio.id.toString() === storedPortfolioId);

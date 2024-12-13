@@ -59,7 +59,6 @@ async function updatePortfolioGoal(portfolioId: number, goal: number) {
         return;
     }
 
-    console.log(JSON.stringify({ portfolioId, goal }));
     try {
         const res = await fetch("http://localhost:8080/api/v1/portfolio/goal", {
             method: "PUT",
@@ -112,9 +111,9 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
 }
 
 async function deletePortfolioEntry(
-    portfolioStockTicker: string,
     portfolioEntryId: number,
-    portfolioId: number,
+    stockTicker: String,
+    portfolioId: number
 ){
     const token = localStorage.getItem("token");
     if (!token) {
@@ -128,7 +127,7 @@ async function deletePortfolioEntry(
                 "Content-type": "application/json",
                 "Authorization": "Bearer " + token,
             },
-            body: JSON.stringify({portfolioStockTicker, portfolioEntryId, portfolioId})
+            body: JSON.stringify({portfolioEntryId, stockTicker, portfolioId})
         });
         checkHttpsErrors(response);
     } catch (error) {

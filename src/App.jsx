@@ -17,6 +17,7 @@ import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
 import NotFoundView from "@/views/errorviews/404"
 
+
 function App() {
   // gets login state from AuthContext
   const { isLoggedin: isLoggedIn } = useContext(AuthContext);

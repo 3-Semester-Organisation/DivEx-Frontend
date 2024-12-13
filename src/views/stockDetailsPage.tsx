@@ -25,7 +25,7 @@ export default function StockDetailsPage() {
     const [isAddingStock, setIsAddingStock] = useState(false);
     const [stockToAdd, setStockToAdd] = useState<Stock>(null);
 
-    const { portfolios, setPortfolios } = usePortfolios();
+    const { portfolios, setPortfolios, selectedPortfolio } = usePortfolios();
 
     useEffect(() => {
         async function fetchStockByTicker(ticker: string) {
@@ -78,12 +78,14 @@ export default function StockDetailsPage() {
                             <h1 className="ml-6 font-bold text-3xl">{stock.name}</h1>
                                 <p className="mt-3 mr-auto">{`(${stock.ticker.toUpperCase()})`}</p>
                                 {/* NEW COMPONENT */}
-                                <div className="mr-4">
-                                <AddStockDialog
-                                        stock={stock}
-                                        buttonSize="default"
-                                    />
-                                </div>
+                                {selectedPortfolio && (
+                                    <div className="mr-4">
+                                        <AddStockDialog
+                                            stock={stock}
+                                            buttonSize="default"
+                                        />
+                                    </div>
+                                )}
                                     
                         </div>
 

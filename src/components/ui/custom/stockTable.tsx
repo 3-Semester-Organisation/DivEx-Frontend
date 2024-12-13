@@ -11,6 +11,8 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Stock } from "@/divextypes/types";
 import { AddStockDialog } from "./add-stock-dialog";
+import { useContext } from "react";
+import { PortfoliosContext } from "@/js/PortfoliosContext";
 
 interface HistoricalPricing {
   openingPrice: number;
@@ -38,10 +40,11 @@ const tableHeads = [
   { id: "dividend.dividendRate", label: "Dividend Rate" },
   { id: "dividend.dividendYield", label: "Dividend Yield" },
   { id: "dividend.ExDividendDate", label: "Ex Date" },
-  { id: "actions", label: "Actions" },
+
 ];
 
 export default function StockTable({ stocks, sorting, onSortClick, isLoading }) {
+  const { selectedPortfolio } = useContext(PortfoliosContext);
   
   function renderSortIndicator(column: string) {
     if (sorting.column === column) {
@@ -78,6 +81,15 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
                   {head.label} {renderSortIndicator(head.id)}
                 </TableHead>
               ))}
+              {selectedPortfolio && (
+                <TableHead
+                  id="actions"
+                  className="text-center hover:cursor-pointer"
+                  onClick={() => onSortClick("actions")}
+                >
+                  Actions {renderSortIndicator("actions")}
+                </TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -107,11 +119,12 @@ export default function StockTable({ stocks, sorting, onSortClick, isLoading }) 
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{stock.dividendRate.toFixed(2)} {stock.currency}</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(stock.dividendYield * 100).toFixed(2)} %</TableCell>
                 <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">{(new Date(stock.exDividendDate * 1000).getFullYear() >= new Date().getFullYear()) ? new Date(stock.exDividendDate * 1000).toDateString() : "-"}</TableCell>
-                <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">
-                  <div onClick={(event) => event.stopPropagation()}>
-                    <AddStockDialog stock={stock} buttonSize={"sm"} />
+                {selectedPortfolio && (
+                  <TableCell className="h-4 text-center truncate overflow-hidden whitespace-nowrap">
+                    <div onClick={(event) => event.stopPropagation()}>
+                      <AddStockDialog stock={stock} buttonSize={"sm"} />
                     </div>
-                </TableCell>
+                  </TableCell>)}
 
                 
               </TableRow>

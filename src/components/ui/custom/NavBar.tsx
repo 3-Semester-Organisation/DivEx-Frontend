@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Button } from "../button";
 import { fetchSubscriptionChange } from "@/api/subscription";
 import { getSubscriptionTypeFromToken } from "@/js/jwt";
+import { useNavigate } from "react-router-dom";
 
 const portfolioNavigation: {
   title: string;
@@ -56,7 +57,8 @@ const homeNavigation: { title: string; to: string; description: string }[] = [
 ];
 
 export default function Navbar({ onLogout }) {
-  const { logout, subscriptionType, setSubscriptionType } =
+  const navigate = useNavigate();
+  const { logout, subscriptionType } =
     useContext(AuthContext);
 
   const isPremium = (subscriptionType: string) => {
@@ -66,24 +68,6 @@ export default function Navbar({ onLogout }) {
   const handleLogout = () => {
     logout();
     toast.success("Logout successful.");
-  };
-
-  const handleUpgrade = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetchSubscriptionChange("PREMIUM", token);
-      const jwtToken = await response.json();
-      const tkn = jwtToken.jwt;
-
-      localStorage.setItem("token", tkn);
-      const newSubType = getSubscriptionTypeFromToken();
-      setSubscriptionType(newSubType);
-
-      toast.success("Upgrade successful.");
-    } catch (error) {
-      console.error(error);
-      toast.error("Upgrade failed.");
-    }
   };
 
   return (
@@ -127,7 +111,7 @@ export default function Navbar({ onLogout }) {
             <Button
               className="mr-5 border"
               variant={"ghost"}
-              onClick={handleUpgrade}
+              onClick={() => navigate("/pricing")}
             >
               <Rocket />
               Upgrade to Premium

@@ -14,8 +14,11 @@ import Register from "@/views/register";
 import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
+import Pricing from "@/views/pricingPage";
 import PortfolioOverview from "@/views/portfolioOverview";
+import CardInput from "@/views/cardInput";
 import NotFoundView from "@/views/errorviews/404"
+
 
 
 function App() {
@@ -38,12 +41,14 @@ function App() {
           <Routes>
             <Route path="/" element={<p>homepage</p>} />
             <Route path="/trending" element={<Trending />} />
-            <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/pricing" element={<Pricing />} />
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={<p>account</p>} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="/stocks" element={<StocksPage />} />
+          <Route path="/stocks" element={<StocksPage />} />
+          <Route path="/upgrade" element={<CardInput />} />
 
             <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
             <Route path="/stocks/:ticker" element={<StockDetailsPage />} />

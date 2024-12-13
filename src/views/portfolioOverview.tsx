@@ -26,12 +26,8 @@ import { updatePortfolioGoal } from "@/api/portfolio";
 import { PortfolioGoalDialog } from "@/components/ui/custom/portfolio-goal-dialog";
 
 export default function PortfolioOverview() {
-  // SUBSCRIPTION TYPE
   const subType = getSubscriptionTypeFromToken();
-
-  // PORTFOLIO STATES
   const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
-
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
@@ -75,6 +71,7 @@ export default function PortfolioOverview() {
     let previousEntry = null;
 
     if (selectedPortfolio && selectedPortfolio.portfolioEntries !== null) {
+      
 
       const portfolioEntries = selectedPortfolio.portfolioEntries;
       portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
@@ -176,7 +173,7 @@ export default function PortfolioOverview() {
     try {
       const updatedPortfolio = await updatePortfolioGoal(selectedPortfolio.id, goal);
       setSelectedPortfolio(updatedPortfolio);
-
+      
       toast.success("Portfolio goal updated.");
     } catch (error: any) {
       console.error("Update portfolio goal error", error);

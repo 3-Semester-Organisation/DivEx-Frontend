@@ -59,7 +59,6 @@ async function updatePortfolioGoal(portfolioId: number, goal: number) {
         return;
     }
 
-    console.log(JSON.stringify({ portfolioId, goal }));
     try {
         const res = await fetch("http://localhost:8080/api/v1/portfolio/goal", {
             method: "PUT",

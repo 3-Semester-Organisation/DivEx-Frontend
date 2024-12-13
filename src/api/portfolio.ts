@@ -113,7 +113,7 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
 
 async function deletePortfolioEntry(
     portfolioEntryId: number,
-    stockId: number,
+    stockTicker: String,
     portfolioId: number
 ){
     const token = localStorage.getItem("token");
@@ -128,7 +128,7 @@ async function deletePortfolioEntry(
                 "Content-type": "application/json",
                 "Authorization": "Bearer " + token,
             },
-            body: JSON.stringify({portfolioEntryId, stockId, portfolioId})
+            body: JSON.stringify({portfolioEntryId, stockTicker, portfolioId})
         });
         checkHttpsErrors(response);
     } catch (error) {

@@ -221,9 +221,9 @@ export default function PortfolioOverview() {
         setSelectedPortfolio(null)
       }
 
-      toast.success("Entry deleted.");
+      toast.success("Portfolio deleted.");
     } catch (error: any) {
-      console.error("Delete portfolio entry error", error);
+      console.error("Delete portfolio error", error);
       toast.error(error.message);
     }
   }

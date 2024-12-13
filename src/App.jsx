@@ -16,8 +16,6 @@ import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
 
-import { PortfoliosProvider } from '@/js/PortfoliosContext'
-
 function App() {
   // gets login state from AuthContext
   const { isLoggedin: isLoggedIn } = useContext(AuthContext);

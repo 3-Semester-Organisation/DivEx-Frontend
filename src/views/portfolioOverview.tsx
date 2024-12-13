@@ -272,20 +272,24 @@ export default function PortfolioOverview() {
         </div>
 
         {/* Set portfolio goal */}
-        <div>
-          <PortfolioGoalDialog
+        {selectedPortfolio && (
+          <div>
+            <PortfolioGoalDialog
               selectedPortfolio={selectedPortfolio}
               onSubmit={onUpdatePortfolioGoal}
-          />
-        </div>
+            />
+          </div>
+        )}
 
-        <div>
-          <CurrencySelect
+        {selectedPortfolio && (
+          <div>
+            <CurrencySelect
               selectedCurrency={currency}
               setSelectedCurrency={setCurrency}
               supportedCurrencies={supportedCurrencies}
-          />
-        </div>
+            />
+          </div>
+        )}
 
         {portfolios?.length > 0 && (
           <div>

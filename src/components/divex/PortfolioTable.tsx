@@ -67,7 +67,7 @@ export default function PortfolioTable({
   const deleteEntry = async (
       portfolioStockTicker: string,
       portfolioEntryId: number
-  )=> {
+  ) => {
     const token = localStorage.getItem("token");
     if (!selectedPortfolio) {
       toast.error("No portfolio selected.");

@@ -137,6 +137,31 @@ async function deletePortfolioEntry(
     }
 }
 
+async function deletePortfolio(
+    portfolioId: number,
+    portfolioName: String
+){
+    const token = localStorage.getItem("token");
+    if (!token) {
+        toast.error("No token found. Please log in.");
+        return;
+    }
+    try{
+        const response = await fetch(`http://localhost:8080/api/v1/portfolio`,{
+            method: "DELETE",
+            headers: {
+                "Content-type": "application/json",
+                "Authorization": "Bearer " + token,
+            },
+            body: JSON.stringify({portfolioId, portfolioName})
+        });
+        checkHttpsErrors(response);
+    } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+    }
+}
+
 async function updatePortfolioName(
     portfolioName: string,
     portfolioId: number,
@@ -161,4 +186,5 @@ async function updatePortfolioName(
 
 
 export { addStockToPortfolio, fetchPortfolios, createPortfolio,
-    updatePortfolioName as fetchUpdatePortfolioName, updatePortfolioGoal, deletePortfolioEntry }
+    updatePortfolioName as fetchUpdatePortfolioName, updatePortfolioGoal,
+    deletePortfolio, deletePortfolioEntry }

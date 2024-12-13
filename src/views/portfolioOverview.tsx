@@ -6,7 +6,7 @@ import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioBut
 
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
-  createPortfolio,
+  createPortfolio, deletePortfolio, deletePortfolioEntry,
   fetchPortfolios,
   fetchUpdatePortfolioName,
 } from "@/api/portfolio";
@@ -187,7 +187,43 @@ export default function PortfolioOverview() {
       console.error("Update portfolio goal error", error);
       toast.error(error.message);
     }
-  };
+  }
+
+  const deleteSelectedPortfolio = async (
+      portfolioId: number,
+      portfolioName: String
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    if (!token) {
+      toast.error("No token found. Please log in.");
+      return;
+    }
+    try {
+      await deletePortfolio(
+          portfolioId,
+          portfolioName
+      );
+
+      setPortfolios((prevPortfolios) => prevPortfolios
+          .filter((portfolio) => portfolio.id !== portfolioId));
+
+      if (portfolios.length > 0) {
+        setSelectedPortfolio(portfolios[0])
+      }
+      //TODO make something that handles what happens if there are no portfolios
+      //I thought about making a "setSelectedPortfolio(null)" but that's bad code
+
+
+      toast.success("Entry deleted.");
+    } catch (error: any) {
+      console.error("Delete portfolio entry error", error);
+      toast.error(error.message);
+    }
+  }
 
   return (
     <>
@@ -210,90 +246,103 @@ export default function PortfolioOverview() {
       <div className="flex flex-row content-center gap-3 pt-5">
         <div>
           {selectedPortfolio && (
-            <PortfolioSelect
-              portfolioList={portfolios}
-              selectedPortfolio={selectedPortfolio}
-              setSelectedPortfolio={setSelectedPortfolio}
-            />
+              <PortfolioSelect
+                  portfolioList={portfolios}
+                  selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
+              />
           )}
         </div>
 
         <div>
           <CreatePortfolioButton
-            onSubmit={handlePortfolioCreation}
-            portfolios={portfolios}
+              onSubmit={handlePortfolioCreation}
+              portfolios={portfolios}
           />
         </div>
 
         <div>
           {selectedPortfolio && (
-            <>
-              <Button
-                variant="default"
-                onClick={() =>
-                  setIsDisplayingDividendSummary(!isDisplayingDividendSummary)
-                }
-              >
-                {isDisplayingDividendSummary ? "Show Stocks" : "Show Dividends"}
-              </Button>
-            </>
+              <>
+                <Button
+                    variant="default"
+                    onClick={() =>
+                        setIsDisplayingDividendSummary(!isDisplayingDividendSummary)
+                    }
+                >
+                  {isDisplayingDividendSummary ? "Show Stocks" : "Show Dividends"}
+                </Button>
+              </>
           )}
         </div>
 
         {/* Set portfolio goal */}
         <div>
           <PortfolioGoalDialog
-            selectedPortfolio={selectedPortfolio}
-            onSubmit={onUpdatePortfolioGoal}
+              selectedPortfolio={selectedPortfolio}
+              onSubmit={onUpdatePortfolioGoal}
           />
         </div>
 
         <div>
           <CurrencySelect
-            selectedCurrency={currency}
-            setSelectedCurrency={setCurrency}
-            supportedCurrencies={supportedCurrencies}
+              selectedCurrency={currency}
+              setSelectedCurrency={setCurrency}
+              supportedCurrencies={supportedCurrencies}
           />
         </div>
 
-        {subType === "PREMIUM" && portfolios?.length > 0 && (
+        {portfolios?.length > 0 && (
           <div>
             <Button
-              variant="ghost"
-              onClick={() => {
-                if (selectedPortfolio) {
-                  //sharePortfolio(selectedPortfolio); //logic here
-                  toast.info("Feature coming soon.");
-                } else {
-                  toast.error("No portfolio selected.");
+                variant="destructive"
+                onClick={() =>
+                    deleteSelectedPortfolio(
+                        selectedPortfolio.id, selectedPortfolio.name
+                    )
                 }
-              }}
             >
-              Share
-              <SquareArrowOutUpRight />
+              Delete
             </Button>
           </div>
         )}
 
+        {subType === "PREMIUM" && portfolios?.length > 0 && (
+            <div>
+              <Button
+                  variant="ghost"
+                  onClick={() => {
+                    if (selectedPortfolio) {
+                      //sharePortfolio(selectedPortfolio); //logic here
+                      toast.info("Feature coming soon.");
+                    } else {
+                      toast.error("No portfolio selected.");
+                    }
+                  }}
+              >
+                Share
+                <SquareArrowOutUpRight/>
+              </Button>
+            </div>
+        )}
 
 
         <div className="w-80 ml-auto">
           <SearchBar
-            placeholder={"Search for stocks to add..."} />
+              placeholder={"Search for stocks to add..."}/>
         </div>
       </div>
 
 
-
       <div>
         {portfolios?.length === 0 && (
-          <h1 className="text-4xl font-semibold mt-20">
-            Create a portfolio to get started
-          </h1>
+            <h1 className="text-4xl font-semibold mt-20">
+              Create a portfolio to get started
+            </h1>
         )}
 
         {selectedPortfolio && (
-          <div className="grid grid-cols-12">
+            <div className="grid grid-cols-12">
             <div className="col-span-4 mt-5">
               <PortfolioChart selectedPortfolio={summarizedPortfolio} />
             </div>

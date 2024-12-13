@@ -7,12 +7,12 @@ import { AuthProvider } from "./js/AuthContext";
 import { PortfoliosProvider } from "./js/PortfoliosContext.tsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <>
     <PortfoliosProvider>
       <AuthProvider>
         <App />
       </AuthProvider>
     </PortfoliosProvider>
     <Toaster />
-  </StrictMode>
+    </>
 );

@@ -25,6 +25,7 @@ export function PortfolioGoalDialog({ selectedPortfolio, onSubmit }) {
 
   const handleSubmit = () => {
     onSubmit(goal);
+
     setOpen(false);
   };
 

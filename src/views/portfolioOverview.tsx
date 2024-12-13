@@ -3,10 +3,9 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PortfolioSelect } from "@/components/ui/custom/portfolioSelect";
 import { CreatePortfolioButton } from "@/components/ui/custom/createPortfolioButton";
-
 import { usePortfolios } from "@/js/PortfoliosContext";
 import {
-  createPortfolio,
+  createPortfolio, deletePortfolio, deletePortfolioEntry,
   fetchPortfolios,
   fetchUpdatePortfolioName,
 } from "@/api/portfolio";
@@ -16,7 +15,6 @@ import PortfolioTable from "@/components/divex/PortfolioTable";
 import { PortfolioChart } from "@/components/ui/custom/pie-chart";
 import { CurrencySelect } from "@/components/ui/custom/currency-select";
 import { Button } from "@/components/ui/button";
-
 import useCheckCredentials from "@/js/useCredentials";
 import DividendSummaryTable from "@/components/divex/DividendSummaryTable";
 import { Portfolio, PortfolioEntry } from "@/divextypes/types";
@@ -28,12 +26,8 @@ import { updatePortfolioGoal } from "@/api/portfolio";
 import { PortfolioGoalDialog } from "@/components/ui/custom/portfolio-goal-dialog";
 
 export default function PortfolioOverview() {
-  // SUBSCRIPTION TYPE
   const subType = getSubscriptionTypeFromToken();
-
-  // PORTFOLIO STATES
   const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
-
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
@@ -48,8 +42,6 @@ export default function PortfolioOverview() {
 
       if(!selectedPortfolio && fetchedPortfolios.length > 0 ) {
         setSelectedPortfolio(fetchedPortfolios[0])
-        console.log("New login portfolio set")
-        console.log("fetched data", fetchedPortfolios[0])
         return;
       }
       
@@ -57,7 +49,6 @@ export default function PortfolioOverview() {
       const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
       const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
       setSelectedPortfolio(cachedSelectedPortfolio);
-      console.log("Not new login set cached POrtfolio")
     }
 
     loadPortfolios();
@@ -80,6 +71,7 @@ export default function PortfolioOverview() {
     let previousEntry = null;
 
     if (selectedPortfolio && selectedPortfolio.portfolioEntries !== null) {
+      
 
       const portfolioEntries = selectedPortfolio.portfolioEntries;
       portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
@@ -181,13 +173,52 @@ export default function PortfolioOverview() {
     try {
       const updatedPortfolio = await updatePortfolioGoal(selectedPortfolio.id, goal);
       setSelectedPortfolio(updatedPortfolio);
-
+      
       toast.success("Portfolio goal updated.");
     } catch (error: any) {
       console.error("Update portfolio goal error", error);
       toast.error(error.message);
     }
-  };
+  }
+
+  const deleteSelectedPortfolio = async (
+      portfolioId: number,
+      portfolioName: String
+  ) => {
+    const token = localStorage.getItem("token");
+    if (!selectedPortfolio) {
+      toast.error("No portfolio selected.");
+      return;
+    }
+    if (!token) {
+      toast.error("No token found. Please log in.");
+      return;
+    }
+    try {
+      await deletePortfolio(
+          portfolioId,
+          portfolioName
+      );
+
+      setPortfolios((prevPortfolios) => prevPortfolios
+          .filter((portfolio) => portfolio.id !== portfolioId));
+
+      //the shortening of portfolios.length seems to happen after the scope ends,
+      //not within, which means the following if-statement has to be +1. Technically,
+      //when we delete the last portfolio, the length is registered as 1 in this scope
+      //and thus we are checking it this way. Seems a quirk of either JS or React.
+      if(portfolios.length > 1) {
+        setSelectedPortfolio(portfolios[0])
+      }else{
+        setSelectedPortfolio(null)
+      }
+
+      toast.success("Portfolio deleted.");
+    } catch (error: any) {
+      console.error("Delete portfolio error", error);
+      toast.error(error.message);
+    }
+  }
 
   return (
     <>
@@ -210,90 +241,103 @@ export default function PortfolioOverview() {
       <div className="flex flex-row content-center gap-3 pt-5">
         <div>
           {selectedPortfolio && (
-            <PortfolioSelect
-              portfolioList={portfolios}
-              selectedPortfolio={selectedPortfolio}
-              setSelectedPortfolio={setSelectedPortfolio}
-            />
+              <PortfolioSelect
+                  portfolioList={portfolios}
+                  selectedPortfolio={selectedPortfolio}
+                  setSelectedPortfolio={setSelectedPortfolio}
+              />
           )}
         </div>
 
         <div>
           <CreatePortfolioButton
-            onSubmit={handlePortfolioCreation}
-            portfolios={portfolios}
+              onSubmit={handlePortfolioCreation}
+              portfolios={portfolios}
           />
         </div>
 
         <div>
           {selectedPortfolio && (
-            <>
-              <Button
-                variant="default"
-                onClick={() =>
-                  setIsDisplayingDividendSummary(!isDisplayingDividendSummary)
-                }
-              >
-                {isDisplayingDividendSummary ? "Show Stocks" : "Show Dividends"}
-              </Button>
-            </>
+              <>
+                <Button
+                    variant="default"
+                    onClick={() =>
+                        setIsDisplayingDividendSummary(!isDisplayingDividendSummary)
+                    }
+                >
+                  {isDisplayingDividendSummary ? "Show Stocks" : "Show Dividends"}
+                </Button>
+              </>
           )}
         </div>
 
         {/* Set portfolio goal */}
         <div>
           <PortfolioGoalDialog
-            selectedPortfolio={selectedPortfolio}
-            onSubmit={onUpdatePortfolioGoal}
+              selectedPortfolio={selectedPortfolio}
+              onSubmit={onUpdatePortfolioGoal}
           />
         </div>
 
         <div>
           <CurrencySelect
-            selectedCurrency={currency}
-            setSelectedCurrency={setCurrency}
-            supportedCurrencies={supportedCurrencies}
+              selectedCurrency={currency}
+              setSelectedCurrency={setCurrency}
+              supportedCurrencies={supportedCurrencies}
           />
         </div>
 
-        {subType === "PREMIUM" && portfolios?.length > 0 && (
+        {portfolios?.length > 0 && (
           <div>
             <Button
-              variant="ghost"
-              onClick={() => {
-                if (selectedPortfolio) {
-                  //sharePortfolio(selectedPortfolio); //logic here
-                  toast.info("Feature coming soon.");
-                } else {
-                  toast.error("No portfolio selected.");
+                variant="destructive"
+                onClick={() =>
+                    deleteSelectedPortfolio(
+                        selectedPortfolio.id, selectedPortfolio.name
+                    )
                 }
-              }}
             >
-              Share
-              <SquareArrowOutUpRight />
+              Delete
             </Button>
           </div>
         )}
 
+        {subType === "PREMIUM" && portfolios?.length > 0 && (
+            <div>
+              <Button
+                  variant="ghost"
+                  onClick={() => {
+                    if (selectedPortfolio) {
+                      //sharePortfolio(selectedPortfolio); //logic here
+                      toast.info("Feature coming soon.");
+                    } else {
+                      toast.error("No portfolio selected.");
+                    }
+                  }}
+              >
+                Share
+                <SquareArrowOutUpRight/>
+              </Button>
+            </div>
+        )}
 
 
         <div className="w-80 ml-auto">
           <SearchBar
-            placeholder={"Search for stocks to add..."} />
+              placeholder={"Search for stocks to add..."}/>
         </div>
       </div>
 
 
-
       <div>
         {portfolios?.length === 0 && (
-          <h1 className="text-4xl font-semibold mt-20">
-            Create a portfolio to get started
-          </h1>
+            <h1 className="text-4xl font-semibold mt-20">
+              Create a portfolio to get started
+            </h1>
         )}
 
         {selectedPortfolio && (
-          <div className="grid grid-cols-12">
+            <div className="grid grid-cols-12">
             <div className="col-span-4 mt-5">
               <PortfolioChart selectedPortfolio={summarizedPortfolio} />
             </div>

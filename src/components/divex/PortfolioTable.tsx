@@ -65,9 +65,9 @@ export default function PortfolioTable({
 
 
   const deleteEntry = async (
-      portfolioStockTicker: string,
-      portfolioEntryId: number
-  )=> {
+      portfolioEntryId: number,
+      stockTicker: String
+  ) => {
     const token = localStorage.getItem("token");
     if (!selectedPortfolio) {
       toast.error("No portfolio selected.");
@@ -79,8 +79,8 @@ export default function PortfolioTable({
     }
     try {
       await deletePortfolioEntry(
-          portfolioStockTicker,
           portfolioEntryId,
+          stockTicker,
           selectedPortfolio.id
       );
 
@@ -379,7 +379,7 @@ export default function PortfolioTable({
                               variant={"destructive"}
                               onClick={(event)=>{
                                   event.stopPropagation()
-                                  deleteEntry(entry.stock.ticker, entry.id)
+                                  deleteEntry(entry.id, entry.stock.ticker)
                                 }
                               }
                           >

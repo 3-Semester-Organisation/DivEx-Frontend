@@ -28,34 +28,38 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex justify-between mb-2">
-        <h1 className="font-semibold text-2xl">DivEX</h1>
+        <div className="flex justify-start items-center">
+          <img src="./public/divex-icon-no-bg.png" alt="DivEx-icon" width="30px" height="30px"/>  
+          <h1 className="font-semibold text-2xl ml-1">DivEX</h1>
+        </div>
+
         <div>
           <ModeToggle />
         </div>
       </div>
 
 
-     
-        <Router>
-          {isLoggedIn ? <Navbar/> : <DefaultNavbar/>}
-          <Routes>
-            <Route path="/" element={<p>homepage</p>} />
-            <Route path="/trending" element={<Trending />} />
+
+      <Router>
+        {isLoggedIn ? <Navbar /> : <DefaultNavbar />}
+        <Routes>
+          <Route path="/" element={<p>homepage</p>} />
+          <Route path="/trending" element={<Trending />} />
           <Route path="/login" element={<Login />} />
           <Route path="/pricing" element={<Pricing />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/account" element={<p>account</p>} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/account" element={<p>account</p>} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/stocks" element={<StocksPage />} />
           <Route path="/upgrade" element={<CardInput />} />
 
-            <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
-            <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
+          <Route path="/portfolio/overview" element={<PortfolioOverview isLoggedIn={isLoggedIn} />} />
+          <Route path="/stocks/:ticker" element={<StockDetailsPage />} />
 
-            <Route path="*" element={<NotFoundView />} />
-          </Routes>
-        </Router>
+          <Route path="*" element={<NotFoundView />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

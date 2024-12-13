@@ -1,11 +1,13 @@
 import { checkHttpsErrors } from "@/js/util";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 async function fetchSubscriptionChange(
   newSubscriptionType: string,
   token: string
 ) {
   try {
-    const response = await fetch(`http://localhost:8080/api/v1/subscription/upgrade`, {
+    const response = await fetch(`${apiUrl}subscription/upgrade`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

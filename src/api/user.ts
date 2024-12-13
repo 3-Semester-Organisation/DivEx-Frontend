@@ -2,6 +2,9 @@ import { checkHttpsErrors } from "@/js/util";
 import { makeAuthOption } from "@/js/util";
 import { toast } from "sonner";
 
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 async function getUserDetails() {
 
     const token = localStorage.getItem("token");
@@ -11,7 +14,7 @@ async function getUserDetails() {
 
     try {
         const getOption = makeAuthOption("GET", token);
-        const res = await fetch("http://localhost:8080/api/v1/user", getOption);
+        const res = await fetch(`${apiUrl}user`, getOption);
         await checkHttpsErrors(res);
         const user = await res.json();
         return user;
@@ -29,7 +32,7 @@ async function updateUserDetails(user: any) {
     }
     try {
         const putOption = makeAuthOption("PUT", token, user);
-        await fetch("http://localhost:8080/api/v1/user", putOption);
+        await fetch(`${apiUrl}user`, putOption);
     } catch (error) {
         console.error("Update user error", error);
         toast.error(error.message);
@@ -44,7 +47,7 @@ async function updatePassword(password: any) {
     try {
         const putOption = makeAuthOption("PUT", token, password);
         console.log(password);
-        await fetch("http://localhost:8080/api/v1/user/password", putOption);
+        await fetch(`${apiUrl}user/password`, putOption);
     } catch (error) {
         console.error("Update password error", error);
         toast.error(error.message);
@@ -57,7 +60,7 @@ async function deleteUser() {
     try {
         const token = localStorage.getItem("token");
         const deleteOption = makeAuthOption("DELETE", token)
-        const response = await fetch("http://localhost:8080/api/v1/user", deleteOption);
+        const response = await fetch(`${apiUrl}user`, deleteOption);
         checkHttpsErrors(response);
 
         let isDeleted = false;

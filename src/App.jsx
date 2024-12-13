@@ -29,7 +29,7 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex justify-between mb-2">
         <div className="flex justify-start items-center">
-          <img src="./public/divex-icon-no-bg.png" alt="DivEx-icon" width="30px" height="30px"/>  
+          <img src="/divex-icon-no-bg.png" alt="DivEx-icon" width="30px" height="30px"/>  
           <h1 className="font-semibold text-2xl ml-1">DivEX</h1>
         </div>
 

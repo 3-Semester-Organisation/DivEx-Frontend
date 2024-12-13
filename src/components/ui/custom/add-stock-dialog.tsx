@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input";
 import { PortfoliosContext, usePortfolios } from "@/js/PortfoliosContext";
 import { AuthContext } from "@/js/AuthContext";
 import { addStockToPortfolio } from "@/api/portfolio";
+import { Plus } from "lucide-react";
 
 const formSchema = z.object({
     portfolio: z.string().nonempty({ message: "Please select a portfolio." }),
@@ -99,7 +100,7 @@ export function AddStockDialog({ stock, buttonSize }) {
     <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
               <Button size={buttonSize}>
-                  Add
+                  <Plus/>Add
               </Button>
               {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}
       </DialogTrigger>

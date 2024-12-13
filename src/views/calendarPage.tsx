@@ -5,6 +5,7 @@ import { DividendCalendar } from "@/components/ui/custom/DividendCalendar";
 import  DividendTable  from "@/components/ui/custom/DividendTable";
 import { Button } from "@/components/ui/button";
 import { checkHttpsErrors } from "@/js/util";
+import { fetchStocksForCalendar, fetchStocksByDividendDate, fetchDividendDates } from "@/api/stocks";
 
 import PaginationBar from "@/components/divex/PaginationBar";
 
@@ -80,30 +81,24 @@ export default function CalendarPage() {
     }
   };
 
-  
-
   useEffect(() => {
-    const fetchDividendDates = async () => {
-      const url = "http://localhost:8080/api/v1/stocks/dividendDates";
+    const getDividendDates = async () => {
+      const dates = await fetchDividendDates();
       try {
-        const data = await handleFetch(url);
-        const dates = data.map((date) => date.exDividendDate);
         setDividendDates(dates);
       } catch (error) {
         console.error("Error fetching dividend dates:", error);
       }
     }
-    fetchDividendDates();
+    getDividendDates();
   }, []);
 
   useEffect(() => {
-    const fetchStocksByDividendDate = async (date: number) => {
+    const getStocksByDividendDate = async (date: number) => {
       
-      const url = `http://localhost:8080/api/v1/stocksByDate?date=${date}&page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
+      const res = await fetchStocksByDividendDate(date, currentPage, sorting);
       try {
-        const res = await fetch(url);
-        await checkHttpsErrors(res);
-        const data = await res.json();
+        const data: PaginatedResponse<Stock> = res;
         setStocks(data.content);
         setTotalPages(data.totalPages);
       } catch (error) {
@@ -111,7 +106,7 @@ export default function CalendarPage() {
       }
     }
     if (date) {
-      fetchStocksByDividendDate(date);
+      getStocksByDividendDate(date);
     }
   }, [date]);
 
@@ -119,17 +114,11 @@ export default function CalendarPage() {
   useEffect(() => {
     const fetchStocks = async () => {
       setLoading(true);
-      let url = "";
-      if (date !== undefined) {
-        // Fetch stocks filtered by dividend date
-        url = `http://localhost:8080/api/v1/stocksByDate?date=${date}&page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
-      } else {
-        // Fetch all stocks
-        url = `http://localhost:8080/api/v1/stocks?page=${currentPage}&size=${PAGESIZE}&sort=${sorting.column},${sorting.direction}`;
-      }
+      
+      const res = await fetchStocksForCalendar(date, currentPage, sorting);
 
       try {
-        const data: PaginatedResponse<Stock> = await handleFetch(url);
+        const data: PaginatedResponse<Stock> = res;
         setStocks(data.content);
         setTotalPages(data.totalPages);
       } catch (error) {

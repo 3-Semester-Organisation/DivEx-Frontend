@@ -203,16 +203,19 @@ export default function PortfolioOverview() {
       setPortfolios((prevPortfolios) => prevPortfolios
           .filter((portfolio) => portfolio.id !== portfolioId));
 
-      if (portfolios.length > 0) {
+      //the shortening of portfolios.length seems to happen after the scope ends,
+      //not within, which means the following if-statement has to be +1. Technically,
+      //when we delete the last portfolio, the length is registered as 1 in this scope
+      //and thus we are checking it this way. Seems a quirk of either JS or React.
+      if(portfolios.length > 1) {
         setSelectedPortfolio(portfolios[0])
+      }else{
+        setSelectedPortfolio(null)
       }
-      //TODO make something that handles what happens if there are no portfolios
-      //I thought about making a "setSelectedPortfolio(null)" but that's bad code
 
-
-      toast.success("Entry deleted.");
+      toast.success("Portfolio deleted.");
     } catch (error: any) {
-      console.error("Delete portfolio entry error", error);
+      console.error("Delete portfolio error", error);
       toast.error(error.message);
     }
   }

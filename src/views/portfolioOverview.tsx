@@ -337,10 +337,10 @@ export default function PortfolioOverview() {
         )}
 
 
-        <div className="w-80 ml-auto">
+        {/* <div className="w-80 ml-auto">
           <SearchBar
               placeholder={"Search for stocks to add..."}/>
-        </div>
+        </div> */}
       </div>
 
 

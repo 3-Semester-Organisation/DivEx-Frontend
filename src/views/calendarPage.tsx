@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect }  from "react";
+import React, { useEffect } from "react";
 import { DividendCalendar } from "@/components/ui/custom/DividendCalendar";
-import  DividendTable  from "@/components/ui/custom/DividendTable";
+import DividendTable from "@/components/ui/custom/DividendTable";
 import { Button } from "@/components/ui/button";
 import { checkHttpsErrors } from "@/js/util";
 import { fetchStocksForCalendar, fetchStocksByDividendDate, fetchDividendDates } from "@/api/stocks";
 
 import PaginationBar from "@/components/divex/PaginationBar";
+import SearchBar from "@/components/divex/searchBar";
 
 const PAGESIZE = 10;
 
@@ -44,8 +45,8 @@ export default function CalendarPage() {
   const [totalPages, setTotalPages] = React.useState(0);
   const [currentPage, setCurrentPage] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  const [sorting, setSorting] = React.useState({ column: "", direction: "asc" }); 
-  
+  const [sorting, setSorting] = React.useState({ column: "", direction: "asc" });
+
   const handleFetch = async (url: string) => {
     try {
       const res = await fetch(url);
@@ -72,7 +73,7 @@ export default function CalendarPage() {
       ));
       // Convert to Unix timestamp in seconds
       const unixTimestamp = Math.floor(utcDate.getTime() / 1000);
-  
+
       setDate(unixTimestamp); // Set `date` as Unix timestamp
       setCurrentPage(0); // Reset to first page on date select
     } else {
@@ -95,7 +96,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     const getStocksByDividendDate = async (date: number) => {
-      
+
       const res = await fetchStocksByDividendDate(date, currentPage, sorting);
       try {
         const data: PaginatedResponse<Stock> = res;
@@ -110,11 +111,11 @@ export default function CalendarPage() {
     }
   }, [date]);
 
-  
+
   useEffect(() => {
     const fetchStocks = async () => {
       setLoading(true);
-      
+
       const res = await fetchStocksForCalendar(date, currentPage, sorting);
 
       try {
@@ -149,14 +150,16 @@ export default function CalendarPage() {
   const handleReset = () => {
     setDate(undefined); // Reset the date state to undefined
     setCurrentPage(0);  // Optionally reset to the first page
-  
+
   };
 
   return (
     <>
       <div className="flex">
-      <h1 className="text-5xl ml-6">Calendar</h1>
-        </div>
+        <h1 className="text-5xl ml-6">Calendar</h1>
+        {/* <SearchBar placeholder={"Seach..."} /> */}
+      </div>
+    
       <div className="flex flex-row p-6">
         <div>
           <DividendCalendar
@@ -175,26 +178,26 @@ export default function CalendarPage() {
           >
             Reset
           </Button>
-          
+
         </div>
       </div>
-      
+
       <div className="p-6">
         <div className="max-w-6xl">
-            <>
-              <DividendTable
-        stocks={stocks}
-        sorting={sorting}
-        onSortClick={handleSortClick}
-        isLoading={loading}
+          <>
+            <DividendTable
+              stocks={stocks}
+              sorting={sorting}
+              onSortClick={handleSortClick}
+              isLoading={loading}
             />
             <PaginationBar
               currentPage={currentPage}
               totalPages={totalPages}
               setCurrentPage={setCurrentPage}
             />
-              </>
-          </div>
+          </>
+        </div>
       </div>
     </>
   );

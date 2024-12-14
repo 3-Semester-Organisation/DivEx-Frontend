@@ -1,8 +1,5 @@
-
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
 import PaginationBar from "../components/divex/PaginationBar";
-import { ChevronDown, ChevronUp } from "lucide-react";
 import { Stock, PaginatedResponse } from "@/divextypes/types";
 import StockTable from "@/components/ui/custom/stockTable";
 import SearchBar from "@/components/divex/searchBar";
@@ -17,8 +14,6 @@ export default function StocksPage() {
     const [totalPages, setTotalPages] = useState(0);
     const [sorting, setSorting] = useState({ column: "", direction: "asc" });
     const [searchValue, setSearchValue] = useState("");
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         async function getPaginatedStocks(pageNumber: number, pageSize: number = 9) {
@@ -71,12 +66,12 @@ export default function StocksPage() {
 
     return (
         <>
-            <h1 className='text-5xl mb-10 text-start'>Nordic Dividend Stocks</h1>
-            <div className="mb-5">
-                <SearchBar
-                    placeholder={"Search..."} />
+            <div className="flex mb-7">
+                <h1 className='text-5xl text-start'>Nordic Dividend Stocks</h1>
+                {/* <SearchBar placeholder={"Search..."} /> */}
             </div>
-            
+
+
             <StockTable
                 stocks={stocks}
                 sorting={sorting}

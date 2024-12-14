@@ -17,6 +17,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/NavigationMenu";
 import { User } from "lucide-react";
+import ModeToggle from "../mode-toggle";
 
 const authNavigation = [
   { name: "Login", to: "/login" },
@@ -26,7 +27,7 @@ const authNavigation = [
 export default function DefaultNavbar() {
   return (
     <NavigationMenu className="flex flex-row p-6 ml-10">
-      <NavigationMenuList>
+      <NavigationMenuList className="flex gap-2">
         <NavigationMenuItem>
           <NavLink to="/login" className={navigationMenuTriggerStyle()}>
             Login
@@ -37,12 +38,19 @@ export default function DefaultNavbar() {
             Create account
           </NavLink>
         </NavigationMenuItem>
+
+
+        <NavigationMenuItem className="flex justify-end">
+          <ModeToggle />
+        </NavigationMenuItem>
+
+
         <NavigationMenuItem className="flex justify-end">
           <DropdownMenu>
             <DropdownMenuTrigger>
               <div
                 className={cn(
-                  "mr-13 flex items-center justify-center p-2 rounded-md cursor-pointer",
+                  "border mr-13 flex items-center justify-center p-2 rounded-md cursor-pointer",
                   "hover:bg-primary-foreground"
                 )}
               >

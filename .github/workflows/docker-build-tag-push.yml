@@ -1,14 +1,13 @@
 name: Docker Build, Tag and Push
 
 on:
-  pull_request:
-    branches: [ main ]
-    types:
-      - closed
+  push:
+    tags:
+      - "*"
 
 jobs:
   docker:
-    if: github.event.pull_request.merged == true
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:

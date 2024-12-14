@@ -1,0 +1,45 @@
+name: Docker Build, Tag and Push
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  docker:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Set Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            chye0001/divexfrontend
+          tags: |
+            type=semver,pattern={{version}}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+# this is propapbly overkill
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image with Both Tags
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+            chye0001/divexfrontend:latest
+          labels: ${{ steps.meta.outputs.labels }}

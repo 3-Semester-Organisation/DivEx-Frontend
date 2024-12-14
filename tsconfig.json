@@ -1,18 +1,30 @@
 {
-    "files": [],
-    "references": [
-      {
-        "path": "./tsconfig.app.json"
-      },
-      {
-        "path": "./tsconfig.node.json"
-      }
-    ],
-    "compilerOptions": {
-      "baseUrl": ".",
-      "paths": {
-        "@/*": ["./src/*"]
-      }
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
     }
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+   "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+   
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",  // if you're using JSX
+    "lib": ["dom", "esnext"],
+    "allowSyntheticDefaultImports": true
   }
-  
+}

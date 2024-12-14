@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 90%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -63,5 +63,49 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
+}
+
+#root {
+  
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  width: 50px;
+  margin: 0 auto;
+}
+
+ul {
+  width: 100vw; 
+  display: flex;
+}
+
+li:nth-child(3) {
+  flex-grow: 1;
+}
+
+.userbutton {
+  margin-right: 5rem;
+}
+
+.mr-13 {
+  margin-right: 3.3rem;
+}
+
+.dividend-day {
+  background-color: lightgreen;
+  color: black;
+  border-radius: 0.25rem;
+}
+
+.main-container {
+  max-width: 100%;
+}
+
+.h-3-5 {
+  height: 0.925rem;
 }

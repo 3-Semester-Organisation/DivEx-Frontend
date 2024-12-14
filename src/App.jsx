@@ -32,10 +32,6 @@ function App() {
           <img src="/divex-icon-no-bg.png" alt="DivEx-icon" width="30px" height="30px"/>  
           <h1 className="font-semibold text-2xl ml-1">DivEX</h1>
         </div>
-
-        <div>
-          <ModeToggle />
-        </div>
       </div>
 
 

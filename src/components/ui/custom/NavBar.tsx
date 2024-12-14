@@ -23,22 +23,23 @@ import {
 import { User, Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../button";
-import { fetchSubscriptionChange } from "@/api/subscription";
-import { getSubscriptionTypeFromToken } from "@/js/jwt";
 import { useNavigate } from "react-router-dom";
+import ModeToggle from "../mode-toggle";
+import { AlignLeft } from 'lucide-react';
+import SearchBar from "@/components/divex/searchBar";
 
 const portfolioNavigation: {
   title: string;
   href: string;
   description: string;
 }[] = [
-  {
-    title: "Overview",
-    href: "/portfolio/overview",
-    description:
-      "Overview of your portfolio, including total value, performance, and more.",
-  },
-];
+    {
+      title: "Overview",
+      href: "/portfolio/overview",
+      description:
+        "Overview of your portfolio, including total value, performance, and more.",
+    },
+  ];
 
 const homeNavigation: { title: string; to: string; description: string }[] = [
   {
@@ -73,92 +74,103 @@ export default function Navbar({ onLogout }) {
   };
 
   return (
-    <NavigationMenu className="flex flex-row p-6 ml-10">
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[400px] ">
-              {homeNavigation.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  to={component.to}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Portfolio</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[400px] ">
-              {portfolioNavigation.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  to={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+    <>
+      <NavigationMenu className="flex flex-row p-6 ml-10">
+        <NavigationMenuList className="flex gap-2">
+          <NavigationMenuItem>
+            <NavigationMenuTrigger> <AlignLeft /></NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[400px] ">
+                {homeNavigation.map((component) => (
+                  <ListItem
+                    key={component.title}
+                    title={component.title}
+                    to={component.to}
+                  >
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem className="flex justify-end">
-          {isPremium(subscriptionType) ? (
-            <Button
-              className="mr-5 border"
-              variant={"ghost"}
-              onClick={() => navigate("/pricing")}
-            >
-              <Rocket />
-              Upgrade to Premium
-            </Button>
-          ) : (
-            ""
-          )}
-        </NavigationMenuItem>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="text-lg">Portfolio</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-1 lg:w-[400px] ">
+                {portfolioNavigation.map((component) => (
+                  <ListItem
+                    key={component.title}
+                    title={component.title}
+                    to={component.href}
+                  >
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
 
-        <NavigationMenuItem className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <div
-                className={cn(
-                  "mr-13 flex items-center justify-center p-2 rounded-md cursor-pointer",
-                  "hover:bg-primary-foreground"
-                )}
+          <NavigationMenuItem className="flex justify-end">
+            {isPremium(subscriptionType) ? (
+              <Button
+                className="border"
+                variant={"ghost"}
+                onClick={() => navigate("/pricing")}
               >
-                <User />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <NavLink
-                  to="/settings"
-                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                <Rocket />
+                Upgrade to Premium
+              </Button>
+            ) : (
+              ""
+            )}
+          </NavigationMenuItem>
+
+          <NavigationMenuItem className="flex justify-end">
+            <ModeToggle />
+          </NavigationMenuItem>
+
+          <NavigationMenuItem className="flex justify-end">
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <div
+                  className={cn(
+                    "border mr-13 flex items-center justify-center p-2 rounded-md cursor-pointer",
+                    "hover:bg-primary-foreground"
+                  )}
                 >
-                  Settings
-                </NavLink>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleLogout()} asChild>
-                <NavLink
-                  to="/"
-                  className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  Sign out
-                </NavLink>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
+                  <User />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <NavLink
+                    to="/settings"
+                    className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Settings
+                  </NavLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLogout()} asChild>
+                  <NavLink
+                    to="/"
+                    className="block w-full px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Sign out
+                  </NavLink>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+
+      <div className="ml-auto w-96">
+        <SearchBar placeholder={"Search..."} />
+      </div>
+    </>
   );
 }
 

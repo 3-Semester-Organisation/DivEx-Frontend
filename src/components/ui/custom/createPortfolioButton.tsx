@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AuthContext } from "@/js/AuthContext";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
 const formSchema = z.object({
   portfolioName: z
@@ -75,7 +76,7 @@ export function CreatePortfolioButton({ onSubmit, portfolios }) {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button onClick={onTriggerClick} >Create Portfolio</Button>
+          <Button onClick={onTriggerClick} ><Plus />Create Portfolio</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <Form {...form}>

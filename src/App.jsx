@@ -14,16 +14,24 @@ import Register from "@/views/register";
 import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
+import Pricing from "@/views/pricingPage";
 import PortfolioOverview from "@/views/portfolioOverview";
 import Landing from "@/Landing.jsx";
+import CardInput from "@/views/cardInput";
+import NotFoundView from "@/views/errorviews/404"
 
+import { PortfoliosProvider } from '@/js/PortfoliosContext'
 
 // eslint-disable-next-line react/prop-types
 function Layout({ children, isLoggedIn}) {
   return (
       <>
         <div className="flex justify-between mb-2">
-          <a href="/"><h1 className="font-semibold text-2xl">DivEX</h1></a>
+          <div className="flex justify-start items-center">
+              <img src="./public/divex-icon-no-bg.png" alt="DivEx-icon" width="30px" height="30px"/>
+              <h1 className="font-semibold text-2xl ml-1">DivEX</h1>
+          </div>
+
           <div>
             <ModeToggle/>
           </div>

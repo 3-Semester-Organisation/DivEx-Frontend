@@ -9,12 +9,12 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Landing from "@/Landing.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  <>
     <PortfoliosProvider>
       <AuthProvider>
         <App/>
       </AuthProvider>
     </PortfoliosProvider>
     <Toaster />
-  </StrictMode>
+    </>
 );

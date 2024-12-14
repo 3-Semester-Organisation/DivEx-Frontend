@@ -16,8 +16,15 @@
         "./src/*"
       ]
     },
-    
-    
+   "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+   
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",  // if you're using JSX
+    "lib": ["dom", "esnext"],
     "allowSyntheticDefaultImports": true
   }
 }

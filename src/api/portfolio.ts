@@ -3,12 +3,15 @@ import { checkHttpsErrors, makeAuthOption } from "@/js/util"
 import { toast } from "sonner";
 import { z } from "zod";
 
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
 async function addStockToPortfolio(portfolioEntryRequest: PortfolioEntryRequest) {
     try {
         const token = localStorage.getItem("token");
         const postOption = makeAuthOption("POST", token, portfolioEntryRequest);
 
-        const response = await fetch("http://localhost:8080/api/v1/portfolioentry", postOption);
+        const response = await fetch(`${apiUrl}portfolioentry`, postOption);
         checkHttpsErrors(response);
         const data = await response.json();
 
@@ -40,7 +43,7 @@ async function fetchPortfolios() {
 
     try {
         const getOption = makeAuthOption("GET", token);
-        const res = await fetch("http://localhost:8080/api/v1/portfolio", getOption);
+        const res = await fetch(`${apiUrl}portfolio`, getOption);
         await checkHttpsErrors(res);
         const portfolios: Portfolio[] = await res.json();
 
@@ -60,7 +63,7 @@ async function updatePortfolioGoal(portfolioId: number, goal: number) {
     }
 
     try {
-        const res = await fetch("http://localhost:8080/api/v1/portfolio/goal", {
+        const res = await fetch(`${apiUrl}portfolio/goal`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -95,7 +98,7 @@ async function createPortfolio(values: z.infer<typeof formSchema>) {
     }
     try {
         const postOption = makeAuthOption("POST", token, values);
-        const res = await fetch("http://localhost:8080/api/v1/portfolio", postOption);
+        const res = await fetch(`${apiUrl}portfolio`, postOption);
         await checkHttpsErrors(res);
 
         toast.success("Portfolio created.");
@@ -121,7 +124,7 @@ async function deletePortfolioEntry(
         return;
     }
     try{
-        const response = await fetch(`http://localhost:8080/api/v1/portfolioentry`,{
+        const response = await fetch(`${apiUrl}portfolioentry`,{
             method: "DELETE",
             headers: {
                 "Content-type": "application/json",
@@ -146,7 +149,7 @@ async function deletePortfolio(
         return;
     }
     try{
-        const response = await fetch(`http://localhost:8080/api/v1/portfolio`,{
+        const response = await fetch(`${apiUrl}portfolio`,{
             method: "DELETE",
             headers: {
                 "Content-type": "application/json",
@@ -166,7 +169,7 @@ async function updatePortfolioName(
     portfolioId: number,
 ) {
   try {
-    const response = await fetch(`http://localhost:8080/api/v1/portfolio`, {
+    const response = await fetch(`${apiUrl}portfolio`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

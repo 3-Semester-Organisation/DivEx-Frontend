@@ -16,6 +16,7 @@ import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
 import PortfolioOverview from "@/views/portfolioOverview";
 import Landing from "@/Landing.tsx";
+import NotFoundView from "@/views/errorviews/404";
 
 
 // eslint-disable-next-line react/prop-types
@@ -71,6 +72,7 @@ function App() {
                                         element={<PortfolioOverview isLoggedIn={isLoggedIn}/>}
                                     />
                                     <Route path="/stocks/:ticker" element={<StockDetailsPage/>}/>
+                                    <Route path="*" element={<NotFoundView />} />
                                 </Routes>
                             </Layout>
                         }

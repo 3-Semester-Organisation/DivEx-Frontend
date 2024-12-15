@@ -30,7 +30,7 @@ export default function PortfolioOverview() {
   const { portfolios, setPortfolios, selectedPortfolio, setSelectedPortfolio } = usePortfolios();
   const [currency, setCurrency] = useState("DKK");
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
-  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(false);
+  const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(true);
   const [summarizedPortfolio, setSummarizedPortfolio] = useState<Portfolio>(null)
   
   useCheckCredentials();
@@ -259,12 +259,14 @@ export default function PortfolioOverview() {
         
 
         {/* Set portfolio goal */}
-        <div>
-          <PortfolioGoalDialog
+        {selectedPortfolio && (
+          <div>
+            <PortfolioGoalDialog
               selectedPortfolio={selectedPortfolio}
               onSubmit={onUpdatePortfolioGoal}
-          />
-        </div>
+            />
+          </div>
+        )}
 
         <div>
           {selectedPortfolio && (
@@ -282,15 +284,15 @@ export default function PortfolioOverview() {
         </div>
 
 
-        {/* Set portfolio goal */}
-        {selectedPortfolio && (
-          <div>
-            <PortfolioGoalDialog
-              selectedPortfolio={selectedPortfolio}
-              onSubmit={onUpdatePortfolioGoal}
-            />
-          </div>
-        )}
+        {/*/!* Set portfolio goal *!/*/}
+        {/*{selectedPortfolio && (*/}
+        {/*  <div>*/}
+        {/*    <PortfolioGoalDialog*/}
+        {/*      selectedPortfolio={selectedPortfolio}*/}
+        {/*      onSubmit={onUpdatePortfolioGoal}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*)}*/}
 
         {selectedPortfolio && (
           <div>
@@ -358,7 +360,7 @@ export default function PortfolioOverview() {
             </div>
 
             <div className="col-span-8 mt-5">
-              {isDisplayingDividendSummary && (
+              {isDisplayingDividendSummary && summarizedPortfolio && (
                 <DividendBarChart
                   selectedPortfolio={summarizedPortfolio}
                   currency={currency} />
@@ -366,14 +368,15 @@ export default function PortfolioOverview() {
             </div>
 
             <div className="col-span-12">
-              {isDisplayingDividendSummary ? (
+              {(isDisplayingDividendSummary && summarizedPortfolio) ? (
                 <DividendSummaryTable
                   selectedPortfolio={summarizedPortfolio}
                   setSelectedPortfolio={setSummarizedPortfolio}
                   currency={currency}
                   numberFormater={numberFormater}
                 />
-              ) : (
+              ) :
+              (
                 <PortfolioTable
                   selectedPortfolio={summarizedPortfolio}
                   setSelectedPortfolio={setSummarizedPortfolio}

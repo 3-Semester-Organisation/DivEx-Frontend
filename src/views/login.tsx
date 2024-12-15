@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
-import { makeOption, checkHttpsErrors } from '@/js/util'
+import { authenticateLogin } from '@/api/authentication'
 
 // Improved schema with additional validation rules
 const formSchema = z.object({
@@ -38,10 +38,10 @@ const formSchema = z.object({
     .regex(/[a-zA-Z0-9]/, { message: 'Password must be alphanumeric' }),
 })
 
-export default function Login({ onLogin }) {
+export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -50,22 +50,15 @@ export default function Login({ onLogin }) {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const URL = 'http://localhost:8080/api/v1/login'
-    try {
-      const postOption = makeOption('POST', values);
-      const res = await fetch(URL, postOption);
-      await checkHttpsErrors(res);
-      const jwtToken = await res.json();
-      const token = jwtToken.jwt;
-      localStorage.setItem('token', token);
-      
+  async function onSubmit(loginCredentials: z.infer<typeof formSchema>) {
+    let isAuthenticated = false;
+
+    isAuthenticated = await authenticateLogin(loginCredentials);
+
+    if (isAuthenticated) {
       login();
       toast.success('Login successful.')
       navigate('/portfolio/overview')
-    } catch (error) {
-      console.error('Form submission error', error)
-      toast.error(error.message)
     }
   }
 
@@ -82,7 +75,7 @@ export default function Login({ onLogin }) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid gap-4">
-              <FormField
+                <FormField
                   control={form.control}
                   name="username"
                   render={({ field }) => (
@@ -123,7 +116,7 @@ export default function Login({ onLogin }) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full dark:bg-slate-950">
                   Login
                 </Button>
               </div>

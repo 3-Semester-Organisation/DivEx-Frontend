@@ -259,12 +259,14 @@ export default function PortfolioOverview() {
         
 
         {/* Set portfolio goal */}
-        <div>
-          <PortfolioGoalDialog
+        {selectedPortfolio && (
+          <div>
+            <PortfolioGoalDialog
               selectedPortfolio={selectedPortfolio}
               onSubmit={onUpdatePortfolioGoal}
-          />
-        </div>
+            />
+          </div>
+        )}
 
         <div>
           {selectedPortfolio && (

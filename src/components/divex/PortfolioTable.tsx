@@ -283,6 +283,7 @@ export default function PortfolioTable({
     "Value (Selected Currency)",
     "P/L",
     "Change",
+    "Action"
   ];
 
 

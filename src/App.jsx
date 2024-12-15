@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 import Trending from "@/views/trendingPage";
 import StockDetailsPage from "@/views/stockDetailsPage";
-import ModeToggle from "@/components/ui/mode-toggle";
 
 
 import StocksPage from "@/views/stocksPage"

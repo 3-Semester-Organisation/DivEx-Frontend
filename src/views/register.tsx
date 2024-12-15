@@ -25,11 +25,11 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
-import { makeOption, checkHttpsErrors } from '@/js/util'
+import { register } from '@/api/authentication'
 
 
 // Improved schema with additional validation rules
-const formSchema = z.object({
+const registrationFormSchema = z.object({
   username: z.string().min(3, { message: 'Username must be at least 3 characters long' }),
   email: z.string().email({ message: 'Invalid email address' }),
   password: z
@@ -38,12 +38,12 @@ const formSchema = z.object({
     .regex(/[a-zA-Z0-9]/, { message: 'Password must be alphanumeric' }),
 })
 
-export default function Register({ onLogin }) {
+export default function Register() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registrationFormSchema>>({
+    resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       username: '',
       email: '',
@@ -51,23 +51,13 @@ export default function Register({ onLogin }) {
     },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const URL = 'http://localhost:8080/api/v1/register'
-    try {
-      const postOption = makeOption('POST', values);
-      const res = await fetch(URL, postOption);
-      await checkHttpsErrors(res);
+  async function onSubmit(registrationInformation: z.infer<typeof registrationFormSchema>) {
+    let isRegistered = await register(registrationInformation);
 
-      const jwtToken = await res.json();
-      const token = jwtToken.jwt;
-      localStorage.setItem('token', token);
-      
+    if (isRegistered) {
       login();
       toast.success('Registration successful.')
       navigate('/portfolio/overview')
-    } catch (error) {
-      console.error('Form submission error', error)
-      toast.error(error.message)
     }
   }
 
@@ -84,7 +74,7 @@ export default function Register({ onLogin }) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid gap-4">
-              <FormField
+                <FormField
                   control={form.control}
                   name="username"
                   render={({ field }) => (

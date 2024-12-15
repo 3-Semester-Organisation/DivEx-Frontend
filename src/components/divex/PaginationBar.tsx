@@ -105,7 +105,7 @@ const PaginationBar: React.FC<PaginationBarProps> = ({ currentPage, totalPages, 
                 onClick={() => setCurrentPage(pageNumber)}
                 className={
                   currentPage === pageNumber
-                    ? " cursor-pointer bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
+                    ? "dark:bg-slate-800 dark:text-white cursor-pointer bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground"
                     : "cursor-pointer"
                 }
                 aria-current={currentPage === pageNumber ? "page" : undefined}

@@ -40,7 +40,7 @@ export default function SearchBar({placeholder}: {placeholder: string}) {
 
     return (
         <>
-            <div className="relative w-full max-w-md">
+            <div className="relative w-full max-w-md ml-auto">
                 <Input
                     id="search"
                     placeholder={placeholder}

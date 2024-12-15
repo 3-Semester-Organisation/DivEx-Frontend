@@ -50,7 +50,6 @@ async function fetchPortfolios() {
 
     } catch (error) {
         console.error("Fetch portfolios error", error);
-        toast.error(error.message);
     }
 }
 

@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { usePortfolios } from '@/js/PortfoliosContext';
 import { toast } from 'sonner';
+import SearchBar from '@/components/divex/searchBar';
 
 
 export default function StockDetailsPage() {
@@ -25,7 +26,7 @@ export default function StockDetailsPage() {
     const [isAddingStock, setIsAddingStock] = useState(false);
     const [stockToAdd, setStockToAdd] = useState<Stock>(null);
 
-    const { portfolios, setPortfolios, selectedPortfolio } = usePortfolios();
+    const { portfolios, selectedPortfolio } = usePortfolios();
 
     useEffect(() => {
         async function fetchStockByTicker(ticker: string) {
@@ -58,15 +59,9 @@ export default function StockDetailsPage() {
 
     return (
         <>
-            <AddStockModal 
-            stock={stock}
-            setIsAddingStock={setIsAddingStock}
-            stockToAdd={stockToAdd}
-            isAddingStock={isAddingStock}
-            />
-
-            <div className="flex p-4">
+            <div className="flex">
                 <Button variant="ghost" onClick={() => navigate(-1)}><ChevronLeft />Go back</Button>
+                {/* <SearchBar placeholder={"Seach..."} /> */}
             </div>
 
             <div className="">
@@ -76,17 +71,17 @@ export default function StockDetailsPage() {
                     <div>
                         <div className="flex justify-between gap-3 mt-5">
                             <h1 className="ml-6 font-bold text-3xl">{stock.name}</h1>
-                                <p className="mt-3 mr-auto">{`(${stock.ticker.toUpperCase()})`}</p>
-                                {/* NEW COMPONENT */}
-                                {selectedPortfolio && (
-                                    <div className="mr-4">
-                                        <AddStockDialog
-                                            stock={stock}
-                                            buttonSize="default"
-                                        />
-                                    </div>
-                                )}
-                                    
+                            <p className="mt-3 mr-auto">{`(${stock.ticker.toUpperCase()})`}</p>
+                            {/* NEW COMPONENT */}
+                            {selectedPortfolio && (
+                                <div className="mr-4">
+                                    <AddStockDialog
+                                        stock={stock}
+                                        buttonSize="default"
+                                    />
+                                </div>
+                            )}
+
                         </div>
 
                         <div className="flex gap-6 p-4">

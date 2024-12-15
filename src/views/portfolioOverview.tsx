@@ -259,12 +259,14 @@ export default function PortfolioOverview() {
         
 
         {/* Set portfolio goal */}
-        <div>
-          <PortfolioGoalDialog
+        {selectedPortfolio && (
+          <div>
+            <PortfolioGoalDialog
               selectedPortfolio={selectedPortfolio}
               onSubmit={onUpdatePortfolioGoal}
-          />
-        </div>
+            />
+          </div>
+        )}
 
         <div>
           {selectedPortfolio && (
@@ -337,10 +339,10 @@ export default function PortfolioOverview() {
         )}
 
 
-        <div className="w-80 ml-auto">
+        {/* <div className="w-80 ml-auto">
           <SearchBar
               placeholder={"Search for stocks to add..."}/>
-        </div>
+        </div> */}
       </div>
 
 

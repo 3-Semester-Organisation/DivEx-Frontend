@@ -4,8 +4,11 @@ import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { deleteUser } from '@/api/user';
 import React from "react";
+import { useContext } from "react";
+import { AuthContext } from "@/js/AuthContext";
 
 export default function DeleteAccountDialog() {
+    const { logout } = useContext(AuthContext);
 
     const navigate = useNavigate();
       function handleDelete() {
@@ -13,8 +16,10 @@ export default function DeleteAccountDialog() {
         const isDeleted = deleteUser();
     
         if (isDeleted) {
+          logout();
           navigate("/login")
           toast("Your account was succesfully deleted.")
+
         }
       }
 

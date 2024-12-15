@@ -38,7 +38,7 @@ function App() {
           </header>
       
       <Router>
-          {isLoggedIn ? <Navbar /> : <DefaultNavbar />}
+          {isLoggedIn ? <Navbar className="h-auto" /> : <DefaultNavbar className="h-auto" />}
           <main className="flex-grow">
         <Routes>
           <Route path="/" element={<p>homepage</p>} />

@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 const schema = z.object({
   goal: z
     .number({ message: "Goal must be a number." })
-    .positive({ message: "Goal must be a positive number." }),
+    .min(0, { message: "Goal must be zero or a positive number." }),
 });
 
 export function PortfolioGoalDialog({ selectedPortfolio, onSubmit }) {

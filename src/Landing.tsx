@@ -26,25 +26,27 @@ import createGlobe from "cobe";
 import {useEffect, useRef} from "react";
 import {motion} from "framer-motion";
 import {IconBrandYoutubeFilled} from "@tabler/icons-react";
+import {Button} from "@/components/ui/button";
+import {useNavigate} from "react-router-dom";
 
 const theWords = ["empower", "modernize", "enhance", "develop"]
 const featuresGrid = [
     {
-        title: "Built for developers",
+        title: "Built for professionals",
         description:
-            "Built for engineers, developers, dreamers, thinkers and doers.",
+            "Built for professionals, dreamers, thinkers and doers.",
         icon: <IconTerminal2/>,
     },
     {
         title: "Ease of use",
         description:
-            "It's as easy as using an Apple, and as expensive as buying one.",
+            "Focus on ease of use, and UX, makes it easy for you",
         icon: <IconEaseInOut/>,
     },
     {
         title: "Pricing like no other",
         description:
-            "Our prices are best in the market. No cap, no lock, no credit card required.",
+            "Our prices are best in the market. No cap, no lock",
         icon: <IconCurrencyDollar/>,
     },
     {
@@ -53,8 +55,8 @@ const featuresGrid = [
         icon: <IconCloud/>,
     },
     {
-        title: "Multi-tenant Architecture",
-        description: "You can simply share passwords instead of buying new seats",
+        title: "Multi-portfolio capability",
+        description: "With premium you can simply create more portfolios.",
         icon: <IconRouteAltLeft/>,
     },
     {
@@ -66,7 +68,7 @@ const featuresGrid = [
     {
         title: "Money back guarantee",
         description:
-            "If you donot like EveryAI, we will convince you to like us.",
+            "If you don't like the us, we will convince you to like us.",
         icon: <IconAdjustmentsBolt/>,
     },
     {
@@ -78,6 +80,7 @@ const featuresGrid = [
 
 
 export default function Landing() {
+    const navigate = useNavigate();
     const features = [
         {
             title: "Track your dividends effectively",
@@ -88,24 +91,24 @@ export default function Landing() {
                 "col-span-1 lg:col-span-4",
         },
         {
-            title: "Calendar",
+            title: "Dividend Calendar",
             description:
                 "Never lose track of dividend dates, with the up-to-date calendar of stock and their dividend dates",
             skeleton: <SkeletonTwo/>,
             className: "col-span-1 lg:col-span-2",
         },
         {
-            title: "Watch our AI on YouTube",
+            title: "Stock overview, with statistics",
             description:
-                "Whether its you or Tyler Durden, you can get to know about our product on YouTube",
+                "Stay ahead in the market! Explore detailed stock insights, including dividends and real-time price movement graphs. Make informed investment decisions with ease!",
             skeleton: <SkeletonThree/>,
             className:
                 "col-span-1 lg:col-span-3",
         },
         {
-            title: "Deploy in seconds",
+            title: "Keep up with the market",
             description:
-                "With our blazing fast, state of the art, cutting edge, we are so back cloud servies (read AWS) - you can deploy your model in seconds.",
+                "With our constantly updated stock and dividend data, you will never lose out a good opportunity.",
             skeleton: <SkeletonFour/>,
             className: "col-span-1 lg:col-span-3",
         },
@@ -118,7 +121,18 @@ export default function Landing() {
                 <div className="text-6xl mr-80"><FlipWords className="font-extrabold text-teal-700" words={theWords}
                                                            duration={1650}/></div>
                 <p className="text-5xl ml-36">your portfolio</p>
-                <a className="text-red-600 text-9xl mt-24" href="/app">GO TO APP</a>
+
+                <button onClick={() => {
+                    navigate("/portfolio/overview");
+                }}
+                        className="relative inline-flex overflow-hidden rounded-full p-[4px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mx-auto mt-16">
+                    <span
+                        className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]"/>
+                    <span
+                        className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-10 py-4 text-2xl font-extrabold text-white backdrop-blur-3xl">
+                        Get Started
+                    </span>
+                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-6 rounded-md gap-8">
@@ -134,6 +148,19 @@ export default function Landing() {
                 {featuresGrid.map((feature, index) => (
                     <Feature key={feature.title} {...feature} index={index}/>
                 ))}
+            </div>
+            <div className="mt-[-120px]">
+                <button onClick={() => {
+                    navigate("/portfolio/overview");
+                }}
+                        className="relative inline-flex overflow-hidden rounded-full p-[4px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mx-auto mt-16">
+                        <span
+                            className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]"/>
+                    <span
+                        className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-10 py-4 text-2xl font-extrabold text-white backdrop-blur-3xl">
+                            Get Started
+                        </span>
+                </button>
             </div>
         </div>
     )
@@ -215,7 +242,7 @@ const FeatureDescription = ({children}: { children?: React.ReactNode }) => {
             className={cn(
                 "text-2xl  max-w-4xl mx-auto",
                 "text-neutral-500 text-center font-normal dark:text-neutral-300",
-                "text-left max-w-sm mx-0 mt-4"
+                "text-left max-w-2xl mx-0 mt-4"
             )}
         >
             {children}
@@ -251,25 +278,24 @@ export const SkeletonOne = () => {
 
 export const SkeletonThree = () => {
     return (
-        <a
-            href="https://www.youtube.com/watch?v=RPa3_AD1_Vs"
-            target="__blank"
-            className="relative flex gap-10  h-full group/image"
-        >
-            <div className="w-full  mx-auto bg-transparent dark:bg-transparent group h-full">
-                <div className="flex flex-1 w-full h-full flex-col space-y-2  relative">
-                    {/* TODO */}
-                    <IconBrandYoutubeFilled className="h-20 w-20 absolute z-10 inset-0 text-red-500 m-auto "/>
-                    <Image
-                        src="https://assets.aceternity.com/fireship.jpg"
-                        alt="header"
-                        width={800}
-                        height={800}
-                        className="h-full w-full aspect-square object-cover object-center rounded-sm blur-none group-hover/image:blur-md transition-all duration-200"
-                    />
-                </div>
-            </div>
-        </a>
+        <div className="relative w-full  mx-auto bg-transparent dark:bg-transparent group h-full">
+            <Image
+                src="/div-stock.png"
+                alt="header"
+                width={840}
+                height={600}
+                className="aspect-square object-cover object-left-top"
+            />
+            <div
+                className="absolute bottom-60 z-40 inset-x-0 h-20 bg-gradient-to-t from-white dark:from-slate-900 to-transparent w-full pointer-events-none"/>
+            <div
+                className="absolute top-14 z-40 inset-x-0 h-20 bg-gradient-to-b from-white dark:from-slate-900 to-transparent w-full pointer-events-none"/>
+            <div
+                className="absolute left-0 z-40 inset-y-0 w-20 bg-gradient-to-r from-white dark:from-slate-900 to-transparent h-full pointer-events-none"/>
+            <div
+                className="absolute right-0 z-40 inset-y-0 w-20 bg-gradient-to-l from-white dark:from-slate-900 to-transparent h-full pointer-events-none"/>
+        </div>
+
     );
 };
 
@@ -278,22 +304,22 @@ export const SkeletonTwo = () => {
         <div className="relative flex flex-col items-start p-8 gap-10 h-full overflow-hidden">
             {/* TODO */}
             <Image
-                src="/div-cal.png"
+                src="/div-cal2.png"
                 alt="header"
-                width={284}
-                height={384}
+                width={502}
+                height={558}
                 className="aspect-square object-cover object-left-top"
             />
 
 
             <div
-                className="absolute bottom-[425px] z-40 inset-x-0 h-20 bg-gradient-to-t from-white dark:from-slate-900 to-transparent w-full pointer-events-none"/>
+                className="absolute bottom-60 z-40 inset-x-0 h-36 bg-gradient-to-t from-white dark:from-slate-900 to-transparent w-full pointer-events-none"/>
             <div
-                className="absolute top-7 z-40 inset-x-0 h-20 bg-gradient-to-b from-white dark:from-slate-900 to-transparent w-full pointer-events-none"/>
+                className="absolute top-8 z-40 inset-x-0 h-32 bg-gradient-to-b from-white dark:from-slate-900 to-transparent w-full pointer-events-none"/>
             <div
-                className="absolute left-8 z-40 inset-y-0 w-12 bg-gradient-to-r from-white dark:from-slate-900 to-transparent h-full pointer-events-none"/>
+                className="absolute left-8 z-40 inset-y-0 w-20 bg-gradient-to-r from-white dark:from-slate-900 to-transparent h-full pointer-events-none"/>
             <div
-                className="absolute right-52 z-40 inset-y-0 w-12 bg-gradient-to-l from-white dark:from-slate-900 to-transparent h-full pointer-events-none"/>
+                className="absolute right-10 z-40 inset-y-0 w-12 bg-gradient-to-l from-white dark:from-slate-900 to-transparent h-full pointer-events-none"/>
             {/*<div className="absolute left-0 z-[100] inset-y-0 w-20 bg-gradient-to-r from-white dark:from-black to-transparent  h-full pointer-events-none" />*/}
             {/*<div className="absolute right-0 z-[100] inset-y-0 w-20 bg-gradient-to-l from-white dark:from-black  to-transparent h-full pointer-events-none" />*/}
         </div>
@@ -303,7 +329,8 @@ export const SkeletonTwo = () => {
 export const SkeletonFour = () => {
     return (
         <div className="h-60 md:h-60  flex flex-col items-center relative bg-transparent dark:bg-transparent mt-10">
-            <Globe className="absolute -right-10 md:-right-10 -bottom-80 md:-bottom-72"/>
+            <Globe
+                className="absolute -right-10 md:-right-10 -bottom-80 md:-bottom-72"/>
         </div>
     );
 };
@@ -323,22 +350,25 @@ export const Globe = ({className}: { className?: string }) => {
             phi: 0,
             theta: 0,
             dark: 1,
-            diffuse: 1.2,
+            diffuse: 0,
             mapSamples: 16000,
-            mapBrightness: 6,
-            baseColor: [0.3, 0.3, 0.3],
+            mapBrightness: 1,
+            baseColor: [0.8, 0.8, 0.8],
             markerColor: [0.1, 0.8, 1],
-            glowColor: [1, 1, 1],
+            glowColor: [0.4, 0.4, 0.4],
             markers: [
                 // longitude latitude
-                {location: [37.7595, -122.4367], size: 0.03},
-                {location: [40.7128, -74.006], size: 0.1},
+                // {location: [37.7595, -122.4367], size: 0.03},
+                // {location: [40.7128, -74.006], size: 0.1},
+                {location: [55.6761, 12.5683], size: 0.05},   // Copenhagen, Denmark
+                {location: [59.3293, 18.0686], size: 0.05},   // Stockholm, Sweden
+                {location: [59.9139, 10.7522], size: 0.05},
             ],
             onRender: (state) => {
                 // Called on every animation frame.
                 // `state` will be an empty object, return updated params.
                 state.phi = phi;
-                phi += 0.01;
+                phi += 0.005;
             },
         });
 
@@ -355,3 +385,4 @@ export const Globe = ({className}: { className?: string }) => {
         />
     );
 };
+

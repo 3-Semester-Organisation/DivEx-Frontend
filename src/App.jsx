@@ -1,7 +1,7 @@
 import {useContext} from "react";
 import {AuthContext} from "@/js/AuthContext";
 import Navbar from "@/components/ui/custom/Navbar";
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import {BrowserRouter as Router, Routes, Route, useNavigate} from "react-router-dom";
 import {ThemeProvider} from "@/components/theme-provider";
 import Trending from "@/views/trendingPage";
 import StockDetailsPage from "@/views/stockDetailsPage";
@@ -24,16 +24,17 @@ import {PortfoliosProvider} from '@/js/PortfoliosContext'
 
 // eslint-disable-next-line react/prop-types
 function Layout({children, isLoggedIn}) {
+    const navigate = useNavigate();
     return (
         <>
-            <div className="flex justify-between mb-2">
-                <a href="/">
-                    <div className="flex justify-start items-center">
+
+            <div className="flex justify-between mb-2 cursor-pointer">
+                    <div onClick={() => {
+                        navigate("/")
+                    }} className="flex justify-start items-center">
                         <img src="/divex-icon-no-bg.png" alt="DivEx-icon" width={"50px"} height={"50px"}/>
                         <h1 className="font-semibold text-5xl ml-2">Div</h1><p className="ont-semibold text-5xl text-teal-700">Ex</p>
                     </div>
-                </a>
-
                 <div>
                     <ModeToggle/>
                 </div>

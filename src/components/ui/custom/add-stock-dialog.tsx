@@ -34,25 +34,26 @@ import { PortfoliosContext, usePortfolios } from "@/js/PortfoliosContext";
 import { AuthContext } from "@/js/AuthContext";
 import { addStockToPortfolio } from "@/api/portfolio";
 import { Plus } from "lucide-react";
+import { PortfolioEntry } from "@/divextypes/types";
 
 const formSchema = z.object({
-    portfolio: z.string().nonempty({ message: "Please select a portfolio." }),
-    
-    price: z
-      .string()
-      .regex(/^\d+(\.\d+)?$/, { message: "Price must be a valid number." })
-      .transform((value) => parseFloat(value)),
-    
-    quantity: z
-      .string()
-      .regex(/^\d+$/, { message: "Quantity must be a valid integer." })
-      .transform((value) => parseInt(value, 10)),
-  });
+  portfolio: z.string().nonempty({ message: "Please select a portfolio." }),
+
+  price: z
+    .string()
+    .regex(/^\d+(\.\d+)?$/, { message: "Price must be a valid number." })
+    .transform((value) => parseFloat(value)),
+
+  quantity: z
+    .string()
+    .regex(/^\d+$/, { message: "Quantity must be a valid integer." })
+    .transform((value) => parseInt(value, 10)),
+});
 
 export function AddStockDialog({ stock, buttonSize }) {
   const [open, setOpen] = useState(false);
   const { portfolios } = usePortfolios();
-  const { selectedPortfolio } = useContext(PortfoliosContext);
+  const { selectedPortfolio, setSelectedPortfolio } = useContext(PortfoliosContext);
   const { subscriptionType } = useContext(AuthContext);
 
   if (subscriptionType === "FREE" && open) {
@@ -60,7 +61,7 @@ export function AddStockDialog({ stock, buttonSize }) {
     const PORTFOLIO_ENTRY_LIMIT = 10;
     const portfolioEntries = selectedPortfolio.portfolioEntries.length;
 
-    if (portfolioEntries === PORTFOLIO_ENTRY_LIMIT) {
+    if (portfolioEntries >= PORTFOLIO_ENTRY_LIMIT) {
       toast.error(
         `Portfolio limit of ${PORTFOLIO_ENTRY_LIMIT} reached for free users. Upgrade to premium for unlimited entries.`
       );
@@ -85,8 +86,13 @@ export function AddStockDialog({ stock, buttonSize }) {
         portfolioId: values.portfolio, // this has to be a number, or just change the type for "portfolioEntryRequest" to string in the divextype folder.
       };
 
-      const isAdded = addStockToPortfolio(portfolioEntryRequest);
-      if (isAdded) {
+      const addedStock = await addStockToPortfolio(portfolioEntryRequest);
+      if (addedStock) {
+        selectedPortfolio.portfolioEntries.push(addedStock);
+        let updatedPortfolioEntries: PortfolioEntry[] = [...selectedPortfolio.portfolioEntries]; 
+
+        setSelectedPortfolio({ ...selectedPortfolio, portfolioEntries: updatedPortfolioEntries });
+
         toast("Stock was added to the portfolio successfully");
         setOpen(false);
       }
@@ -98,11 +104,11 @@ export function AddStockDialog({ stock, buttonSize }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-              <Button className="dark:bg-slate-950" size={buttonSize}>
-                  <Plus/>Add
-              </Button>
-              {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}
+      <DialogTrigger asChild>
+        <Button className="dark:bg-slate-950" size={buttonSize}>
+          <Plus />Add
+        </Button>
+        {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <Form {...form}>
@@ -167,9 +173,9 @@ export function AddStockDialog({ stock, buttonSize }) {
                   <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
-                            <Input
-                                type="number"
-                                inputMode="decimal"
+                      <Input
+                        type="number"
+                        inputMode="decimal"
                         placeholder="Enter price"
                         {...field}
                         className="bg-primary-foreground border-primary"
@@ -189,9 +195,9 @@ export function AddStockDialog({ stock, buttonSize }) {
                     <FormLabel>Quantity</FormLabel>
                     <FormControl>
                       <Input
-                                placeholder="Enter quantity"
-                                type="number"
-                                inputMode="numeric"
+                        placeholder="Enter quantity"
+                        type="number"
+                        inputMode="numeric"
                         {...field}
                         className="bg-primary-foreground border-primary"
                       />

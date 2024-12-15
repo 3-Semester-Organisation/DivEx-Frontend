@@ -1,0 +1,36 @@
+services:
+  frontend:
+    image: chye0001/divexfrontend:latest
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+
+  backend:
+    image: chye0001/divexbackend:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/divex
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: mysql:8.0.36
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: news
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysql -h localhost -u root -proot -e 'SELECT 1'" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+volumes:
+  mysql_data:

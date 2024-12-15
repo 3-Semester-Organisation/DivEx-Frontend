@@ -99,7 +99,7 @@ export function AddStockDialog({ stock, buttonSize }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-              <Button size={buttonSize}>
+              <Button className="dark:bg-slate-950" size={buttonSize}>
                   <Plus/>Add
               </Button>
               {/*<div className="hover:bg-accent rounded-md cursor-pointer">Add</div>*/}

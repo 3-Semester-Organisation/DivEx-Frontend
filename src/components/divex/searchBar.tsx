@@ -45,14 +45,14 @@ export default function SearchBar({placeholder}: {placeholder: string}) {
                     id="search"
                     placeholder={placeholder}
                     type="search"
-                    className="p-2 border-2 border-primary w-full rounded-lg bg-primary-foreground"
+                    className="p-2 border-2 border-gray-600 w-full rounded-lg bg-primary-foreground"
                     value={searchValue}
                     onChange={(e) => setSearchValue(e.target.value)}
                 />
 
                 {searchResults.length > 0 && (
                     <div
-                        className="absolute left-0 w-full border-2 border-primary rounded-md mt-2 z-50 shadow-lg overflow-y-auto"
+                        className="absolute left-0 w-full border-2 border-gray-600 rounded-md mt-2 z-50 shadow-lg overflow-y-auto"
                         style={{
                             maxHeight: "calc(100vh - 300px)", // Adjust the dropdown height to fit within the viewport
                         }}
@@ -73,7 +73,7 @@ export default function SearchBar({placeholder}: {placeholder: string}) {
                 )}
 
                 {searchValue && searchResults.length === 0 && (
-                    <div className="flex flex-col items-start absolute w-full border-2 border-primary bg-primary-foreground rounded-md mt-2 z-50 shadow-lg p-4">
+                    <div className="flex flex-col items-start absolute w-full border-2 border-gray-600 bg-primary-foreground rounded-md mt-2 z-50 shadow-lg p-4">
                         <p>No results found for "{searchValue}".</p>
                     </div>
                 )}

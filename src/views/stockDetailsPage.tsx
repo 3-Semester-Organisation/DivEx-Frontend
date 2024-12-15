@@ -77,7 +77,7 @@ export default function StockDetailsPage() {
                                 <div className="mr-4">
                                     <AddStockDialog
                                         stock={stock}
-                                        buttonSize="default"
+                                        buttonSize="lg"
                                     />
                                 </div>
                             )}

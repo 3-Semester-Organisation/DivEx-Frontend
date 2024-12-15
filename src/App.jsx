@@ -29,8 +29,8 @@ function Layout({children, isLoggedIn}) {
             <div className="flex justify-between mb-2">
                 <a href="/">
                     <div className="flex justify-start items-center">
-                        <img src="/divex-icon-no-bg.png" alt="DivEx-icon" width={"30px"} height={"30px"}/>
-                        <h1 className="font-semibold text-2xl ml-1">DivEX</h1>
+                        <img src="/divex-icon-no-bg.png" alt="DivEx-icon" width={"50px"} height={"50px"}/>
+                        <h1 className="font-semibold text-5xl ml-2">Div</h1><p className="ont-semibold text-5xl text-teal-700">Ex</p>
                     </div>
                 </a>
 

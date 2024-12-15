@@ -3,7 +3,6 @@ import { checkHttpsErrors, makeAuthOption } from "@/js/util"
 import { toast } from "sonner";
 import { z } from "zod";
 
-
 const apiUrl = import.meta.env.VITE_API_URL;
 
 async function addStockToPortfolio(portfolioEntryRequest: PortfolioEntryRequest) {

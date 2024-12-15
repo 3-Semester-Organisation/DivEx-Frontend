@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const Image = ({ src, alt, width, height, placeholder=false, className, ...props }) => {
+const Image = ({ src, alt, width=200, height=200, placeholder=false, className, ...props }) => {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -38,7 +38,7 @@ const Image = ({ src, alt, width, height, placeholder=false, className, ...props
           transition: "opacity 0.3s ease-in-out",
           width: "100%",
           height: "100%",
-          objectFit: "cover",
+          objectFit: "scale-down",
         }}
         onLoad={() => setLoaded(true)}
         {...props}

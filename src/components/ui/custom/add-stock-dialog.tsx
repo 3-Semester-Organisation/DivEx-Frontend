@@ -58,7 +58,7 @@ export function AddStockDialog({ stock, buttonSize }) {
 
   if (subscriptionType === "FREE" && open) {
     //TODO make use of selected portfolio in the Portfolio contex when it gets merged.
-    const PORTFOLIO_ENTRY_LIMIT = 3;
+    const PORTFOLIO_ENTRY_LIMIT = 10;
     const portfolioEntries = selectedPortfolio.portfolioEntries.length;
 
     if (portfolioEntries >= PORTFOLIO_ENTRY_LIMIT) {

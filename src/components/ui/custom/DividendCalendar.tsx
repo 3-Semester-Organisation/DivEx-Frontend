@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { fetchStocksByDate } from "@/api/stocks";
 
 interface Stock { 
   ticker: string;
@@ -118,20 +119,20 @@ function CustomDayContent({ date, modifiers, className, dividendData, ...rest })
   // Fetch data for the date when tooltip opens
   const fetchDataForDate = useCallback(async () => {
     if (dataCache.current[dateKey]) {
-      console.log("Data already fetched for date:", dateKey);
       setTooltipData(dataCache.current[dateKey]);
+
     } else {
+
       try {
         const unixTimestamp = Math.floor(new Date(dateKey).getTime() / 1000);
-        const url = `http://localhost:8080/api/v1/stocksByDate?date=${unixTimestamp}&page=0&size=10`;
-        const res = await fetch(url);
-        const data = await res.json();
+        const data = await fetchStocksByDate(unixTimestamp);
         dataCache.current[dateKey] = data;
         setTooltipData(data);
       } catch (error) {
         console.error("Error fetching data for date:", error);
         setTooltipData(null);
       }
+
     }
   }, [dateKey]);
 

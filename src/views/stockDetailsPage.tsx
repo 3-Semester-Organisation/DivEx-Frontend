@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { usePortfolios } from '@/js/PortfoliosContext';
 import { toast } from 'sonner';
 import SearchBar from '@/components/divex/searchBar';
+import { fetchStockByTicker } from '@/api/stocks';
 
 
 export default function StockDetailsPage() {
@@ -29,12 +30,9 @@ export default function StockDetailsPage() {
     const { portfolios, selectedPortfolio } = usePortfolios();
 
     useEffect(() => {
-        async function fetchStockByTicker(ticker: string) {
+        async function fetchSelectedStock(ticker: string) {
             try {
-                const response = await fetch("http://localhost:8080/api/v1/stock/" + ticker)
-                checkHttpsErrors(response);
-                const stockResponse = await response.json();
-
+                const stockResponse = await fetchStockByTicker(ticker);
                 setStock(stockResponse);
 
             } catch (error) {
@@ -42,7 +40,7 @@ export default function StockDetailsPage() {
             }
         }
 
-        fetchStockByTicker(ticker);
+        fetchSelectedStock(ticker);
     }, []);
 
     function showModal(stock: Stock, event: React.MouseEvent<HTMLButtonElement>) {

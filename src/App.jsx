@@ -46,9 +46,6 @@ function Layout({ children, isLoggedIn }) {
           <h1 className="font-semibold text-5xl ml-2">Div</h1>
           <p className="ont-semibold text-5xl text-teal-700">Ex</p>
         </div>
-        <div>
-          <ModeToggle />
-        </div>
       </div>
       {isLoggedIn ? <Navbar /> : <DefaultNavbar />}
       {children}

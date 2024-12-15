@@ -15,7 +15,7 @@ async function addStockToPortfolio(portfolioEntryRequest: PortfolioEntryRequest)
         const data = await response.json();
 
         if (data) {
-            return true;
+            return data;
 
         } else {
             throw new Error('Data mismatch: Portfolio entry data does not match request');

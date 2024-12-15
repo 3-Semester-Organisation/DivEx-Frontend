@@ -65,6 +65,13 @@ export default function dividendBarChart({ selectedPortfolio, currency }) {
         const SECONDS_CONVERSION_VALUE = 1000;
 
         const latestExDate = new Date(portfolioEntry.stock.exDividendDate * SECONDS_CONVERSION_VALUE).getMonth();
+
+        //ensure program dont crash if there is only one data
+        if(historicalDividends.length <= 1) {
+            payoutFrequenzy = 1;
+            return payoutFrequenzy;
+        }
+
         const previousExDate = new Date(historicalDividends[lastIndex - 1].exDividendDate * SECONDS_CONVERSION_VALUE).getMonth();
         const priorExDate = new Date(historicalDividends[lastIndex - 2].exDividendDate * SECONDS_CONVERSION_VALUE).getMonth();
 
@@ -126,7 +133,7 @@ export default function dividendBarChart({ selectedPortfolio, currency }) {
                                 <YAxis
                                     allowDecimals={false}
                                     />
-                                <ChartTooltip content={<DividendChartToolTip selectedCurrency={currency} />} />
+                                <ChartTooltip cursor={{ fill: 'transparent' }} content={<DividendChartToolTip selectedCurrency={currency} />} />
                                 <Bar dataKey="dividendAmount" fill="#183e7a" radius={8} maxBarSize={100} />
                             </BarChart>
                         </ResponsiveContainer>

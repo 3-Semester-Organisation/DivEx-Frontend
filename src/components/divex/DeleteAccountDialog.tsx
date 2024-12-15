@@ -37,7 +37,7 @@ export default function DeleteAccountDialog() {
                 className='bg-red-500 hover:bg-red-500 hover:opacity-90'
                 onClick={() => handleDelete()}
               >
-                Delte
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

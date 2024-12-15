@@ -45,6 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Function to handle login
   const login = () => {
     setIsLoggedin(true);
+    const subType = getSubscriptionTypeFromToken();
+    setSubscriptionType(subType);
   };
 
   // Function to handle logout
@@ -53,6 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem("selectedPortfolioId");
     setSelectedPortfolio(null);
     setIsLoggedin(false);
+    setSubscriptionType(null);
   };
 
   

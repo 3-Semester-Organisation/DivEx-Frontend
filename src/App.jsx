@@ -14,13 +14,9 @@ import Register from "@/views/register";
 import CalendarPage from "@/views/calendarPage";
 import DefaultNavbar from "@/components/ui/custom/DefaultNavbar";
 import Settings from "@/views/settings";
-import Pricing from "@/views/pricingPage";
 import PortfolioOverview from "@/views/portfolioOverview";
 import Landing from "@/Landing.tsx";
-import CardInput from "@/views/cardInput";
-import NotFoundView from "@/views/errorviews/404"
 
-import {PortfoliosProvider} from '@/js/PortfoliosContext'
 
 // eslint-disable-next-line react/prop-types
 function Layout({children, isLoggedIn}) {

@@ -66,6 +66,7 @@ export default function dividendBarChart({ selectedPortfolio, currency }) {
 
         const latestExDate = new Date(portfolioEntry.stock.exDividendDate * SECONDS_CONVERSION_VALUE).getMonth();
 
+        //ensure program dont crash if there is only one data
         if(historicalDividends.length <= 1) {
             payoutFrequenzy = 1;
             return payoutFrequenzy;

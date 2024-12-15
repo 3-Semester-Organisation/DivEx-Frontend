@@ -23,7 +23,7 @@ import Landing from "@/Landing.tsx";
 import NotFoundView from "@/views/errorviews/404";
 import Pricing from "@/views/pricingPage";
 import CardInput from "@/views/cardInput";
-import { Footer } from "@/components/ui/custom/Footer";
+import { Footer } from "@/components/ui/custom/footer";
 
 // eslint-disable-next-line react/prop-types
 function Layout({ children, isLoggedIn }) {

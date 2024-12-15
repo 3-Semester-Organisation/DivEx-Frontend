@@ -135,7 +135,7 @@ export default function Register() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full dark:bg-slate-950">
                   Register
                 </Button>
               </div>

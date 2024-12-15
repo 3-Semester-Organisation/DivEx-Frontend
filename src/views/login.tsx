@@ -116,7 +116,7 @@ export default function Login() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full dark:bg-slate-950">
                   Login
                 </Button>
               </div>

@@ -128,7 +128,7 @@ export function PortfolioChart({ selectedPortfolio }: PortfolioChartProps) {
   }
 
   return (
-    <Card className="bg-primary-foreground shadow-md">
+    <Card className="bg-primary-foreground shadow-md flex-grow">
       <CardHeader >
         <CardTitle className="">Holdings</CardTitle>
         

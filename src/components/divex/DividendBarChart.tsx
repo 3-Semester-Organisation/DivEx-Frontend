@@ -133,7 +133,7 @@ export default function dividendBarChart({ selectedPortfolio, currency }) {
                                 <YAxis
                                     allowDecimals={false}
                                     />
-                                <ChartTooltip content={<DividendChartToolTip selectedCurrency={currency} />} />
+                                <ChartTooltip cursor={{ fill: 'transparent' }} content={<DividendChartToolTip selectedCurrency={currency} />} />
                                 <Bar dataKey="dividendAmount" fill="#183e7a" radius={8} maxBarSize={100} />
                             </BarChart>
                         </ResponsiveContainer>

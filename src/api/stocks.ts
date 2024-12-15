@@ -18,7 +18,7 @@ async function fetchPaginatedStocks(pageNumber: number, pageSize: number = 10, s
         };
     } catch (error) {
         console.log(error);
-    } 
+    }
 }
 
 async function fetchStocksBySearchTerm(searchTerm: string) {
@@ -31,7 +31,7 @@ async function fetchStocksBySearchTerm(searchTerm: string) {
 
     } catch (error) {
         console.log(error);
-    } 
+    }
 }
 
 async function fetchStocksForCalendar(date: number, currentPage: number, sorting: { column: string, direction: string }) {
@@ -88,10 +88,41 @@ async function fetchDividendDates() {
     }
 }
 
+async function fetchStockByTicker(ticker: string) {
+    try {
+        const response = await fetch(`${apiUrl}stock/${ticker}`)
+        await checkHttpsErrors(response);
+        const stockResponse = await response.json();
+
+        if (stockResponse) {
+            return stockResponse;
+        }
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function fetchStocksByDate(unixTimestamp) {
+    try {
+        const respone = await fetch(`${apiUrl}stocksByDate?date=${unixTimestamp}&page=0&size=10`);
+        await checkHttpsErrors(respone);
+        const data = await respone.json();
+
+        if (data) {
+            return data;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export {
     fetchPaginatedStocks,
     fetchStocksBySearchTerm,
     fetchStocksForCalendar,
     fetchStocksByDividendDate,
-    fetchDividendDates
+    fetchDividendDates,
+    fetchStockByTicker,
+    fetchStocksByDate
 }

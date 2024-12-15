@@ -32,7 +32,7 @@ export default function PortfolioOverview() {
   const supportedCurrencies: string[] = ["DKK", "SEK", "NOK"];
   const [isDisplayingDividendSummary, setIsDisplayingDividendSummary] = useState(true);
   const [summarizedPortfolio, setSummarizedPortfolio] = useState<Portfolio>(null)
-  
+
   useCheckCredentials();
 
   useEffect(() => {
@@ -40,11 +40,11 @@ export default function PortfolioOverview() {
       const fetchedPortfolios = await fetchPortfolios();
       setPortfolios(fetchedPortfolios || []);
 
-      if(!selectedPortfolio && fetchedPortfolios.length > 0 ) {
+      if (!selectedPortfolio && fetchedPortfolios.length > 0) {
         setSelectedPortfolio(fetchedPortfolios[0])
         return;
       }
-      
+
       //sets the selected portfolio to the one that was selected last. Since setting state is asynchronize, make use of the variable instead.
       const selectedPortfolioId = localStorage.getItem("selectedPortfolioId");
       const cachedSelectedPortfolio = fetchedPortfolios.find(portfolio => portfolio.id.toString() === selectedPortfolioId)
@@ -71,7 +71,7 @@ export default function PortfolioOverview() {
     let previousEntry = null;
 
     if (selectedPortfolio && selectedPortfolio.portfolioEntries !== null) {
-      
+
 
       const portfolioEntries = selectedPortfolio.portfolioEntries;
       portfolioEntries.sort((a, b) => a.stock.name.localeCompare(b.stock.name));
@@ -173,7 +173,7 @@ export default function PortfolioOverview() {
     try {
       const updatedPortfolio = await updatePortfolioGoal(selectedPortfolio.id, goal);
       setSelectedPortfolio(updatedPortfolio);
-      
+
       toast.success("Portfolio goal updated.");
     } catch (error: any) {
       console.error("Update portfolio goal error", error);
@@ -182,8 +182,8 @@ export default function PortfolioOverview() {
   }
 
   const deleteSelectedPortfolio = async (
-      portfolioId: number,
-      portfolioName: String
+    portfolioId: number,
+    portfolioName: String
   ) => {
     const token = localStorage.getItem("token");
     if (!selectedPortfolio) {
@@ -196,20 +196,20 @@ export default function PortfolioOverview() {
     }
     try {
       await deletePortfolio(
-          portfolioId,
-          portfolioName
+        portfolioId,
+        portfolioName
       );
 
       setPortfolios((prevPortfolios) => prevPortfolios
-          .filter((portfolio) => portfolio.id !== portfolioId));
+        .filter((portfolio) => portfolio.id !== portfolioId));
 
       //the shortening of portfolios.length seems to happen after the scope ends,
       //not within, which means the following if-statement has to be +1. Technically,
       //when we delete the last portfolio, the length is registered as 1 in this scope
       //and thus we are checking it this way. Seems a quirk of either JS or React.
-      if(portfolios.length > 1) {
+      if (portfolios.length > 1) {
         setSelectedPortfolio(portfolios[0])
-      }else{
+      } else {
         setSelectedPortfolio(null)
       }
 
@@ -241,22 +241,22 @@ export default function PortfolioOverview() {
       <div className="flex flex-row content-center gap-3 pt-5">
         <div>
           {selectedPortfolio && (
-              <PortfolioSelect
-                  portfolioList={portfolios}
-                  selectedPortfolio={selectedPortfolio}
-                  setSelectedPortfolio={setSelectedPortfolio}
-              />
+            <PortfolioSelect
+              portfolioList={portfolios}
+              selectedPortfolio={selectedPortfolio}
+              setSelectedPortfolio={setSelectedPortfolio}
+            />
           )}
         </div>
 
         <div>
           <CreatePortfolioButton
-              onSubmit={handlePortfolioCreation}
-              portfolios={portfolios}
+            onSubmit={handlePortfolioCreation}
+            portfolios={portfolios}
           />
         </div>
 
-        
+
 
         {/* Set portfolio goal */}
         {selectedPortfolio && (
@@ -270,16 +270,16 @@ export default function PortfolioOverview() {
 
         <div>
           {selectedPortfolio && (
-              <>
-                <Button
-                    variant="default"
-                    onClick={() =>
-                        setIsDisplayingDividendSummary(!isDisplayingDividendSummary)
-                    }
-                >
-                  {isDisplayingDividendSummary ? "Show Stocks" : "Show Dividends"}
-                </Button>
-              </>
+            <>
+              <Button
+                variant="default"
+                onClick={() =>
+                  setIsDisplayingDividendSummary(!isDisplayingDividendSummary)
+                }
+              >
+                {isDisplayingDividendSummary ? "Show Stocks" : "Show Dividends"}
+              </Button>
+            </>
           )}
         </div>
 
@@ -307,12 +307,12 @@ export default function PortfolioOverview() {
         {portfolios?.length > 0 && (
           <div>
             <Button
-                variant="destructive"
-                onClick={() =>
-                    deleteSelectedPortfolio(
-                        selectedPortfolio.id, selectedPortfolio.name
-                    )
-                }
+              variant="destructive"
+              onClick={() => {
+                deleteSelectedPortfolio(selectedPortfolio.id, selectedPortfolio.name);
+                localStorage.removeItem("selectedPortfolioId")
+              }
+              }
             >
               Delete
             </Button>
@@ -320,22 +320,22 @@ export default function PortfolioOverview() {
         )}
 
         {subType === "PREMIUM" && portfolios?.length > 0 && (
-            <div>
-              <Button
-                  variant="ghost"
-                  onClick={() => {
-                    if (selectedPortfolio) {
-                      //sharePortfolio(selectedPortfolio); //logic here
-                      toast.info("Feature coming soon.");
-                    } else {
-                      toast.error("No portfolio selected.");
-                    }
-                  }}
-              >
-                Share
-                <SquareArrowOutUpRight/>
-              </Button>
-            </div>
+          <div>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (selectedPortfolio) {
+                  //sharePortfolio(selectedPortfolio); //logic here
+                  toast.info("Feature coming soon.");
+                } else {
+                  toast.error("No portfolio selected.");
+                }
+              }}
+            >
+              Share
+              <SquareArrowOutUpRight />
+            </Button>
+          </div>
         )}
 
 
@@ -348,13 +348,13 @@ export default function PortfolioOverview() {
 
       <div>
         {portfolios?.length === 0 && (
-            <h1 className="text-4xl font-semibold mt-20">
-              Create a portfolio to get started
-            </h1>
+          <h1 className="text-4xl font-semibold mt-20">
+            Create a portfolio to get started
+          </h1>
         )}
 
         {selectedPortfolio && (
-            <div className="grid grid-cols-12">
+          <div className="grid grid-cols-12">
             <div className="col-span-4 mt-5">
               <PortfolioChart selectedPortfolio={summarizedPortfolio} />
             </div>
@@ -376,14 +376,14 @@ export default function PortfolioOverview() {
                   numberFormater={numberFormater}
                 />
               ) :
-              (
-                <PortfolioTable
-                  selectedPortfolio={summarizedPortfolio}
-                  setSelectedPortfolio={setSummarizedPortfolio}
-                  currency={currency}
-                  numberFormater={numberFormater}
-                />
-              )}
+                (
+                  <PortfolioTable
+                    selectedPortfolio={summarizedPortfolio}
+                    setSelectedPortfolio={setSummarizedPortfolio}
+                    currency={currency}
+                    numberFormater={numberFormater}
+                  />
+                )}
             </div>
           </div>
         )}
